@@ -49,7 +49,7 @@ npm run dev            # Starts both frontend & backend concurrently
 
 This will:
 - Run the React frontend on [http://localhost:3000](http://localhost:3000)
-- Run the Node backend on [http://localhost:4000](http://localhost:4000)
+- Run the Node backend on [http://localhost:8080](http://localhost:8080)
 
 ### 2. ⚙️ Setup Environment Variables (Required)
 
@@ -59,7 +59,7 @@ You'll need to manually create the following `.env` files for both frontend and 
 Used in local dev mode by React.
 
 ```env
-REACT_APP_BACKEND_URL=http://localhost:4000
+REACT_APP_BACKEND_URL=http://localhost:8080
 ```
 
 #### ✅ `frontend/.env.production`
@@ -73,7 +73,7 @@ REACT_APP_BACKEND_URL=https://<your-cloud-run-backend-url>
 Used by Node.js backend.
 
 ```env
-PORT=4000
+PORT=8080
 ANAM_API_KEY=your_anam_api_key_here
 FIREBASE_API_KEY=your_firebase_api_key_here
 ```
