@@ -1,0 +1,61 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build Output
+dist/
+build/
+.env
+.env.local
+
+# Logs
+logs/
+*.log
+debug.log
+
+# System
+.DS_Store
+Thumbs.db
+
+# VSCode
+.vscode/
+
+# GitHub Actions
+*.tsbuildinfo
+
+# Firebase
+.firebase/
+.firebaserc
+
+# GCP
+*.key.json
+*.pem
+*.p12
+
+# Docker
+*.dockerfile
+docker-compose.override.yml
+
+# IDEs
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Local dev
+coverage/
+*.tgz
+
+# Backend specific
+backend/node_modules/
+backend/.env
+
+# Frontend specific
+frontend/node_modules/
+frontend/.env
+frontend/build/
+
+# Ignore local secrets
+*.secret.*
+*.env.*
