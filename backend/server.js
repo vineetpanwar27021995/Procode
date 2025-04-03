@@ -7,7 +7,7 @@ const app = express();
 const PORT = process.env.PORT || 8080;
 const ALLOWED_ORIGINS = [
     "http://localhost:3000", // Local frontend
-    "https://procode-silk.vercel.app/", // Vercel frontend
+    "https://procode-silk.vercel.app", // Vercel frontend
 ];
 // Enable CORS
 app.use(
