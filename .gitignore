@@ -35,8 +35,8 @@ Thumbs.db
 *.p12
 
 # Docker
-*.dockerfile
-docker-compose.override.yml
+#*.dockerfile
+#//docker-compose.override.yml
 
 # IDEs
 .idea/
