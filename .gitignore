@@ -50,7 +50,7 @@ coverage/
 # Backend specific
 backend/node_modules/
 backend/.env
-backend/firebaseServiceAccount.json
+backend/secrets/*
 
 # Frontend specific
 frontend/node_modules/
