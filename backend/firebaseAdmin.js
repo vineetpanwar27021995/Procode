@@ -1,11 +1,15 @@
 const admin = require("firebase-admin");
-const serviceAccount = require("./secrets/firebaseServiceAccount.json");
+const fs = require("fs");
+
+let serviceAccount;
+
+if (process.env.NODE_ENV === "production") {
+  const serviceAccountPath = "/firebase-secrets/firebaseServiceAccount.json"; // ✅ FIXED
+  serviceAccount = JSON.parse(fs.readFileSync(serviceAccountPath, "utf8"));
+} else {
+  serviceAccount = require("./secrets/firebaseServiceAccount.json"); // local dev
+}
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
-
-const auth = admin.auth();
-const db = admin.firestore();
-
-module.exports = { auth, db };
