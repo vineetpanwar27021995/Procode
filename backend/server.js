@@ -1,57 +1,54 @@
-// backend/server.js
-require("dotenv").config();
-const express = require("express");
-const cors = require("cors");
-const authRoutes = require("./routes/authRoutes");
-const firestoreRoutes = require("./routes/firestoreRoutes");
-const analyzeRoute = require("./routes/analyzeIntutionRoutes");
+require('dotenv').config();
+const express = require('express');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
+const cors = require('cors');
+const { handleErrors } = require('./utils/errorHandler');
+const { CORS, RATE_LIMIT } = require('./config/constants');
 
 const app = express();
-const PORT = process.env.PORT || 8080;
+
 // Middleware
+app.use(helmet());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cors({ 
+  origin: CORS.ALLOWED_ORIGINS,
+  credentials: true
+}));
 
-const ALLOWED_ORIGINS = [
-    "http://localhost:3000", // Local frontend
-    "https://procode-silk.vercel.app", // Vercel frontend
-];
-// Enable CORS
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      if (!origin || ALLOWED_ORIGINS.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: true,
-  })
-);
+// Rate limiting
+const limiter = rateLimit({
+  windowMs: RATE_LIMIT.WINDOW_MS,
+  max: RATE_LIMIT.MAX,
+  message: 'Too many requests from this IP, please try again later'
+});
+app.use('/api', limiter);
 
-// DeepSeek API
-app.use("/api/analyze", analyzeRoute);
+// Routes
+app.use('/api/auth', require('./routes/auth.routes'));
+app.use('/api/db', require('./routes/firestore.routes'));
+app.use('/api/analyze', require('./routes/analyzeIntution.routes'));
 
-// Authentication
-app.use("/api/auth", authRoutes);
-
-// DB
-app.use("/api/db", firestoreRoutes);
-
-app.get("/", (req, res) => {
-  res.send("🚀 Hello from ProCode on GCP! Hope you are doing great... Just checking if GCP cloud run is working fine ");
+// Health check
+app.get('/', (req, res) => {
+  res.send('🚀 Hello from ProCode on GCP!');
 });
 
-// Sample API route
-app.get("/api/test", (req, res) => {
+app.get('/api/test', (req, res) => {
   res.json({
-    message: "🎉 Hello from ProCode Backend!",
-    status: "success",
+    message: '🎉 Hello from ProCode Backend!',
+    status: 'success',
     time: new Date().toISOString(),
   });
 });
 
-// Start server
+// Error handling
+app.use(handleErrors);
+
+const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`✅ Backend server listening on port ${PORT}`);
 });
+
+module.exports = app;
