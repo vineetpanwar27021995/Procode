@@ -1,35 +1,29 @@
-import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import PrivacyPolicy from './pages/PrivacyPolicy';
-import DataDeletion from './pages/DataDeletion';
-import './App.css';
+import React from 'react';
+import { useThemeStore } from './stores/themeStore';
+import { lightTheme, darkTheme } from './styles/themes';
+import { ThemeProvider } from 'styled-components';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Welcome, Login, Register, ForgotPassword, Verify } from './pages';
+import {Snackbar} from './components';
+import './styles/global.css'
 
-function App() {
-  const [testData, setTestData] = React.useState(null);
-  const API_BASE = process.env.REACT_APP_API_BASE_URL;
-
-  useEffect(() => {
-    fetch(`${API_BASE}/api/test`)
-      .then((res) => res.text())
-      .then((data) => {
-        console.log("✅ Backend response:", data);
-        setTestData(data);
-      })
-      .catch((err) => console.error("❌ API error:", err));
-  }, []);
-
+const App = () => {
+  const { darkMode } = useThemeStore();
+  
   return (
-    <Router>
-      <nav className="bg-gray-100 p-4 text-center">
-        <Link className="mx-4 text-blue-600" to="/privacy">Privacy Policy</Link>
-        <Link className="mx-4 text-blue-600" to="/delete-data">Data Deletion</Link>
-      </nav>
-      <Routes>
-        <Route path="/privacy" element={<PrivacyPolicy />} />
-        <Route path="/delete-data" element={<DataDeletion />} />
-      </Routes>
-    </Router>
+    <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
+      <Snackbar />
+      <Router>
+        <Routes>
+          <Route path="/" element={<Welcome />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/verify" element={<Verify />} />
+        </Routes>
+      </Router>
+    </ThemeProvider>
   );
-}
+};
 
 export default App;
