@@ -5,7 +5,7 @@ import { ThemeProvider } from 'styled-components';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Welcome, Login, Register, ForgotPassword, Verify } from './pages';
 import {Snackbar} from './components';
-import './styles/global.css'
+import './global.css'
 
 const App = () => {
   const { darkMode } = useThemeStore();
