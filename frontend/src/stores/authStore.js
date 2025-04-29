@@ -31,13 +31,13 @@ export const useAuthStore = create((set) => ({
         }
     },
 
-    verifyCode: async (code) => {
+    verifyCode: async (code, email) => {
         set({
             loading: true,
             error: null
         });
         try {
-            const response = await authService.verifyCode(code);
+            const response = await authService.verifyCode(code, email);
             set({
                 loading: false
             });

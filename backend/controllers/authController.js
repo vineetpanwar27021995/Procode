@@ -1,44 +1,50 @@
 const jwt = require('jsonwebtoken');
-const { auth, db } = require('../config/firebase');
+const { admin, auth, db } = require('../config/firebase');
 const { JWT, EMAIL_VERIFICATION } = require('../config/constants');
 const { sendVerificationEmail } = require('../services/email.service');
-const AppError = require('../utils/errorHandler');
+const {AppError} = require('../utils/errorHandler');
+const axios = require('axios');
 
 exports.signup = async (req, res, next) => {
   try {
-    const { email, password, displayName } = req.body;
+    const { email, password, name } = req.body;
+
+    if (!email || !password || !name) {
+      throw new AppError('Email, password, and name are required.', 400);
+    }
 
     const user = await auth.createUser({ 
       email, 
       password, 
-      displayName,
+      displayName: name,
       emailVerified: false
     });
 
     await db.collection('users').doc(user.uid).set({
       email,
-      displayName,
+      name,
       emailVerified: false,
       createdAt: admin.firestore.FieldValue.serverTimestamp()
     });
 
-    const verificationToken = jwt.sign(
-      { uid: user.uid },
-      EMAIL_VERIFICATION.TOKEN_SECRET,
-      { expiresIn: EMAIL_VERIFICATION.TOKEN_EXPIRES_IN }
+    const otp = Math.floor(1000 + Math.random() * 9000).toString(); // 4-digit OTP
+    const otpExpiresAt = admin.firestore.Timestamp.fromDate(
+      new Date(Date.now() + 10 * 60 * 1000) // 10 mins
     );
 
-    await db.collection('verificationTokens').doc(user.uid).set({
-      token: verificationToken,
-      createdAt: admin.firestore.FieldValue.serverTimestamp()
+    await db.collection('verificationOtps').doc(user.uid).set({
+      otp,
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      expiresAt: otpExpiresAt
     });
 
-    await sendVerificationEmail(email, verificationToken);
+    await sendVerificationEmail(email, otp); // 🔥 send 4-digit OTP
 
     res.status(201).json({ 
-      message: 'User created. Verification email sent.', 
+      message: 'User created. OTP sent to email.', 
       uid: user.uid 
     });
+
   } catch (err) {
     next(new AppError(err.message, 400));
   }
@@ -46,15 +52,43 @@ exports.signup = async (req, res, next) => {
 
 exports.login = async (req, res, next) => {
   try {
-    const { uid } = req.body;
-    if (!uid) throw new Error('UID is required');
+    const { email, password } = req.body;
+    if (!email || !password) throw new Error('Email and password are required');
 
-    const customToken = await auth.createCustomToken(uid);
-    res.status(200).json({ token: customToken });
+    // Firebase Authentication API URL
+    const url = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key='+process.env.FIREBASE_API_KEY;  // Replace with your Firebase Web API Key
+
+    // Making the API call to Firebase Authentication to sign in the user
+    const response = await axios.post(url, {
+      email,
+      password,
+      returnSecureToken: true,  // Ensure Firebase returns a secure token
+    });
+
+    const { idToken, localId } = response.data;
+
+    // Optionally, you can verify the token and fetch the user's details
+    const userRecord = await auth.getUser(localId);  // Using Admin SDK to get user data by localId
+
+    // If needed, create a custom token for the user
+    const customToken = await auth.createCustomToken(localId);
+
+    // Send the response with the custom token, user data, and ID token
+    res.status(200).json({
+      token: customToken,
+      idToken,  // Optionally send Firebase's ID token as well
+      user: {
+        uid: userRecord.uid,
+        email: userRecord.email,
+        displayName: userRecord.displayName,
+        // Add other fields as necessary
+      },
+    });
   } catch (err) {
-    next(new AppError(err.message, 400));
+    next(new AppError(err.message || 'Login failed', 400));
   }
 };
+
 
 exports.forgotPassword = async (req, res, next) => {
   try {
@@ -80,23 +114,89 @@ exports.verifyToken = async (req, res, next) => {
 
 exports.verifyEmail = async (req, res, next) => {
   try {
-    const { token } = req.query;
-    const decoded = jwt.verify(token, EMAIL_VERIFICATION.TOKEN_SECRET);
+    const { email, otp } = req.body;
 
-    const tokenDoc = await db.collection('verificationTokens').doc(decoded.uid).get();
-    if (!tokenDoc.exists || tokenDoc.data().token !== token) {
-      throw new Error('Invalid or expired verification token');
+    if (!email || !otp) {
+      throw new Error('Email and OTP are required');
     }
 
-    await auth.updateUser(decoded.uid, { emailVerified: true });
-    await db.collection('users').doc(decoded.uid).update({ emailVerified: true });
-    await db.collection('verificationTokens').doc(decoded.uid).delete();
+    const userRecord = await auth.getUserByEmail(email);
+    const uid = userRecord.uid;
+
+    console.log('User UID:', uid); // Log the UID for debugging
+
+    const otpDoc = await db.collection('verificationOtps').doc(uid).get();
+    console.log('OTP Document Data:', otpDoc.data()); // Log OTP data for debugging
+
+    if (!otpDoc.exists) {
+      throw new Error('Verification code not found');
+    }
+
+    const { code, createdAt } = otpDoc.data();
+
+    if (code !== otp) {
+      throw new Error('Invalid verification code');
+    }
+
+    const now = new Date();
+    const created = createdAt.toDate();
+    const diffInMinutes = (now - created) / 60000;
+    if (diffInMinutes > 10) {
+      throw new Error('Verification code expired');
+    }
+
+    await auth.updateUser(uid, { emailVerified: true });
+    await db.collection('users').doc(uid).update({ emailVerified: true });
+
+    await db.collection('verificationTokens').doc(uid).delete();
 
     res.status(200).json({ message: 'Email verified successfully' });
+
   } catch (err) {
+    console.error('Verification error:', err); // Log error for debugging
     next(new AppError(err.message, 400));
   }
 };
+
+exports.resendVerificationCode = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      throw new Error('Email is required');
+    }
+
+    // Check if user exists
+    const userRecord = await auth.getUserByEmail(email);
+    const uid = userRecord.uid;
+
+    // Generate a new 4-digit OTP
+    const otp = Math.floor(1000 + Math.random() * 9000).toString(); // 4-digit OTP
+
+    // Set expiration time (10 minutes)
+    const otpExpiresAt = admin.firestore.Timestamp.fromDate(
+      new Date(Date.now() + 10 * 60 * 1000) // 10 minutes from now
+    );
+
+    // Save OTP and expiration time in Firestore
+    await db.collection('verificationOtps').doc(uid).set({
+      code: otp,
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      expiresAt: otpExpiresAt,
+    });
+
+    // Send OTP to email
+    await sendVerificationEmail(email, otp);
+
+    res.status(200).json({
+      message: 'Verification code resent successfully',
+    });
+  } catch (err) {
+    next(new AppError(err.message, 400)); // Use your custom error handler
+  }
+};
+
+
 
 exports.googleLogin = async (req, res, next) => {
   try {
@@ -112,7 +212,7 @@ exports.googleLogin = async (req, res, next) => {
       await userRef.set({
         uid: decodedToken.uid,
         email: decodedToken.email,
-        displayName: decodedToken.name || decodedToken.email,
+        name: decodedToken.name || decodedToken.email,
         photoURL: decodedToken.picture || null,
         provider: 'google',
         createdAt: admin.firestore.FieldValue.serverTimestamp(),
@@ -146,7 +246,7 @@ exports.facebookLogin = async (req, res, next) => {
       await userRef.set({
         uid: decodedToken.uid,
         email: decodedToken.email,
-        displayName: decodedToken.name || decodedToken.email,
+        name: decodedToken.name || decodedToken.email,
         photoURL: decodedToken.picture || null,
         provider: 'facebook',
         createdAt: admin.firestore.FieldValue.serverTimestamp(),

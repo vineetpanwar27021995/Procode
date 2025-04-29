@@ -4,15 +4,17 @@ export const authService = {
   register: async (name, email, password) => {
     try {
       const response = await api.post('/auth/register', { name, email, password });
+      console.log('response',response)
       return response.data;
-    } catch (error) {
+    } catch (error) {     
+      console.log('error',error)
       throw new Error(error.response?.data?.message || 'Registration failed. Please try again.');
     }
   },
 
-  verifyCode: async (code) => {
+  verifyCode: async (code, email) => {
     try {
-      const response = await api.post('/auth/verify', { code });
+      const response = await api.post('/auth/verify-email', { otp:code, email });
       return response.data;
     } catch (error) {
       throw new Error(error.response?.data?.message || 'Invalid verification code. Please try again.');

@@ -1,0 +1,95 @@
+.welcomeContainer {
+    background-color: var(--welcome-bg-color);
+    color: var(--welcome-text-color);
+    padding: 20px;
+    text-align: center;
+  }
+  
+  .landingLabel {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    color: var(--welcome-subtitle-color); 
+    font-size: 0.9rem;
+  }
+  
+  .welcomeTitle {
+    font-size: 2.8rem;
+    font-weight: bold;
+    color: var(--welcome-title-color);
+    margin-bottom: 0.5rem;
+  }
+  
+  .welcomeSubtitle {
+    color: var(--welcome-subtitle-color);
+    font-size: 1rem;
+  }
+  
+  .codeIcon {
+    width: 80px;
+    height: 80px;
+    color: var(--welcome-icon-color);
+    margin-bottom: 3rem;
+    transition: color 0.3s ease; 
+  }
+  
+  .baseButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.1s ease;
+    width: 280px;
+    margin-bottom: 1rem;
+  }
+  
+  .baseButton:active {
+    transform: scale(0.98);
+  }
+  
+  .signInButton {
+    composes: baseButton; 
+    background-color: var(--welcome-button-primary-bg);
+    color: var(--welcome-button-primary-text);
+  }
+  
+  .signInButton:hover {
+    background-color: var(--welcome-button-primary-hover-bg);
+  }
+  
+  .createAccountButton {
+    composes: baseButton; 
+    background-color: var(--welcome-button-secondary-bg);
+    color: var(--welcome-button-secondary-text);
+    display: block;
+    width: auto;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+  
+  .createAccountButton:hover {
+    background-color: var(--welcome-button-secondary-hover-bg);
+  }
+  
+  .signInButton svg,
+  .createAccountButton svg {
+     width: 18px;
+     height: 18px;
+  }
+
+  .createAccountButton span{
+    color: var(--welcome-text-color);
+    font-size: 1rem;
+  }
+  
+  .getStarted{
+    color: var(--welcome-text-color);
+    margin-bottom: 1rem;
+    font-size: 1rem;
+  }

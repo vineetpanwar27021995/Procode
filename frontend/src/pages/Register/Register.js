@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuthStore } from '../../stores/authStore';
-import { useThemeStore } from '../../stores/themeStore';
 import { Button, Input } from '../../components';
 import { useNavigate } from 'react-router-dom';
-import { lightTheme, darkTheme } from '../../styles/themes';
 import { useSnackbarStore } from '../../stores/snackbarStore';
+import styles from '../../styles/Register.module.css'; 
+import { MdOutlineKeyboardArrowLeft } from 'react-icons/md'; 
 
 const Register = () => {
   const [name, setName] = useState('');
@@ -12,9 +12,15 @@ const Register = () => {
   const [password, setPassword] = useState('');
   const [agree, setAgree] = useState(false);
   const { register, loading, error } = useAuthStore();
-  const { darkMode } = useThemeStore();
   const navigate = useNavigate();
   const { showSnackbar } = useSnackbarStore();
+
+  // useEffect(() => {
+  //   if (error) {
+  //     console.log(error)
+  //     showSnackbar(error.message || 'Registration failed', 'error');
+  //   }
+  // }, [error, showSnackbar]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -22,68 +28,90 @@ const Register = () => {
       showSnackbar('Please agree to the terms and conditions', 'error');
       return;
     }
-    
+
     try {
       await register(name, email, password);
       showSnackbar('Registration successful! Verification email sent.', 'success');
       navigate('/verify', { state: { email } });
-    } catch (error) {
-      showSnackbar(error.message || 'Registration failed', 'error');
+    } catch (err) {
+       console.error("Registration submit error:", err);
+       if (!error) {
+           showSnackbar(err.message || 'Registration failed during submit', 'error');
+       }
     }
   };
-  
+
   return (
-    <div style={{ 
-      background: darkMode ? darkTheme.background : lightTheme.background,
-      color: darkMode ? darkTheme.text : lightTheme.text,
-      height: '100vh',
-      padding: 20
-    }}>
-      <Button variant="text" onClick={() => navigate(-1)}>
-        Back
-      </Button>
-      
-      <h1>Sign Up</h1>
-      <p>Please create a new account</p>
-      
-      <form onSubmit={handleSubmit}>
-        <Input
-          label="Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="Enter your name"
-        />
-        
-        <Input
-          label="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="Enter your email"
-        />
-        
-        <Input
-          label="Password"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Enter your password"
-        />
-        
-        <div style={{ marginTop: 10 }}>
-          <input 
-            type="checkbox" 
-            className='checkbox checkbox-primary'
-            checked={agree} 
-            onChange={(e) => setAgree(e.target.checked)} 
+    <div className={`${styles.registerContainer} min-h-screen p-5 flex flex-col items-center`}>
+
+      <div className={`${styles.backButton}`}>
+         <Button
+            variant="text" 
+            onClick={() => navigate('/')}
+            className="btn btn-ghost text-sm p-2 flex items-center self-start"
+          >
+            <MdOutlineKeyboardArrowLeft className="mr-1 h-4 w-4" /> 
+            Back
+          </Button>
+      </div>
+
+
+      <div className="w-full max-w-md">
+        <h1 className={`${styles.title} text-3xl font-bold mb-2 text-center`}>Sign Up</h1>
+        <p className={`${styles.subtitle} text-center mb-8`}>Please create a new account</p>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <Input
+            label="Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Enter your name"
+            id="register-name"
+            className={styles.inputField} 
           />
-          <span>Agree the terms of use and privacy policy</span>
-        </div>
-        
-        <Button type="submit" disabled={loading || !agree} style={{ marginTop: 20 }}>
-          {loading ? 'Loading...' : 'Sign up'}
-        </Button>
-      </form>
-      
+
+          <Input
+            label="Email"
+            type="email" 
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Enter your email"
+            id="register-email"
+            className={styles.inputField}
+          />
+
+          <Input
+            label="Password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Enter your password"
+            id="register-password"
+            className={styles.inputField}
+          />
+
+          <div className="flex items-center mt-4"> 
+            <input
+              type="checkbox"
+              id="agree-checkbox"
+              className="checkbox checkbox-primary mr-2"
+              checked={agree}
+              onChange={(e) => setAgree(e.target.checked)}
+            />
+            <label htmlFor="agree-checkbox" className={`${styles.checkboxLabel} text-sm cursor-pointer`}>
+              Agree the terms of use and privacy policy
+            </label>
+          </div>
+
+          <Button
+            type="submit"
+            disabled={loading || !agree}
+            className="btn btn-primary w-full mt-6"
+          >
+            {loading ? <span className="loading loading-spinner loading-sm"></span> : 'Sign up'}
+          </Button>
+        </form>
+      </div>
     </div>
   );
 };

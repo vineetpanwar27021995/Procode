@@ -1,0 +1,74 @@
+
+.registerContainer {
+    background-color: var(--welcome-bg-color); 
+    color: var(--welcome-text-color); 
+    transition: background-color 0.3s ease, color 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+  }
+
+  .backButton{
+    position: absolute;
+    top: 20px;
+    left: 20px;
+  }
+
+  .backButton button{
+    display: inline-flex !important;
+    color: var(--welcome-text-color) !important;
+    text-decoration: none !important;
+    padding-left: 0 !important;padding-right: 0 !important;
+    
+  }
+  
+  .title {
+    color: var(--welcome-title-color); 
+  }
+  
+  .subtitle {
+    color: var(--welcome-subtitle-color); 
+  }
+  
+  .inputField label {
+     color: var(--welcome-text-color);
+  }
+  
+  .inputField input {
+     background-color: var(--welcome-input-bg, var(--welcome-bg-color)); 
+     color: var(--welcome-text-color);
+     border: 1px solid var(--welcome-border-color, #ccc); 
+  }
+  
+  .checkboxLabel {
+    color: var(--welcome-text-color);
+  }
+
+.registerContainer {
+    background-color: var(--welcome-bg-color); 
+    color: var(--welcome-text-color); 
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  .title {
+    color: var(--welcome-title-color); 
+  }
+  
+  .subtitle {
+    color: var(--welcome-subtitle-color); 
+  }
+  
+  .inputField label {
+     color: var(--welcome-text-color);
+  }
+  
+  .inputField input {
+     background-color: var(--welcome-input-bg, var(--welcome-bg-color));
+     color: var(--welcome-text-color);
+     border: 1px solid var(--welcome-border-color, #ccc); 
+  }
+  
+  .checkboxLabel {
+    color: var(--welcome-text-color);
+  } 

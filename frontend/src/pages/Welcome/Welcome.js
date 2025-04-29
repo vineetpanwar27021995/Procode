@@ -1,41 +1,36 @@
 import React from 'react';
-import { useThemeStore } from '../../stores/themeStore';
-import { Button } from '../../components';
 import { useNavigate } from 'react-router-dom';
-import { lightTheme, darkTheme } from '../../styles/themes';
+import { FiLogIn, FiUserPlus } from 'react-icons/fi'; 
+import styles from '../../styles/Welcome.module.css';
+import Logo from '../../assets/icons/logo.png'
 
 const Welcome = () => {
-  const { darkMode } = useThemeStore();
   const navigate = useNavigate();
-  
+
   return (
-    <div style={{ 
-      background: darkMode ? darkTheme.background : lightTheme.background,
-      color: darkMode ? darkTheme.text : lightTheme.text,
-      height: '100vh',
-      padding: 20,
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'center',
-      alignItems: 'center'
-    }}>
-      <h1>Welcome</h1>
-      <p>Let's get started</p>
-      
-      <Button 
+    <div className={`min-h-screen flex flex-col items-center justify-center ${styles.welcomeContainer}`}>
+
+
+      <h1 className={styles.welcomeTitle}>Welcome</h1>
+
+      <p className={styles.welcomeSubtitle}>Let's get started</p>
+
+      <img src={Logo}/>
+      <p className={styles.getStarted}>Existing  customer / Get started </p>
+      <button
         onClick={() => navigate('/login')}
-        style={{ marginTop: 20 }}
+        className={styles.signInButton}
       >
-        Existing customer / Get started
-      </Button>
-      
-      <Button 
-        variant="outlined"
+        Sign in
+      </button>
+
+      <button
         onClick={() => navigate('/register')}
-        style={{ marginTop: 10 }}
+        className={styles.createAccountButton} 
       >
-        New customer? Create new account
-      </Button>
+        <span>New customer?</span> Create new account
+      </button>
+
     </div>
   );
 };

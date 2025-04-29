@@ -1,0 +1,81 @@
+.verifyContainer {
+    background-color: var(--welcome-bg-color); 
+    color: var(--welcome-text-color); 
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  .backButton {
+    position: absolute;
+    top: 20px; 
+    left: 20px; 
+    z-index: 10;
+  }
+  
+  .backButton button {
+    color: var(--welcome-text-color) !important; 
+    padding: 0rem !important; 
+    font-size: 0.875rem;
+    text-decoration: none !important;
+  }
+  .backButton button:hover {
+     background-color: rgba(128, 128, 128, 0.1);
+  }
+  
+  .title {
+    color: var(--welcome-title-color); 
+  }
+  
+  .subtitle {
+    color: var(--welcome-subtitle-color); 
+  }
+  
+  .inputField label {
+     color: var(--welcome-text-color);
+     display: block;
+     margin-bottom: 0.25rem;
+     font-size: 0.875rem; 
+     font-weight: 500;
+     text-align: center; 
+  }
+  
+  .inputField input {
+     background-color: var(--welcome-input-bg, var(--welcome-bg-color)); 
+     color: var(--welcome-text-color);
+     border: 1px solid var(--welcome-border-color, #ccc); 
+     width: 100%; 
+     max-width: 200px; 
+     margin-left: auto; 
+     margin-right: auto; 
+     padding: 0.75rem;
+     border-radius: 0.375rem; 
+     font-size: 1.5rem; 
+     text-align: center; 
+     letter-spacing: 0.5em; 
+  }
+  .inputField input::placeholder {
+      color: var(--welcome-subtitle-color); 
+      opacity: 0.7;
+      font-size: 1.5rem; 
+      letter-spacing: 0.5em; 
+  }
+  
+  .resendLink {
+    color: var(--welcome-link-color, var(--welcome-button-secondary-text)); 
+    text-decoration: none;
+    transition: color 0.2s ease;
+    display: inline-flex; 
+    align-items: center;
+  }
+
+  .resendLink:hover {
+    text-decoration: underline;
+    color: var(--welcome-link-hover-color, var(--welcome-button-primary-bg)); 
+  }
+  
+  .resendLink:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+  }
+  
+  
+  

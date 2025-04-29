@@ -1,0 +1,94 @@
+.loginContainer {
+    background-color: var(--welcome-bg-color); 
+    color: var(--welcome-text-color); 
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  .backButton {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 10; 
+  }
+  
+  .backButton button {
+    color: var(--welcome-text-color) !important;
+    padding: 0 !important;
+    text-decoration: none !important;
+    font-size: 0.875rem;
+  }
+  
+  .backButton button:hover {
+     background-color: rgba(128, 128, 128, 0.1); 
+  }
+  
+  .title {
+    color: var(--welcome-title-color); 
+  }
+  
+  .subtitle {
+    color: var(--welcome-subtitle-color); 
+  }
+  
+  .inputField label {
+     color: var(--welcome-text-color);
+     display: block;
+     margin-bottom: 0.25rem;
+     font-size: 0.875rem; 
+     font-weight: 500;
+  }
+  
+  .inputField input {
+     background-color: var(--welcome-input-bg, var(--welcome-bg-color)); 
+     color: var(--welcome-text-color);
+     border: 1px solid var(--welcome-border-color, #ccc); 
+     width: 100%;
+     padding: 0.75rem;
+     border-radius: 0.375rem; 
+     font-size: 1rem;
+  }
+  .inputField input::placeholder {
+      color: var(--welcome-subtitle-color);
+      opacity: 0.7;
+  }
+  
+  
+  .forgotPasswordLink {
+    color: var(--welcome-link-color, var(--welcome-button-secondary-text)); 
+    text-decoration: none;
+    transition: color 0.2s ease;
+    display: inline-flex !important;
+    width: auto !important;
+    padding: 0 !important;
+  }
+
+  .forgotPasswordLink:hover {
+    text-decoration: underline;
+    color: var(--welcome-link-hover-color, var(--welcome-button-primary-bg)); 
+  }
+  
+  .googleButton {
+      border-color: var(--welcome-google-border, #4280EF);
+      color: var(--welcome-google-text, #4280EF);
+  }
+  .googleButton:hover {
+      background-color: var(--welcome-google-hover-bg, rgba(66, 128, 239, 0.05));
+      border-color: var(--welcome-google-hover-border, #3573d4);
+      color: var(--welcome-google-hover-text, #3573d4);
+  }
+  
+  .facebookButton {
+      border-color: var(--welcome-facebook-border, #1877F2);
+      color: var(--welcome-facebook-text, #1877F2);
+  }
+  .facebookButton:hover {
+      background-color: var(--welcome-facebook-hover-bg, rgba(24, 119, 242, 0.05));
+      border-color: var(--welcome-facebook-hover-border, #166bde);
+      color: var(--welcome-facebook-hover-text, #166bde);
+  }
+  
+  .googleButton svg, .facebookButton svg {
+      color: currentColor;
+  }
+  
+  
