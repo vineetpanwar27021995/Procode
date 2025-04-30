@@ -1,6 +1,6 @@
 // hooks/useAnamSessionToken.js
 import { useCallback } from 'react';
-import useAnamStore from '../stores/anamStore';
+import { useAnamStore } from '../stores/anamStore';
 import { baseURL } from '../utils/getBaseURL';
 
 export default function useAnamSessionToken() {
@@ -26,6 +26,7 @@ export default function useAnamSessionToken() {
   }, [setSessionToken]);
 
   const ensureSessionToken = useCallback(async () => {
+    console.log("Ensuring session token...", sessionToken);
     if (sessionToken) {
       return sessionToken;
     } else {

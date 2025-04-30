@@ -1,8 +1,10 @@
 import { create } from 'zustand';
 
-const useAnamStore = create((set) => ({
+export const useAnamStore = create((set) => ({
   sessionToken: null,
   setSessionToken: (token) => set({ sessionToken: token }),
-}));
 
-export default useAnamStore;
+  conversationHistory: [],
+  setConversationHistory: (messages) => set({ conversationHistory: messages }),
+  clearConversationHistory: () => set({ conversationHistory: [] }),
+}));

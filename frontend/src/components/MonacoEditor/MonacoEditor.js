@@ -3,6 +3,8 @@ import Editor from "@monaco-editor/react";
 import axios from "axios";
 import { LoaderCircle } from "lucide-react";
 import { baseURL } from "../../utils/getBaseURL";
+import { useAuthStore } from '../../stores/authStore';
+import { useAnamStore } from '../../stores/anamStore';
 
 import { extractFunctionName } from "../../utils/extractFunctionName";
 import { wrapUserCode } from "../../utils/wrapUserCode";
@@ -18,6 +20,7 @@ const MonacoEditor = ({
   isUnlocked = false,
   starterCode = "",
   problemId,
+  categoryId,
   problemMetadata,
 }) => {
   const [code, setCode] = useState(starterCode);
@@ -25,6 +28,7 @@ const MonacoEditor = ({
   const [language, setLanguage] = useState("javascript");
   const [functionName, setFunctionName] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [submitLoading, setSubmitLoading] = useState(false);
   const monacoRef = useRef(null);
 
   useEffect(() => {
@@ -35,6 +39,46 @@ const MonacoEditor = ({
     }
   }, [starterCode, language]);
 
+  useEffect(() => {
+    const loadExistingCode = async () => {
+      try {
+        const user = useAuthStore.getState().user;
+        // if (!user || !problemId || !categoryId) return;
+  
+        const res = await axios.post(`${baseURL}/api/submission/load`, {
+          uid: user?.uid || 'RNJzTCLbBlYb2N7KspJtn43mzhm1',
+          categoryId,
+          questionId: problemId,
+        });
+  
+        if (res.data?.code) {
+          setCode(res.data.code);
+        }
+      } catch (err) {
+        console.error("❌ Failed to load previous code:", err);
+      }
+    };
+  
+    loadExistingCode();
+  }, [problemId, categoryId]);
+
+  const runCode = async () => {
+    console.log("Running code...", problemMetadata);
+    const finalCode = wrapUserCode(code, language, functionName, problemMetadata.custom_test_cases);
+    const batchSubmissions = (problemMetadata.custom_test_cases || []).map(testCase => ({
+      source_code: finalCode,
+      language_id: LANGUAGE_MAP[language],
+      stdin: testCase.endsWith("\n") ? testCase : testCase + "\n",
+    }));
+
+    const res = await axios.post(`${baseURL}/api/judge/batch`, {
+      problem_id: problemMetadata.id,
+      problem_description: problemMetadata.description,
+      submissions: batchSubmissions,
+    });
+      return res;
+  }
+
   const handleRun = async () => {
     if (!isUnlocked || !problemId || !problemMetadata) return;
 
@@ -43,21 +87,11 @@ const MonacoEditor = ({
 
     try {
       // 🛠 Wrap code automatically
-      const finalCode = wrapUserCode(code, language, functionName, problemMetadata.custom_test_cases);
-
-      const batchSubmissions = (problemMetadata.custom_test_cases || []).map(testCase => ({
-        source_code: finalCode,
-        language_id: LANGUAGE_MAP[language],
-        stdin: testCase.endsWith("\n") ? testCase : testCase + "\n",
-      }));
-
-      const res = await axios.post(`${baseURL}/api/judge/batch`, {
-        problem_id: problemMetadata.id,
-        problem_description: problemMetadata.description,
-        submissions: batchSubmissions,
-      });
-
+      
+      const res = await runCode();
       const results = res.data?.results || [];
+
+      console.log("Judge results:", results);
 
       const formatted = results.map((r, i) => {
         const status = r.status?.description || "Unknown";
@@ -78,6 +112,40 @@ const MonacoEditor = ({
     }
   };
 
+  const handleSubmit = async () => {
+    try {
+      const user = useAuthStore.getState().user;
+      // if (!user || !problemId || !categoryId) return;
+  
+      setSubmitLoading(true);
+
+      const res = await runCode();
+      const results = res.data?.results || [];
+
+      const conversationHistory = useAnamStore.getState().conversationHistory;
+  
+      const analysisRes = await axios.post(`${baseURL}/api/submit`, {
+        uid: user?.uid || 'RNJzTCLbBlYb2N7KspJtn43mzhm1',
+        code,
+        categoryId,
+        questionId: problemId,
+        codeDescription: problemMetadata.description,
+        codeResults: results,
+        messages: conversationHistory, // ✅ send full history
+      });
+  
+      if (analysisRes.data.success) {
+        alert("Code submitted successfully! ✅");
+      } else {
+        alert("Submission saved, but no complexity feedback.");
+      }
+    } catch (err) {
+      console.error("❌ Submission failed:", err);
+    } finally {
+      setSubmitLoading(false);
+    }
+  };
+
   return (
     <div className="h-full flex flex-col space-y-2 overflow-hidden">
       {/* Header controls */}
@@ -93,11 +161,18 @@ const MonacoEditor = ({
           <option value="cpp">C++</option>
         </select>
         <button
-          className="btn btn-success"
+          className="btn btn-success ml-auto"
           onClick={handleRun}
           disabled={!isUnlocked || loading}
         >
           {loading ? <LoaderCircle className="animate-spin" /> : "Run"}
+        </button>
+        <button
+          className="btn border border-[#22C55E] bg-black text-white ml-2"
+          onClick={handleSubmit}
+          disabled={!isUnlocked || submitLoading}
+        >
+         {submitLoading ? <LoaderCircle className="animate-spin" /> : "Submit"} 
         </button>
       </div>
 

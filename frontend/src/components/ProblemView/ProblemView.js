@@ -36,7 +36,7 @@ const ProblemView = ({ problem }) => {
           </div>
           <div className="flex-1 ml-4">
             <h2 className="text-white font-semibold">{problem.name}</h2>
-            <p className="text-gray-400 text-sm">{problem.tag}</p>
+            <p className="text-gray-400 text-sm">{problem.question_category}</p>
           </div>
         </div>
 

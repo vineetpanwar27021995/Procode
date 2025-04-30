@@ -1,25 +1,35 @@
 const express = require('express');
 const router = express.Router();
+const { db } = require('../config/firebase'); // your existing initialized Firestore
 
 router.post('/problem-metadata', async (req, res, next) => {
   try {
-    const { problemId } = req.body;
-    const response = await fetch("https://us-central1-neetcode-dd170.cloudfunctions.net/getProblemMetadataFunction", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "*/*",
-        Origin: "https://neetcode.io",
-        Referer: "https://neetcode.io/",
-      },
-      body: JSON.stringify({ data: { problemId } }),
-    });
+    const { problemId, categoryId } = req.body;
+    console.log('Received problemId:', problemId, categoryId);
 
-    const result = await response.json();
-    res.status(200).json({ problem: result.result });
+    if (!problemId) {
+      return res.status(400).json({ error: "Missing problemId" });
+    }
+
+    // Firestore path: /category/dsa/Arrays & Hashing/{problemId}
+    const docRef = db
+      .collection('category')
+      .doc('dsa')
+      .collection(categoryId)
+      .doc(problemId); // e.g. "anagram-groups"
+
+    const doc = await docRef.get();
+
+    if (!doc.exists) {
+      return res.status(404).json({ error: `No problem found for ID '${problemId}'` });
+    }
+
+    const data = doc.data();
+
+    return res.status(200).json({ problem: data });
   } catch (err) {
-    next(err);
+    console.error('Error fetching problem from Firestore:', err);
+    return next(err);
   }
 });
-
 module.exports = router;
