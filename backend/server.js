@@ -32,6 +32,8 @@ app.use("/api/", require("./routes/judge.routes"));
 app.use("/api/", require("./routes/judgeBatch.routes"));
 app.use("/api/", require("./routes/fetchProblemData.route"));
 app.use('/api', require('./routes/getANAMToken.routes'));
+app.use('/api', require('./routes/getPriorCodeSubmission.routes'));
+app.use('/api', require('./routes/saveCodeChanges.routes'));
 
 // Health check
 app.get('/', (req, res) => {

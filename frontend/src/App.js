@@ -14,6 +14,7 @@ const App = () => {
   const { darkMode } = useThemeStore();
   const [showSplash, setShowSplash] = useState(true);
   const [fadeOut, setFadeOut] = useState(false);
+
   window.addEventListener('error', (e) => {
     if (
       e.message === 'ResizeObserver loop completed with undelivered notifications.'
@@ -33,12 +34,6 @@ const App = () => {
     // Add/remove a class instead if you prefer:
     // document.documentElement.classList.toggle('dark-theme', darkMode);
   }, [darkMode]); // Re-run this effect when darkMode changes
-
-  const { ensureSessionToken } = useAnamSessionToken();
-  useEffect(() => {
-    ensureSessionToken(); // Only fetches if not already present
-  }, [ensureSessionToken]);
-
 
   useEffect(() => {
     // Fade out before removing splash
@@ -75,7 +70,7 @@ const App = () => {
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/verify" element={<Verify />} />
               <Route path="/questions" element={<QuestionList />} />
-              <Route path="/solve/:questionId" element={<CodingSession />} />
+              <Route path="/:categoryId/solve/:questionId" element={<CodingSession />} />
             </Routes>
           </Router>
           </ThemeProvider>
