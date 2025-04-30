@@ -5,7 +5,6 @@ const rateLimit = require('express-rate-limit');
 const cors = require('cors');
 const { handleErrors } = require('./utils/errorHandler');
 const { CORS, RATE_LIMIT } = require('./config/constants');
-
 const app = express();
 
 // Middleware
@@ -28,7 +27,11 @@ app.use('/api', limiter);
 // Routes
 app.use('/api/auth', require('./routes/auth.routes'));
 app.use('/api/db', require('./routes/firestore.routes'));
-app.use('/api/analyze', require('./routes/analyzeIntution.routes'));
+app.use('/api/', require('./routes/analyzeIntution.routes'));
+app.use("/api/", require("./routes/judge.routes"));
+app.use("/api/", require("./routes/judgeBatch.routes"));
+app.use("/api/", require("./routes/fetchProblemData.route"));
+app.use('/api', require('./routes/getANAMToken.routes'));
 
 // Health check
 app.get('/', (req, res) => {
