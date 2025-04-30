@@ -2,9 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useThemeStore } from './stores/themeStore';
 import { lightTheme, darkTheme } from './styles/themes';
 import { ThemeProvider } from 'styled-components';
-import { BrowserRouter as Router, Routes, Route, Welcome, Login, ForgotPassword, Verify, QuestionList, CodingSession } from 'react-router-dom';
-import { Welcome, Login, Register, ForgotPassword, Verify } from './pages';
-import {Snackbar} from './components';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Register, Welcome, Login, ForgotPassword, Verify, QuestionList, CodingSession } from './pages';
 import './global.css';
 import { Snackbar, SplashScreen } from './components';
 import './styles/global.css'
