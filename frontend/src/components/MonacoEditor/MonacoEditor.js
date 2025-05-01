@@ -64,16 +64,15 @@ const MonacoEditor = ({
 
   const runCode = async () => {
     console.log("Running code...", problemMetadata);
-    const finalCode = wrapUserCode(code, language, functionName, problemMetadata.custom_test_cases);
-    const batchSubmissions = (problemMetadata.custom_test_cases || []).map(testCase => ({
-      source_code: finalCode,
+    const batchSubmissions = (problemMetadata.custom_test_cases || []).map((testCase) => ({
+      source_code: wrapUserCode(code, language, functionName, testCase),
       language_id: LANGUAGE_MAP[language],
       stdin: testCase.endsWith("\n") ? testCase : testCase + "\n",
     }));
 
     const res = await axios.post(`${baseURL}/api/judge/batch`, {
       problem_id: problemMetadata.id,
-      problem_description: problemMetadata.description,
+      problemMetadata,
       submissions: batchSubmissions,
     });
       return res;
@@ -121,9 +120,18 @@ const MonacoEditor = ({
 
       const res = await runCode();
       const results = res.data?.results || [];
+      const formatted = results.map((r, i) => {
+        const status = r.status?.description || "Unknown";
+        const icon = status === "Accepted" ? "✅" : "❌";
+        return `🧪 Test Case ${i + 1} — ${icon} ${status}`;
+      }).join("\n");
 
+      setOutput(formatted);
+
+      const allPassed = results.every(r => r.status?.description === "Accepted");
+      
       const conversationHistory = useAnamStore.getState().conversationHistory;
-  
+      
       const analysisRes = await axios.post(`${baseURL}/api/submit`, {
         uid: user?.uid || 'RNJzTCLbBlYb2N7KspJtn43mzhm1',
         code,
@@ -133,12 +141,13 @@ const MonacoEditor = ({
         codeResults: results,
         messages: conversationHistory, // ✅ send full history
       });
-  
+      
       if (analysisRes.data.success) {
         alert("Code submitted successfully! ✅");
       } else {
         alert("Submission saved, but no complexity feedback.");
       }
+      if (allPassed) onSuccess?.();
     } catch (err) {
       console.error("❌ Submission failed:", err);
     } finally {

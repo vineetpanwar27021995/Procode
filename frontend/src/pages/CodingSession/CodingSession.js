@@ -59,12 +59,12 @@ const CodingSession = () => {
         // 🔹 MOBILE VIEW
         <div className="flex flex-col h-full gap-4">
           <div className="h-[60%] overflow-y-auto rounded-box bg-base-100 p-2">
-            <ProblemView problem={problem} />
+            <ProblemView problem={problem} categoryId={categoryId}/>
           </div>
 
           <div className="h-[40%] relative rounded-box bg-base-100">
             {!intuitionApproved ? (
-              <div className="w-full h-full flex items-center justify-center text-center border border-[#22C55E] relative p-2">
+              <div className="w-full h-full flex items-center justify-center text-center relative p-2">
                 <AITile fullScreen setIntuitionApproved={setIntuitionApproved} intuitionApproved={intuitionApproved} problemMetadata={problem}/>
               </div>
             ) : (
@@ -89,15 +89,15 @@ const CodingSession = () => {
             { intuitionApproved ? (
               <>
                 <div className="h-[100%] overflow-y-auto rounded-box bg-base-100">
-                <ProblemView problem={problem} />
+                <ProblemView problem={problem} categoryId={categoryId}/>
                 </div>
               </>
             ) : (
               <>
                 <div className="h-[60%] overflow-y-auto rounded-box bg-base-100">
-                <ProblemView problem={problem} />
+                <ProblemView problem={problem} categoryId={categoryId}/>
                 </div>
-                <div className="h-[40%] rounded-box p-4 shadow border border-[#22C55E]">
+                <div className="h-[40%] rounded-box p-4 shadow ">
                   <AITile fullScreen setIntuitionApproved={setIntuitionApproved} intuitionApproved={intuitionApproved} problemMetadata={problem}/>
                 </div>
               </>

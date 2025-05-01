@@ -35,16 +35,17 @@ router.post('/submit', async (req, res) => {
 
     const prevDoc = await docRef.get();
     const prevData = prevDoc.exists ? prevDoc.data() : {};
-    const isSuccessfullSubmissions = codeResults && codeResults.every(result => result.status?.description === "Accepted");
+
+    const isSuccessfullSubmission = codeResults && codeResults.every(result => result.status?.description === "Accepted");
 
     const payload = {
       code,
       USER_TIME_COMPLEXITY: time,
       USER_SPACE_COMPLEXITY: space,
-      USER_ATTEMPT_COUNT: (prevData.USER_ATTEMPT_COUNT || 0) + 1,
-      SUCCESS_ATTEMPT_COUNT: isSuccessfullSubmissions ? (prevData.SUCCESS_ATTEMPT_COUNT || 0) + 1 : (prevData.SUCCESS_ATTEMPT_COUNT || 0),
-      TIMESTAMP: timestamp,
-      Brief_Conversation: summary,
+      USER_ATTEMPT_COUNT: (prevData?.USER_ATTEMPT_COUNT || 0) + 1,
+      SUCCESS_ATTEMPT_COUNT: isSuccessfullSubmission ? (prevData?.SUCCESS_ATTEMPT_COUNT || 0) + 1 : (prevData?.SUCCESS_ATTEMPT_COUNT || 0),
+      TIMESTAMP: [...(prevData?.TIMESTAMP || []), timestamp],
+      Brief_Conversation: [...(prevData?.Brief_Conversation || []), summary],
       Category: categoryId,
       questionID: questionId,
       codeResults,
