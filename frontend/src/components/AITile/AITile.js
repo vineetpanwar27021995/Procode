@@ -155,7 +155,7 @@ const AITile = ({ fullScreen = false, setIntuitionApproved, intuitionApproved, p
 
   if (fullScreen) {
     return (
-      <div className="w-full h-full flex items-center justify-center text-center text-base-content font-semibold relative">
+      <div className="w-full h-full flex items-center justify-center text-center text-base-content font-semibold relative rounded-md border border-[#22C55E] p-2">
           <>
             <video id="video-id" width="100%" autoPlay playsInline></video>
             <audio id="audio-id" autoPlay></audio>
@@ -175,10 +175,10 @@ const AITile = ({ fullScreen = false, setIntuitionApproved, intuitionApproved, p
           Loading avatar...
         </div>
       ) : (
-      <>
+      <div className="rounded-md border border-[#22C55E] p-2">
           <video id="video-id" className="w-inherit h-inherit object-cover" autoPlay playsInline muted></video>
           <audio id="audio-id" autoPlay></audio>
-        </>
+        </div>
       )}
     </>
 

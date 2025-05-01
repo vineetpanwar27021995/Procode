@@ -55,14 +55,15 @@ const getExpectedOutputsFromDeepSeek = async (problemDescription, problemKey) =>
 
 // 🎯 Batch judge endpoint
 router.post("/judge/batch", async (req, res) => {
-  const { problem_id, problem_description, submissions } = req.body;
+  const { problem_id, problemMetadata, submissions } = req.body;
 
-  if (!problem_id || !problem_description || !Array.isArray(submissions)) {
-    return res.status(400).json({ error: "Missing problem_id, problem_description or submissions array." });
+  if (!problem_id || !problemMetadata || !Array.isArray(submissions)) {
+    return res.status(400).json({ error: "Missing problem_id, problemMetadata or submissions array." });
   }
 
   try {
-    const expectedOutputs = await getExpectedOutputsFromDeepSeek(problem_description, problem_id);
+    // const expectedOutputs = await getExpectedOutputsFromDeepSeek(problemMetadata, problem_id);
+    const expectedOutputs = problemMetadata.expected_outputs;
     console.log("🚀 Expected outputs:", expectedOutputs);
 
     // 1. Submit to Judge0 batch API

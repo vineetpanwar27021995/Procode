@@ -7,29 +7,31 @@ router.post('/problem-metadata', async (req, res, next) => {
     const { problemId, categoryId } = req.body;
     console.log('Received problemId:', problemId, categoryId);
 
-    if (!problemId) {
-      return res.status(400).json({ error: "Missing problemId" });
+    if (!problemId || !categoryId) {
+      return res.status(400).json({ error: "Missing problemId or categoryId" });
     }
 
-    // Firestore path: /category/dsa/Arrays & Hashing/{problemId}
-    const docRef = db
-      .collection('category')
-      .doc('dsa')
-      .collection(categoryId)
-      .doc(problemId); // e.g. "anagram-groups"
+    // Access the category document
+    const categoryDocRef = db.collection('problems').doc(categoryId);
+    const categoryDocSnap = await categoryDocRef.get();
 
-    const doc = await docRef.get();
-
-    if (!doc.exists) {
-      return res.status(404).json({ error: `No problem found for ID '${problemId}'` });
+    if (!categoryDocSnap.exists) {
+      return res.status(404).json({ error: `Category '${categoryId}' not found` });
     }
 
-    const data = doc.data();
+    const data = categoryDocSnap.data();
+    const problemData = data?.[problemId];
 
-    return res.status(200).json({ problem: data });
+    if (!problemData) {
+      return res.status(404).json({ error: `Problem '${problemId}' not found in '${categoryId}'` });
+    }
+
+    return res.status(200).json({ problem: problemData });
+
   } catch (err) {
     console.error('Error fetching problem from Firestore:', err);
     return next(err);
   }
 });
+
 module.exports = router;
