@@ -47,7 +47,11 @@ const CodingSession = () => {
   };
 
   if (!problem) {
-    return <div className="text-white p-4">Loading question...</div>;
+    return (<div className="w-full h-screen flex flex-col items-center justify-center space-y-4">
+    <span className="loading loading-ring loading-xl text-[#22C55E]"></span>
+    <span className="text-[#22C55E] text-xl font-medium">Loading your question...</span>
+  </div>
+      )
   }
 
 

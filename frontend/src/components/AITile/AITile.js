@@ -156,30 +156,37 @@ const AITile = ({ fullScreen = false, setIntuitionApproved, intuitionApproved, p
   if (fullScreen) {
     return (
       <div className="w-full h-full flex items-center justify-center text-center text-base-content font-semibold relative rounded-md border border-[#22C55E] p-2">
-          <>
-            <video id="video-id" width="100%" autoPlay playsInline></video>
-            <audio id="audio-id" autoPlay></audio>
-          </>
-        {/* {loading ? (
-          <p>{loadingText}</p>
-        ) : (
-        )} */}
+          
+          {loading ?  (
+        <div className="flex flex-col items-center justify-center space-y-4">
+          <span className="loading loading-bars loading-xl text-[#22C55E]"></span>
+        </div>
+          ) : (
+            <>
+              <video id="video-id" width="100%" autoPlay playsInline></video>
+              <audio id="audio-id" autoPlay></audio>
+            </>
+          )
+          }
       </div>
     );
   }
 
   return (
     <>
+    <div className="rounded-md border border-[#22C55E] p-2">
       {loading ? (
-        <div className="absolute inset-0 flex items-center justify-center bg-black text-white z-10">
-          Loading avatar...
+        <div className="flex flex-col items-center justify-center space-y-4">
+          <span className="loading loading-bars loading-xl text-[#22C55E]"></span>
         </div>
       ) : (
-      <div className="rounded-md border border-[#22C55E] p-2">
+        <>
           <video id="video-id" className="w-inherit h-inherit object-cover" autoPlay playsInline muted></video>
           <audio id="audio-id" autoPlay></audio>
-        </div>
-      )}
+        </>
+      )
+    }
+    </div>
     </>
 
   );
