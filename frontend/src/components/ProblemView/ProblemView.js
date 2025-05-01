@@ -15,9 +15,6 @@ const handleBack = () => {
     navigate("/"); // fallback
   }
 };
-  if (!problem || !problem.description) {
-    return <div className="text-white p-4">Loading question...</div>;
-  }
 
   const descriptionOnly = problem.description.split("**Example")[0];
 
