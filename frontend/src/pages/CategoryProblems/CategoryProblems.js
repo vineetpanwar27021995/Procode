@@ -5,23 +5,26 @@ import { useProblemStore } from '../../stores/problemStore'; // Adjust path
 import { useUserStore } from '../../stores/userStore'; // Adjust path
 import { MdOutlineKeyboardArrowLeft as BackIcon, MdCheckCircle as SolvedIcon, MdSearch } from 'react-icons/md'; // Added Search, Solved icons
 
+// Filter options matching the Problems screen
 const filterOptions = ['All', 'Hot 50', 'Blind 75', 'NeetCode 150'];
 
-const CategoryProblems = () => {
+const CategoryProblemsScreen = () => {
   // --- Hooks ---
   const navigate = useNavigate();
-  const { categoryId } = useParams(); // Get category ID from route param (e.g., "Arrays-&-Hashing")
+  const { categoryId } = useParams(); // Get category ID or "submissions" from route param
   const [searchParams] = useSearchParams(); // Get query parameters
   const activeListFilter = searchParams.get('filter') || 'All'; // Get filter like 'blind 75', default to 'All'
 
   // --- State ---
   const [searchTerm, setSearchTerm] = useState('');
-  const [groupedProblems, setGroupedProblems] = useState({ Easy: [], Medium: [], Hard: [] });
+  const [groupedProblems, setGroupedProblems] = useState({ Easy: [], Medium: [], Hard: [], Unknown: [] });
+  const [isSubmissionsView, setIsSubmissionsView] = useState(false); // State to track if showing submissions
 
   // --- Store Data ---
   const { categories, loading: problemsLoading, error: problemsError, fetchCategories } = useProblemStore();
   const { userProfile, loading: userLoading } = useUserStore();
   const submissions = useMemo(() => userProfile?.submissions || {}, [userProfile]); // Memoize submissions
+  const submittedProblemIds = useMemo(() => new Set(Object.keys(submissions)), [submissions]); // Memoize set of submitted IDs
 
   // --- Fetch Data ---
   useEffect(() => {
@@ -34,47 +37,76 @@ const CategoryProblems = () => {
 
   // --- Filtering and Grouping Logic ---
   useEffect(() => {
-    if (!categories || !categoryId || problemsLoading || userLoading) {
-        // Clear or show loading if data isn't ready
-        setGroupedProblems({ Easy: [], Medium: [], Hard: [] });
+    // Determine if this is the special submissions view
+    const isSubmissionsRoute = categoryId === 'submissions';
+    setIsSubmissionsView(isSubmissionsRoute);
+
+    // Wait for necessary data
+    if (!categories || problemsLoading || userLoading || (isSubmissionsRoute && !userProfile)) {
+        setGroupedProblems({ Easy: [], Medium: [], Hard: [], Unknown: [] });
         return;
     }
 
-    const problemsInCategory = categories[categoryId] || {}; // Get problems for the current category ID
-    const problemList = Object.values(problemsInCategory); // Convert from {id: data} to [data]
+    let initialProblemList = [];
 
-    // 1. Filter by List (Hot 50, Blind 75, etc.)
-    let listFilteredProblems = problemList;
+    // --- MODIFIED: Select initial list based on route ---
+    if (isSubmissionsRoute) {
+        // If it's the submissions route, get all problems the user has submitted
+        console.log("Filtering for submitted problems only.",submittedProblemIds);
+        initialProblemList = [];
+        // Iterate through all categories to find submitted problems
+        for (const catKey in categories) {
+            for (const probId in categories[catKey]) {
+                if (submittedProblemIds.has(probId)) {
+                    initialProblemList.push({ ...categories[catKey][probId], id: probId }); // Add problem data if submitted
+                }
+            }
+        }
+    } else if (categoryId && categories[categoryId]) {
+        // If it's a regular category route, get problems for that category
+        console.log(`Filtering for category: ${categoryId}`);
+        initialProblemList = Object.values(categories[categoryId] || {});
+    } else {
+        console.log("No valid category ID or 'submissions' found in route.");
+        initialProblemList = []; // No category match or submissions view
+    }
+    // --- End Modification ---
+
+
+    // 1. Filter by List (Hot 50, Blind 75, etc.) - Apply AFTER selecting initial list
+    let listFilteredProblems = initialProblemList;
     if (activeListFilter && activeListFilter !== 'All') {
         const filterKey = activeListFilter.toLowerCase();
-        listFilteredProblems = problemList.filter(problem =>
+        listFilteredProblems = initialProblemList.filter(problem =>
             problem.curated_lists && Array.isArray(problem.curated_lists) && problem.curated_lists.includes(filterKey)
         );
     }
 
     // 2. Filter by Search Term
     const searchFilteredProblems = listFilteredProblems.filter(problem =>
-      problem.name.toLowerCase().includes(searchTerm.toLowerCase())
+      (problem?.name || '').toLowerCase().includes(searchTerm.toLowerCase()) // Add safety check for name
     );
 
     // 3. Group by Difficulty
-    const grouped = searchFilteredProblems.reduce((acc, problem, index) => {
-      const difficulty = problem.difficulty || 'Unknown'; // Default group
+    const grouped = searchFilteredProblems.reduce((acc, problem) => {
+      const difficulty = problem.difficulty || 'Unknown';
       if (!acc[difficulty]) {
         acc[difficulty] = [];
       }
-      acc[difficulty].push({ ...problem, sequenceNumber: index + 1 });
+      // Add problem (sequence number added later during render)
+      acc[difficulty].push(problem);
       return acc;
-    }, { Easy: [], Medium: [], Hard: [] });
+    }, { Easy: [], Medium: [], Hard: [], Unknown: [] }); // Initialize with expected keys
 
+    // Sort problems within each difficulty group
     Object.keys(grouped).forEach(difficulty => {
         grouped[difficulty].sort((a, b) => (a.name || '').localeCompare(b.name || ''));
     });
 
-
     setGroupedProblems(grouped);
 
-  }, [categories, categoryId, activeListFilter, searchTerm, problemsLoading, userLoading]); // Re-run when data or filters change
+  // Rerun when relevant data or filters change
+  }, [categories, categoryId, activeListFilter, searchTerm, problemsLoading, userLoading, userProfile, submittedProblemIds]);
 
 
   // --- Event Handlers ---
@@ -83,12 +115,16 @@ const CategoryProblems = () => {
   };
 
   const handleGoBack = () => {
-    navigate(-1); // Go back to the previous page
+    navigate(-1);
   };
 
   // --- Render Logic ---
-  // Get the original category name for display (find it in the categories object keys based on categoryId)
-  const displayCategoryName = Object.keys(categories || {}).find(key => key === categoryId) || categoryId.replace(/-/g, ' '); // Fallback formatting
+  // Determine the display title
+  const displayTitle = isSubmissionsView
+    ? "My Submissions"
+    : (categories?.[categoryId]?.[Object.keys(categories[categoryId])[0]]['category'] || categoryId.replace(/-/g, ' ')); // Fallback formatting
+  // Variable to track continuous sequence number
+  let sequenceCounter = 0;
 
   return (
     <div className={styles.screenContainer}>
@@ -97,7 +133,7 @@ const CategoryProblems = () => {
         <button onClick={handleGoBack} className={styles.backButton}>
           <BackIcon size={28} />
         </button>
-        <h1 className={styles.categoryTitle}>{displayCategoryName}</h1>
+        <h1 className={styles.categoryTitle}>{displayTitle}</h1>
       </div>
 
       {/* Search Bar */}
@@ -114,38 +150,47 @@ const CategoryProblems = () => {
         </button>
       </div>
 
+      {/* Loading / Error State */}
       {problemsLoading || userLoading && <p>Loading problems...</p>}
       {problemsError && <p className={styles.errorText}>Error loading problems: {problemsError}</p>}
 
+      {/* Problems List */}
       {!problemsLoading && !userLoading && !problemsError && (
         <div className={styles.problemsList}>
-          {['Easy', 'Medium', 'Hard', 'Unknown'].map(difficulty => (
-            groupedProblems[difficulty]?.length > 0 && (
+          {/* Iterate through difficulties to render sections */}
+          {['Easy', 'Medium', 'Hard', 'Unknown'].map((difficulty) => {
+            const problemsInGroup = groupedProblems[difficulty];
+            if (!problemsInGroup || problemsInGroup.length === 0) {
+                return null; // Don't render section if no problems
+            }
+
+            return (
               <section key={difficulty} className={styles.difficultySection}>
                 <div className={styles.difficultyHeader}>
                   <h2 className={styles.difficultyTitle}>{difficulty}</h2>
-                  <span className={styles.problemCount}>{groupedProblems[difficulty].length}</span>
+                  <span className={styles.problemCount}>{problemsInGroup.length}</span>
                 </div>
                 <ul className={styles.questionList}>
-                  {groupedProblems[difficulty].map((problem, index) => {
-                    const isSolved = submissions.hasOwnProperty(problem.id);
-                    // Format sequence number with leading zero
-                    const sequence = String(index + 1).padStart(2, '0');
+                  {/* Map through problems, incrementing continuous counter */}
+                  {problemsInGroup.map((problem) => {
+                    sequenceCounter++; // Increment counter for each problem rendered
+                    // Check if solved (always true in submissions view, check normally otherwise)
+                    const isSolved = isSubmissionsView || submissions.hasOwnProperty(problem.id);
+                    // Format sequence number with leading zero using the continuous counter
+                    const sequence = String(sequenceCounter).padStart(2, '0');
                     return (
-                      <li key={problem.id} className={styles.questionItem+` ${(difficulty.toLowerCase())}-border`}>
-                        <div className={styles.questionNumber +` ${difficulty.toLowerCase()}`}>{sequence}</div>
+                      <li key={problem.id} className={`${styles.questionItem} ${styles[`${difficulty.toLowerCase()}-border`]}`}> {/* Added difficulty border class */}
+                        <div className={`${styles.questionNumber} ${styles[difficulty.toLowerCase()]}`}>{sequence}</div> {/* Added difficulty class */}
                         <div className={styles.questionDetails}>
-                          <span className={styles.questionName +` ${difficulty.toLowerCase()}`}>{problem.name}</span>
-                          {/* Placeholder for time - use short_description or omit if not available */}
-                          {/* <span className={styles.questionTime}>{problem.short_description ? problem.short_description.substring(0, 30)+'...' : 'Info unavailable'}</span> */}
-                           <span className={styles.questionTime}>Est. {difficulty==='Easy'?'15':difficulty==='Medium'?'20':'30'} Mins</span> {/* Placeholder */}
+                          <span className={`${styles.questionName} ${styles[difficulty.toLowerCase()]}`}>{problem.name}</span> {/* Added difficulty class */}
+                          <span className={styles.questionTime}>Est. {difficulty==='Easy'?'15':difficulty==='Medium'?'20':'30'} Mins</span> {/* Placeholder */}
                         </div>
                         <div className={styles.questionStatus}>
                           {isSolved ? (
                             <SolvedIcon size={24} className={styles.solvedIcon} />
                           ) : (
                             <span className={`${styles.difficultyText} ${styles[difficulty.toLowerCase()]}`}>
-                              {/* No icon, just difficulty text */}
+                              {/* No icon */}
                             </span>
                           )}
                         </div>
@@ -154,8 +199,8 @@ const CategoryProblems = () => {
                    })}
                 </ul>
               </section>
-            )
-          ))}
+            );
+          })}
            {/* Display message if no problems match filters */}
            {Object.values(groupedProblems).every(arr => arr.length === 0) && !problemsLoading && !userLoading && (
                <p className={styles.noResults}>No problems match the current filters.</p>
@@ -166,4 +211,4 @@ const CategoryProblems = () => {
   );
 };
 
-export default CategoryProblems;
+export default CategoryProblemsScreen;

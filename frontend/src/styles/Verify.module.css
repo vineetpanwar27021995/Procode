@@ -1,81 +1,82 @@
-.verifyContainer {
-    background-color: var(--welcome-bg-color); 
-    color: var(--welcome-text-color); 
-    transition: background-color 0.3s ease, color 0.3s ease;
-  }
-  
-  .backButton {
-    position: absolute;
-    top: 20px; 
-    left: 20px; 
-    z-index: 10;
-  }
-  
-  .backButton button {
-    color: var(--welcome-text-color) !important; 
-    padding: 0rem !important; 
-    font-size: 0.875rem;
-    text-decoration: none !important;
-  }
-  .backButton button:hover {
-     background-color: rgba(128, 128, 128, 0.1);
-  }
-  
-  .title {
-    color: var(--welcome-title-color); 
-  }
-  
-  .subtitle {
-    color: var(--welcome-subtitle-color); 
-  }
-  
-  .inputField label {
-     color: var(--welcome-text-color);
-     display: block;
-     margin-bottom: 0.25rem;
-     font-size: 0.875rem; 
-     font-weight: 500;
-     text-align: center; 
-  }
-  
-  .inputField input {
-     background-color: var(--welcome-input-bg, var(--welcome-bg-color)); 
-     color: var(--welcome-text-color);
-     border: 1px solid var(--welcome-border-color, #ccc); 
-     width: 100%; 
-     max-width: 200px; 
-     margin-left: auto; 
-     margin-right: auto; 
-     padding: 0.75rem;
-     border-radius: 0.375rem; 
-     font-size: 1.5rem; 
-     text-align: center; 
-     letter-spacing: 0.5em; 
-  }
-  .inputField input::placeholder {
-      color: var(--welcome-subtitle-color); 
-      opacity: 0.7;
-      font-size: 1.5rem; 
-      letter-spacing: 0.5em; 
-  }
-  
-  .resendLink {
-    color: var(--welcome-link-color, var(--welcome-button-secondary-text)); 
-    text-decoration: none;
-    transition: color 0.2s ease;
-    display: inline-flex; 
-    align-items: center;
-  }
+/* styles/Verify.module.css */
+/* Uses global CSS variables defined in global.css */
 
-  .resendLink:hover {
-    text-decoration: underline;
-    color: var(--welcome-link-hover-color, var(--welcome-button-primary-bg)); 
-  }
-  
-  .resendLink:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-  }
-  
-  
-  
+.verifyContainer {
+  background-color: var(--welcome-bg-color); /* Use global variable */
+  color: var(--welcome-text-color); /* Use global variable */
+  /* min-height, padding, flex layout handled by Tailwind */
+  transition: background-color 0.3s ease, color 0.3s ease;
+  /* position: relative; is set via Tailwind */
+  /* justify-content, align-items handled by Tailwind */
+}
+
+/* Positioning for the back button */
+.backButton {
+  position: absolute;
+  top: 20px; /* Adjust as needed */
+  left: 20px; /* Adjust as needed */
+  z-index: 10;
+}
+
+/* Specific styles for the back button itself if btn-ghost isn't enough */
+/* Using DaisyUI/Tailwind classes in JSX, so specific overrides might not be needed */
+.backButton button {
+  color: var(--welcome-text-color) !important; /* Example override */
+  gap: 0.25rem; /* Space between icon and text */
+}
+.backButton button:hover {
+   background-color: rgba(128, 128, 128, 0.1) !important; /* Subtle hover override if needed */
+}
+
+.title {
+  color: var(--welcome-title-color); /* Use global variable */
+  /* Font size, weight, margin handled by Tailwind */
+}
+
+.subtitle {
+  color: var(--welcome-subtitle-color); /* Use global variable */
+   /* Font size (text-sm = 0.875rem), margin handled by Tailwind */
+}
+
+/* --- Style for OTP Label --- */
+.otpLabel {
+   color: var(--welcome-subtitle-color); /* Use subtitle color or text color */
+   display: block; /* Make it block */
+   margin-bottom: 0.75rem; /* Space before OTP input */
+   font-size: 0.875rem; /* text-sm */
+   font-weight: 500;
+   text-align: center; /* Center label */
+}
+
+/* Optional wrapper for OTP input if specific alignment needed */
+.otpInputContainer {
+    display: flex;
+    justify-content: center; /* Center the OtpInput component */
+    /* margin-top: 1rem; */ /* Margin handled by form space-y */
+    /* margin-bottom: 1rem; */ /* Margin handled by form space-y */
+}
+
+
+/* Style for the 'Resend Code' link */
+.resendLink {
+  color: var(--welcome-link-color, var(--welcome-button-secondary-text)); /* Use a link color variable */
+  text-decoration: none;
+  transition: color 0.2s ease;
+  display: inline-flex; /* Align loading spinner */
+  align-items: center;
+  /* Base button styles might be handled by Button component or DaisyUI */
+  padding: 5px; /* Add some padding */
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+.resendLink:hover {
+  text-decoration: underline;
+  color: var(--welcome-link-hover-color, var(--welcome-button-primary-bg)); /* Use a link hover color */
+}
+.resendLink:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    text-decoration: none; /* Remove underline when disabled */
+}
+

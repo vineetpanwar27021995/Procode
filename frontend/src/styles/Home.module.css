@@ -89,8 +89,8 @@ font-weight: 700; /* bold */
 background-color: var(--welcome-icon-container-bg, #4a5568); /* Example dark grey */
 color: var(--welcome-icon-container-text, #e2e8f0); /* Example light grey */
 border-radius: 50%;
-width: 40px;
-height: 40px;
+width: 50px;
+height: 50px;
 display: flex;
 align-items: center;
 justify-content: center;
@@ -101,6 +101,13 @@ border: 1px solid var(--welcome-border-color, #444); /* Example border */
   background-color: var(--welcome-icon-container-bg-light, #e2e8f0);
   color: var(--welcome-icon-container-text-light, #4a5568);
   border-color: var(--welcome-border-color-light, #ccc);
+}
+
+.profileIcon img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
 }
 
 

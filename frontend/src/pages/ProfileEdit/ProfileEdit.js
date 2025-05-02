@@ -67,6 +67,11 @@ const ProfileEdit = () => {
         fileInputRef.current?.click();
     };
 
+    const changeTheme = () => {
+        console.log(darkMode)
+        toggleDarkMode()
+    }
+
     // Handle saving profile changes
     const handleSaveChanges = async () => {
         setIsSaving(true); // Show saving indicator
@@ -224,9 +229,9 @@ const ProfileEdit = () => {
             <div className={styles.settingsSection}>
                  <div className={styles.settingItem}>
                     <span className={styles.settingLabel}>Theme</span>
-                    <button onClick={toggleDarkMode} className={styles.themeToggleButton}>
+                    <button onClick={_=>changeTheme()} className={styles.themeToggleButton}>
                         {darkMode ? <SunIcon size={20} /> : <MoonIcon size={20} />}
-                        <span className={styles.themeToggleText}>{darkMode ? 'Light Mode' : 'Dark Mode'}</span>
+                        <span className={styles.themeToggleText}>{darkMode ? 'Dark Mode' : 'Light Mode'}</span>
                     </button>
                  </div>
                  <div className={styles.settingItem}>

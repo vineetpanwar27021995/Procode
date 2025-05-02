@@ -35,7 +35,7 @@ const Snackbar = () => {
 
   return (
     <div className="fixed top-5 right-5 z-50 max-w-xs">
-      <div className={`alert ${typeClasses[type] || 'alert-info'} shadow-lg transition-all duration-300 d-flex ${styles.snackbar}  gap-2`}>
+      <div className={`alert ${typeClasses[type] || 'alert-info'} shadow-lg transition-all duration-300 flex ${styles.snackbar}  gap-2`}>
         <div className={"flex-1 flex items-center gap-2"}>
           {typeIcons[type] || <AiOutlineInfoCircle size={24} />}
           <span>{message}</span>

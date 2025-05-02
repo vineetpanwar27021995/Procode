@@ -261,6 +261,7 @@ const Home = () => {
 
   // Extract user name
   const userName = userProfile?.name || 'User';
+  const userImage = userProfile?.photoURL;
 
   // Format relative time
   const formatRelativeTime = (timestamp) => {
@@ -293,7 +294,7 @@ const Home = () => {
           {!userLoading && !userError && <h1 className={styles.greetingTitle}>Hello, {userName}!</h1>}
         </div>
         <div className={styles.profileIcon} onClick={_=>navigate('/me')}>
-          <FiUser size={20} />
+              {userImage ? <img src={userImage} alt={userName} /> : <FiUser size={25} />}
         </div>
       </div>
 
@@ -358,7 +359,12 @@ const Home = () => {
 
       {/* Recap Section using DaisyUI Carousel */}
       <section className={styles.section}>
-        <h3 className={styles.sectionTitle}>Recap from the last day!!!</h3>
+        <div className={styles.sectionHeader}>
+            <h3 className={styles.sectionTitle +' m-0'}>Recap from last solved!!!</h3>
+            <button onClick={_=>navigate('/category/submissions')} className={styles.viewAllButton}>
+                View All <MdArrowForward />
+            </button>
+        </div>
         <div className={`carousel carousel-center w-full space-x-4 rounded-box ${styles.recapCarouselContainer}`}>
           {userProfile?.submissions && categories && Object.keys(categories).length > 0 && Object.keys(userProfile.submissions).length > 0 ? (
             Object.entries(userProfile.submissions).map(([key, value]) => {

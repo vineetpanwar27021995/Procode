@@ -70,6 +70,7 @@
   .googleButton {
       border-color: var(--welcome-google-border, #4280EF);
       color: var(--welcome-google-text, #4280EF);
+      background-color: white !important;
   }
   .googleButton:hover {
       background-color: var(--welcome-google-hover-bg, rgba(66, 128, 239, 0.05));
@@ -80,6 +81,7 @@
   .facebookButton {
       border-color: var(--welcome-facebook-border, #1877F2);
       color: var(--welcome-facebook-text, #1877F2);
+      background-color: white !important;
   }
   .facebookButton:hover {
       background-color: var(--welcome-facebook-hover-bg, rgba(24, 119, 242, 0.05));
@@ -87,8 +89,10 @@
       color: var(--welcome-facebook-hover-text, #166bde);
   }
   
-  .googleButton svg, .facebookButton svg {
-      color: currentColor;
+  .googleButton img, .facebookButton img {
+      width: 20px;
+      height: 20px;
+      object-fit: cover;
   }
   
   

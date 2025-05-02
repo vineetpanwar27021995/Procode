@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useAuthStore } from '../../stores/authStore';
 import { Button, Input } from '../../components';
-import { FaGoogle as GoogleIcon, FaFacebook as FacebookIcon } from 'react-icons/fa';
+// import { FaGoogle as GoogleIcon, FaFacebook as FacebookIcon } from 'react-icons/fa';
 import { MdOutlineKeyboardArrowLeft as BackIcon } from 'react-icons/md';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSnackbarStore } from '../../stores/snackbarStore';
 import styles from '../../styles/Login.module.css';
+import GoogleIcon from '../../assets/icons/google.png'
+import FacebookIcon from '../../assets/icons/facebook.png'
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -115,7 +117,7 @@ const Login = () => {
             onClick={handleGoogleLogin}
             className={`btn btn-outline w-full flex items-center justify-center gap-2 ${styles.googleButton}`}
           >
-            <GoogleIcon />
+            <img src={GoogleIcon} alt='google'/>
             Sign in with Google
           </Button>
 
@@ -123,8 +125,8 @@ const Login = () => {
             variant="outlined"
             onClick={handleFacebookLogin}
             className={`btn btn-outline w-full flex items-center justify-center gap-2 ${styles.facebookButton}`}
-          >
-            <FacebookIcon />
+          >            
+          <img src={FacebookIcon} alt='facebook'/>
             Sign in with Facebook
           </Button>
         </div>

@@ -1,0 +1,62 @@
+/* components/OtpInput/OtpInput.module.css */
+/* Uses global CSS variables */
+
+.otpGroup {
+    display: flex;
+    justify-content: center; /* Center the boxes */
+    gap: 0.75rem; /* Space between boxes (adjust as needed) */
+    margin: 1.5rem 0; /* Add vertical margin */
+  }
+  
+  .otpInput {
+    width: 45px; /* Width of each box */
+    height: 55px; /* Height of each box */
+    text-align: center;
+    font-size: 1.5rem; /* Larger font size for digits */
+    font-weight: 600;
+    border-radius: 6px; /* Rounded corners */
+    border: 1px solid var(--welcome-border-color, #4a5568); /* Use theme border color */
+    background-color: var(--welcome-input-bg, var(--welcome-bg-color)); /* Use theme input background */
+    color: var(--welcome-text-color); /* Use theme text color */
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    caret-color: var(--welcome-button-primary-bg); /* Make cursor visible */
+  }
+  
+  /* Style for light theme */
+  [data-theme="light"] .otpInput {
+      border-color: var(--welcome-border-color-light, #d1d5db);
+      background-color: var(--welcome-input-bg-light, var(--welcome-bg-color));
+  }
+  
+  
+  .otpInput:focus {
+    border-color: var(--welcome-button-primary-bg); /* Highlight border on focus */
+    box-shadow: 0 0 0 2px var(--welcome-focus-ring, rgba(74, 144, 226, 0.3)); /* Add focus ring */
+  }
+  
+  /* Style for filled input */
+  .otpInput.filled {
+      border-color: var(--welcome-button-primary-bg); /* Optional: Keep border highlighted when filled */
+  }
+  
+  
+  .otpInput:disabled {
+    background-color: var(--welcome-disabled-bg, #4a5568); /* Disabled background */
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+  [data-theme="light"] .otpInput:disabled {
+       background-color: var(--welcome-disabled-bg-light, #e5e7eb);
+  }
+  
+  /* Hide spinner buttons on number input (might not be needed with type="text") */
+  .otpInput::-webkit-outer-spin-button,
+  .otpInput::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  .otpInput[type=number] {
+    -moz-appearance: textfield; /* Firefox */
+  }
+  
