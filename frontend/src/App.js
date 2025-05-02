@@ -16,6 +16,7 @@ import { Snackbar,ProtectedRoute,PublicRoute } from './components';
 import './index.css';
 import CategoryProblems from 'pages/CategoryProblems/CategoryProblems';
 import Profile from 'pages/Profile/Profile';
+import ProfileEdit from 'pages/ProfileEdit/ProfileEdit';
 
 const App = () => {
   // Get theme state
@@ -81,6 +82,7 @@ const App = () => {
             <Route path="/problems" element={<Problems />} />
             <Route path="/category/:categoryId" element={<CategoryProblems />} />
             <Route path="/me" element={<Profile />} />
+            <Route path="/profile/edit" element={<ProfileEdit />} />
             {/* Add other protected routes here */}
             {/* Example: <Route path="/profile" element={<Profile />} /> */}
           </Route>

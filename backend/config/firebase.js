@@ -3,7 +3,8 @@ const serviceAccount = require('../secrets/firebaseServiceAccount.json');
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  databaseURL: `https://${serviceAccount.project_id}.firebaseio.com`
+  databaseURL: `https://${serviceAccount.project_id}.firebaseio.com`,
+  storageBucket: process.env.FIREBASE_STORAGE_BUCKET
 });
 
 const auth = admin.auth();

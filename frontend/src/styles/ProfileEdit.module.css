@@ -1,0 +1,263 @@
+/* pages/ProfileEdit/ProfileEditScreen.module.css */
+/* Uses global CSS variables */
+
+.editContainer {
+    background-color: var(--welcome-bg-color);
+    color: var(--welcome-text-color);
+    min-height: 100vh;
+    padding: 15px;
+    font-family: var(--global-font-family, sans-serif);
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .editHeader {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    width: 100%;
+  }
+  
+  .backButton {
+    background: none;
+    border: none;
+    color: var(--welcome-text-color);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    font-size: 0.9rem;
+    padding: 5px 0;
+    margin-right: auto;
+  }
+  .backButton:hover {
+      opacity: 0.8;
+  }
+  
+  .editTitle {
+    font-size: 1.2rem;
+    font-weight: 600;
+    flex-grow: 1;
+    text-align: center;
+    /* Adjust padding if needed, e.g., padding-right: 50px; to balance back button */
+  }
+  
+  /* --- Picture Section --- */
+  .pictureSection {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 2rem;
+  }
+  
+  .pictureWrapper {
+      position: relative;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 3px solid var(--welcome-border-color, #4a5568);
+      background-color: var(--welcome-card-bg, #2d3748);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden; /* Clip image */
+  }
+  [data-theme="light"] .pictureWrapper {
+      border-color: var(--welcome-border-color-light, #e2e8f0);
+      background-color: var(--welcome-card-bg-light, #f3f4f6);
+  }
+  
+  
+  .profileImage {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+  }
+  
+  .profileIconPlaceholder {
+      color: var(--welcome-subtitle-color);
+      font-size: 3rem; /* Larger placeholder icon */
+  }
+  
+  .editIconOverlay {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      background-color: rgba(0, 0, 0, 0.6);
+      color: white;
+      border-radius: 50%;
+      padding: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      transition: background-color 0.2s ease;
+  }
+  .pictureWrapper:hover .editIconOverlay {
+      background-color: rgba(0, 0, 0, 0.8);
+  }
+  
+  .loaderOverlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent overlay */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+  }
+  
+  .loaderAnimation {
+      color: white;
+      animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  
+  /* --- Form Section --- */
+  .formSection {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem; /* Space between form groups */
+      margin-bottom: 2.5rem;
+  }
+  
+  .formGroup {
+      display: flex;
+      flex-direction: column;
+  }
+  
+  .label {
+      font-size: 0.875rem; /* text-sm */
+      font-weight: 500;
+      color: var(--welcome-subtitle-color);
+      margin-bottom: 0.5rem;
+  }
+  
+  .input, .select {
+      background-color: var(--welcome-card-bg, #2d3748);
+      border: 1px solid var(--welcome-border-color, #4a5568);
+      color: var(--welcome-text-color);
+      border-radius: 6px;
+      padding: 10px 12px;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.2s ease;
+  }
+  .input:focus, .select:focus {
+      border-color: var(--welcome-button-primary-bg); /* Highlight border on focus */
+  }
+  [data-theme="light"] .input, [data-theme="light"] .select {
+      background-color: var(--welcome-card-bg-light, #ffffff);
+      border-color: var(--welcome-border-color-light, #d1d5db);
+  }
+  
+  .select {
+      appearance: none; /* Remove default arrow */
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E"); /* Add custom arrow */
+      background-repeat: no-repeat;
+      background-position: right 0.7rem top 50%;
+      background-size: 1.2em 1.2em;
+      padding-right: 2.5rem; /* Make space for arrow */
+  }
+  [data-theme="dark"] .select {
+       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%239ca3af' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E"); /* Dark theme arrow */
+  }
+  
+  /* --- Settings Section --- */
+  .settingsSection {
+      margin-bottom: 2rem;
+      border-top: 1px solid var(--welcome-border-color, #4a5568);
+      padding-top: 2rem;
+  }
+  [data-theme="light"] .settingsSection {
+       border-top-color: var(--welcome-border-color-light, #e2e8f0);
+  }
+  
+  .settingItem {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+  }
+  
+  .settingLabel {
+      font-size: 1rem;
+      font-weight: 500;
+  }
+  
+  .settingButton, .themeToggleButton {
+      background: none;
+      border: none;
+      color: var(--welcome-link-color);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+      padding: 5px;
+  }
+  .settingButton:hover, .themeToggleButton:hover {
+      opacity: 0.8;
+  }
+  
+  .logoutButton {
+      color: var(--alert-error-text-color, #f87171); /* Use error color for logout */
+  }
+  
+  .themeToggleText {
+      min-width: 80px; /* Ensure consistent width */
+      text-align: left;
+  }
+  
+  /* --- Save Button --- */
+  .saveButtonContainer {
+      margin-top: auto; /* Push save button to bottom */
+      padding-top: 1rem;
+  }
+  
+  .saveButton {
+      background-color: var(--welcome-button-primary-bg);
+      color: var(--welcome-button-primary-text);
+      border: none;
+      border-radius: 8px;
+      padding: 12px 20px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      transition: background-color 0.2s ease;
+  }
+  .saveButton:hover {
+      background-color: var(--welcome-button-primary-hover-bg);
+  }
+  .saveButton:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+  }
+  
+  /* --- Info/Error Text --- */
+  .infoText {
+      text-align: center;
+      font-size: 0.9rem;
+      color: var(--welcome-subtitle-color);
+      margin-top: 1rem;
+  }
+  .errorText {
+      text-align: center;
+      font-size: 0.9rem;
+      color: var(--alert-error-text-color, #f87171);
+      margin-top: 1rem;
+  }
+  
+  
