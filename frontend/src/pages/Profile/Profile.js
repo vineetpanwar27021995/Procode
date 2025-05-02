@@ -53,7 +53,7 @@ const Profile = () => {
     const isLoading = userLoading || problemsLoading;
   
     const goToSettings = () => {
-        navigate('/profile/edit'); // Navigate to edit screen
+        navigate('/me/edit'); // Navigate to edit screen
     };
   
     return (

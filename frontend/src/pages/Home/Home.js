@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import { FaCode, FaBug, FaBrain } from "react-icons/fa";
 import { SiLeetcode, SiCodemirror } from "react-icons/si";
 import { VscSymbolMethod } from "react-icons/vsc";
+import BottomNavBar from 'components/BottomNavBar/BottomNavBar';
 
 // Helper function to shuffle an array (Fisher-Yates)
 function shuffleArray(array) {
@@ -414,6 +415,7 @@ const Home = () => {
            )}
         </div>
       </section>
+
     </div>
   );
 };

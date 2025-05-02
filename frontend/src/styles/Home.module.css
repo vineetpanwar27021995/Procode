@@ -31,6 +31,7 @@ padding: 20px 15px; /* Adjusted padding */
 font-family: var(--global-font-family, sans-serif);
 display: flex;
 flex-direction: column;
+padding-bottom: 4.5rem;
 }
 
 .header {

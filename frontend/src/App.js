@@ -17,11 +17,12 @@ import Profile from 'pages/Profile/Profile';
 import ProfileEdit from 'pages/ProfileEdit/ProfileEdit';
 import { lightTheme, darkTheme } from './styles/themes';
 import { ThemeProvider } from 'styled-components';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { Snackbar, SplashScreen, ProtectedRoute,PublicRoute } from './components';
 import useAnamSessionToken from './hooks/useAnamSessionToken';
 import { ErrorBoundary } from "react-error-boundary";
 import { CodingSession, QuestionList } from 'pages';
+import BottomNavBar from 'components/BottomNavBar/BottomNavBar';
 
 const App = () => {
   // Get theme state
@@ -99,11 +100,28 @@ const App = () => {
     );
 }
 
+const Layout = ({ children }) => {
+  const location = useLocation();
+  // Define paths where the bottom nav SHOULD be shown
+  const showNavPaths = ['/home', '/me']; // Only show on these exact paths
+  // Check if the current pathname is exactly one of the allowed paths
+  const showNav = showNavPaths.includes(location.pathname);
+
+  return (
+      <>
+          {children}
+          {/* Conditionally render BottomNavBar based on the specific paths */}
+          {showNav && <BottomNavBar />}
+      </>
+  );
+};
+
   return (
     <>
       <ErrorBoundary fallback={<div>Something went wrong! Please try again later</div>}>
       <Snackbar />
       <Router>
+        <Layout>
         <Routes>
           {/* Public Routes: Accessible only when logged OUT */}
           {/* PublicRoute checks if authenticated and redirects to /home if true */}
@@ -120,7 +138,7 @@ const App = () => {
             <Route path="/problems" element={<Problems />} />
             <Route path="/category/:categoryId" element={<CategoryProblems />} />
             <Route path="/me" element={<Profile />} />
-            <Route path="/profile/edit" element={<ProfileEdit />} />
+            <Route path="/me/edit" element={<ProfileEdit />} />
             <Route path="/:categoryId/solve/:questionId" element={<CodingSession />} />
             <Route path="/questions" element={<QuestionList />} />
           </Route>
@@ -129,10 +147,12 @@ const App = () => {
           {/* Redirect to /home if logged in, otherwise redirect to /login */}
           {/* Note: This might conflict if Welcome page ('/') should be accessible when logged in */}
           {/* Consider removing this or adjusting logic if '/' needs different handling */}
-          <Route path="*" element={<Navigate to={isAuthenticated ? "/home" : "/login"} replace />} />
+          {/* <Route path="*" element={<Navigate to={isAuthenticated ? "/home" : "/login"} replace />} /> */}
 
         </Routes>
+        </Layout>
       </Router>
+
       </ErrorBoundary>
     </>
   );

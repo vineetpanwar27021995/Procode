@@ -1,0 +1,119 @@
+/* components/BottomNavBar/BottomNavBar.module.css */
+/* Uses global CSS variables like --welcome-bg-color, --welcome-text-color etc. */
+
+/* Define colors if not globally available */
+:root {
+    --nav-bg: #1f2937; /* Example: gray-800 */
+    --nav-icon-color: #9ca3af; /* Example: gray-400 */
+    --nav-icon-active-color: #ffffff; /* Example: white */
+    --nav-active-bg: #3b82f6; /* Example: blue-500 - Used for middle button */
+    --nav-border-color: #374151; /* Example: gray-700 */
+    --nav-pulse-color: rgba(59, 130, 246, 0.5); /* Example: semi-transparent blue-500 */
+}
+
+[data-theme="light"] {
+    --nav-bg: #ffffff; /* Example: white */
+    --nav-icon-color: #6b7280; /* Example: gray-500 */
+    --nav-icon-active-color: #2563eb; /* Example: blue-600 - Make active icon blue */
+    --nav-active-bg: #2563eb; /* Example: blue-600 - Used for middle button */
+    --nav-border-color: #e5e7eb; /* Example: gray-200 */
+    --nav-pulse-color: rgba(37, 99, 235, 0.4); /* Example: semi-transparent blue-600 */
+}
+
+
+.navContainer {
+  position: fixed; /* Stick to the bottom */
+  bottom: 1rem; /* Space from bottom */
+  left: 50%; /* Center horizontally */
+  transform: translateX(-50%);
+  width: auto; /* Adjust width based on content */
+  max-width: 90%; /* Max width */
+  display: inline-flex; /* Use inline-flex to fit content */
+  justify-content: space-around; /* Evenly space items */
+  align-items: center;
+  background-color: var(--nav-bg);
+  padding: 0.75rem 1.5rem; /* Increased horizontal padding slightly */
+  border-radius: 30px; /* Pill shape */
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25); /* Add shadow for depth */
+  border: 1px solid var(--nav-border-color);
+  z-index: 1000; /* Ensure it's above other content */
+  gap: 1rem; /* Adjusted gap between nav items */
+}
+
+.navItem {
+  background-color: transparent;
+  border: none;
+  color: var(--nav-icon-color);
+  padding: 0.75rem; /* Generous padding for tap target */
+  border-radius: 50%; /* Make the tap area circular */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+  text-decoration: none; /* Remove underline from NavLink */
+  line-height: 0; /* Prevent extra space from line height */
+  position: relative; /* Needed for pulse pseudo-element if used */
+}
+
+.navItem:hover {
+  /* Change icon color on hover, even if not active */
+  color: var(--nav-icon-active-color);
+  /* Optional: Subtle hover background */
+  /* background-color: rgba(128, 128, 128, 0.1); */
+}
+
+/* Active style for Home/Profile (NavLink) */
+/* Only changes icon color, no background */
+.navItem.active {
+  /* background-color: transparent; */ /* Ensure no background */
+  color: var(--nav-icon-active-color); /* Active icon color */
+  /* box-shadow: none; */ /* Ensure no shadow */
+}
+/* Keep hover effect for active Home/Profile */
+.navItem.active:hover {
+    color: var(--nav-icon-active-color);
+    /* background-color: rgba(128, 128, 128, 0.1); */ /* Optional hover background */
+}
+
+
+/* Style for the always active middle button */
+.alwaysActiveRandom {
+  background-color: var(--nav-active-bg); /* Always use active background */
+  color: var(--nav-icon-active-color); /* Always use active icon color */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Keep slight shadow */
+}
+/* Hover state for the middle button */
+.alwaysActiveRandom:hover {
+    /* Override default hover, maybe slightly darken bg */
+    background-color: color-mix(in srgb, var(--nav-active-bg) 90%, black);
+    color: var(--nav-icon-active-color); /* Keep icon color */
+}
+
+
+/* Pulsating Animation */
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 var(--nav-pulse-color);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(204, 169, 44, 0); /* Use transparent end color */
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(204, 169, 44, 0);
+  }
+}
+
+.pulseAnimation {
+  /* Apply the animation to the middle button */
+  animation: pulse 2s infinite;
+  /* Ensure border-radius is set for the shadow shape */
+  border-radius: 50%;
+}
+
+
+/* Ensure icons size correctly */
+.navItem svg {
+    display: block;
+}
+

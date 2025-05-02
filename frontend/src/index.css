@@ -2,9 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Global CSS (e.g., index.css or themes.css) */
-
-/* Define CSS Variables - Default (Light Theme) */
 :root {
     --welcome-bg-color: #f0f0f5; /* Example light background */
     --welcome-text-color: #333333; /* Example light text */
@@ -18,11 +15,9 @@
     --welcome-button-secondary-text: #007bff;
     --welcome-button-secondary-hover-bg: rgba(0, 123, 255, 0.1);
   
-    /* Add other global variables for other components here */
     --global-font-family: 'Inter', sans-serif; /* Example */
     --global-link-color: var(--welcome-icon-color); /* Re-use variable */
 
-  /* Light Theme Topic Colors */
   --topic-blue-bg: #e0f2fe;       /* light sky 100 */
   --topic-blue-icon-bg: #bae6fd; /* light sky 200 */
   --topic-blue-icon: #0ea5e9;    /* sky 500 */
@@ -42,7 +37,6 @@
   --topic-yellow-icon-bg: #fef08a;/* yellow 200 */
   --topic-yellow-icon: #eab308;  /* yellow 500 */
 
-  /* Action Button Colors */
   --action-primary-bg: var(--welcome-button-primary-bg);
   --action-primary-text: var(--welcome-button-primary-text);
   --action-primary-hover-bg: var(--welcome-button-primary-hover-bg);
@@ -54,8 +48,6 @@
   --dark-red: #f8615c;
   }
   
-  /* Define CSS Variables - Dark Theme Override */
-  /* Apply this class or attribute (e.g., <body data-theme="dark">) */
   [data-theme="dark"] {
     --welcome-bg-color: #1a1a2e; /* Original dark background */
     --welcome-text-color: #e0e0e0; /* Original light text */
@@ -69,9 +61,7 @@
     --welcome-button-secondary-text: #4a90e2;
     --welcome-button-secondary-hover-bg: rgba(74, 144, 226, 0.1);
   
-    /* Override other global variables for dark theme */
      --global-link-color: var(--welcome-icon-color);
-     /* Dark Theme Topic Colors */
      --topic-blue-bg: #1e3a8a;       /* blue 900 */
      --topic-blue-icon-bg: #1d4ed8; /* blue 700 */
      --topic-blue-icon: #93c5fd;    /* blue 300 */

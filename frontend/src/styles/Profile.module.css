@@ -79,6 +79,7 @@
   min-height: 100vh;
   padding: 15px;
   font-family: var(--global-font-family, sans-serif);
+padding-bottom: 4.5rem;
 }
 
 .profileHeader {
