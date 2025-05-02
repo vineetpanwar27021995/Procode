@@ -9,8 +9,8 @@ const SplashScreen = () => {
         alt="Splash"
         className="
           w-auto h-auto 
-          max-w-full max-h-full
-          sm:w-full sm:h-full sm:object-cover
+          max-w-full
+          md:w-full sm:h-full sm:object-cover
         "
       />
     </div>

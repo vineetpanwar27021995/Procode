@@ -284,6 +284,12 @@ const Home = () => {
       navigate(`/category/${categoryId}`)
   }
 
+  const handleCodeSession = (problemKey,categoryKey) => {
+    console.log(problemKey, categoryKey)
+    navigate(`/${categoryKey}/solve/${problemKey}`)
+    // navigate('/questions')
+  }
+
   return (
     <div className={styles.homeContainer}>
       {/* Greeting Section */}
@@ -318,7 +324,7 @@ const Home = () => {
               const IconComponent = shuffledIcons[index];
 
               return (
-              <li key={task.id} className={styles.taskItem}>
+              <li key={task.id} className={styles.taskItem} onClick={_=>handleCodeSession(task.id,task.category.replace(/[\s\/]+/g, '-').replace(/[^\w\-\&]/g, '').replace(/-+/g, '-'))}>
                 <div className={styles.taskIcon}><IconComponent /></div> {/* Placeholder */}
                 <div className={styles.taskDetails}>
                   <span className={styles.taskTitle}>{task.name || 'Unknown Task'}</span>
@@ -389,7 +395,7 @@ const Home = () => {
 
                return (
                  <div key={key} id={`recap-${key}`} className={`carousel-item ${styles.recapCarouselItem}`}>
-                   <div className={styles.recapCard}>
+                   <div className={styles.recapCard} onClick={_=>handleCodeSession(problemData.id,categoryKey)}>
                      <div className={styles.recapCardHeader}>
                         <div className={styles.recapIcon}><TaskIcon /></div>{/* Placeholder */}
                         <div className={styles.recapDetails}>

@@ -132,3 +132,12 @@
     border: 1px solid var(--dark-red) !important;
   }
 
+  /* In index.css */
+::-webkit-resizer {
+  display: none;
+}
+
+#webpack-dev-server-client-overlay-div {
+  display: none !important;
+}
+

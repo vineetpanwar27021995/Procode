@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useThemeStore } from './stores/themeStore'; // Adjust path if needed
 import { useAuthStore } from './stores/authStore'; // Adjust path if needed
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
 // Import Page Components (Adjust paths based on your project structure)
 import Welcome from './pages/Welcome/Welcome';
@@ -11,22 +10,18 @@ import ForgotPassword from './pages/ForgotPassword/ForgotPassword';
 import Verify from './pages/Verify/Verify';
 import Home from './pages/Home/Home'; // Create this component if it doesn't exist
 import Problems from './pages/Problems/Problems'; 
-import { Snackbar,ProtectedRoute,PublicRoute } from './components';
 
 import './index.css';
 import CategoryProblems from 'pages/CategoryProblems/CategoryProblems';
 import Profile from 'pages/Profile/Profile';
 import ProfileEdit from 'pages/ProfileEdit/ProfileEdit';
-import { useThemeStore } from './stores/themeStore';
 import { lightTheme, darkTheme } from './styles/themes';
 import { ThemeProvider } from 'styled-components';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { Register, Welcome, Login, ForgotPassword, Verify, QuestionList, CodingSession } from './pages';
-import './global.css';
-import { Snackbar, SplashScreen } from './components';
-import './styles/global.css'
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { Snackbar, SplashScreen, ProtectedRoute,PublicRoute } from './components';
 import useAnamSessionToken from './hooks/useAnamSessionToken';
 import { ErrorBoundary } from "react-error-boundary";
+import { CodingSession, QuestionList } from 'pages';
 
 const App = () => {
   // Get theme state
@@ -72,13 +67,6 @@ const App = () => {
     };
     verifyAuth();
   }, [checkAuth]); 
-  if (isCheckingAuth) {
-      return (
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', backgroundColor: '#1a1a2e', color: 'white' }}>
-              Loading Application...
-          </div>
-      );
-  }
 
   useEffect(() => {
     // Fade out before removing splash
@@ -103,6 +91,14 @@ const App = () => {
     );
   }
 
+  if (isCheckingAuth) {
+    return (
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', backgroundColor: '#1a1a2e', color: 'white' }}>
+            Loading Application...
+        </div>
+    );
+}
+
   return (
     <>
       <ErrorBoundary fallback={<div>Something went wrong! Please try again later</div>}>
@@ -119,16 +115,14 @@ const App = () => {
             <Route path="/verify" element={<Verify />} />
           </Route>
 
-          {/* Protected Routes: Accessible only when logged IN */}
-          {/* ProtectedRoute checks if authenticated and redirects to /login if false */}
           <Route element={<ProtectedRoute />}>
             <Route path="/home" element={<Home />} />
             <Route path="/problems" element={<Problems />} />
             <Route path="/category/:categoryId" element={<CategoryProblems />} />
             <Route path="/me" element={<Profile />} />
             <Route path="/profile/edit" element={<ProfileEdit />} />
-            {/* Add other protected routes here */}
-            {/* Example: <Route path="/profile" element={<Profile />} /> */}
+            <Route path="/:categoryId/solve/:questionId" element={<CodingSession />} />
+            <Route path="/questions" element={<QuestionList />} />
           </Route>
 
           {/* Catch-all Route: Redirects unknown paths */}

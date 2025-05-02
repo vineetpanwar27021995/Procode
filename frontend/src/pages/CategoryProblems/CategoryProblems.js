@@ -118,6 +118,11 @@ const CategoryProblemsScreen = () => {
     navigate(-1);
   };
 
+  const handleCodeSession = (problemKey,categoryKey) => {
+    console.log(problemKey, categoryKey)
+    navigate(`/${categoryKey}/solve/${problemKey}`)
+  }
+
   // --- Render Logic ---
   // Determine the display title
   const displayTitle = isSubmissionsView
@@ -179,7 +184,7 @@ const CategoryProblemsScreen = () => {
                     // Format sequence number with leading zero using the continuous counter
                     const sequence = String(sequenceCounter).padStart(2, '0');
                     return (
-                      <li key={problem.id} className={`${styles.questionItem} ${styles[`${difficulty.toLowerCase()}-border`]}`}> {/* Added difficulty border class */}
+                      <li key={problem.id} className={`${styles.questionItem} ${styles[`${difficulty.toLowerCase()}-border`]}`} onClick={_=>handleCodeSession(problem.id,problem.category.replace(/[\s\/]+/g, '-').replace(/[^\w\-\&]/g, '').replace(/-+/g, '-'))}> {/* Added difficulty border class */}
                         <div className={`${styles.questionNumber} ${styles[difficulty.toLowerCase()]}`}>{sequence}</div> {/* Added difficulty class */}
                         <div className={styles.questionDetails}>
                           <span className={`${styles.questionName} ${styles[difficulty.toLowerCase()]}`}>{problem.name}</span> {/* Added difficulty class */}
