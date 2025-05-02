@@ -6,6 +6,7 @@ import useWindowSize from 'react-use/lib/useWindowSize';
 import { baseURL } from '../../utils/getBaseURL';
 import { useAnamStore } from '../../stores/anamStore';
 import Loader from 'components/Loader/Loader';
+import { ErrorBoundary } from "react-error-boundary";
 
 
 const CodingSession = () => {
@@ -55,76 +56,78 @@ const CodingSession = () => {
 
 
   return (
-    <div className="relative w-full h-screen bg-base-200 overflow-hidden p-4">
-      {testPassed && <Confetti width={width} height={height} />}
+    <ErrorBoundary fallback={<div>Something went wrong! Please try again later</div>}>
+      <div className="relative w-full h-screen bg-base-200 overflow-hidden p-4">
+        {testPassed && <Confetti width={width} height={height} />}
 
-      {isMobile ? (
-        // 🔹 MOBILE VIEW
-        <div className="flex flex-col h-full gap-4">
-          <div className="h-[60%] overflow-y-auto rounded-box bg-base-100 p-2">
-            <ProblemView problem={problem} categoryId={categoryId}/>
-          </div>
+        {isMobile ? (
+          // 🔹 MOBILE VIEW
+          <div className="flex flex-col h-full gap-4">
+            <div className="h-[60%] overflow-y-auto rounded-box bg-base-100 p-2">
+              <ProblemView problem={problem} categoryId={categoryId}/>
+            </div>
 
-          <div className="h-[40%] relative rounded-box bg-base-100">
-            {!intuitionApproved ? (
-              <div className="w-full h-full flex items-center justify-center text-center relative p-2">
-                <AITile fullScreen setIntuitionApproved={setIntuitionApproved} intuitionApproved={intuitionApproved} problemMetadata={problem}/>
-              </div>
-            ) : (
-              <>
-                <MonacoEditor
-                  isUnlocked
-                  onSuccess={handleTestSuccess}
-                  problemId={questionId}
-                  customTestCases={problem.custom_test_cases || []}
-                  starterCode={problem.starterCode?.javascript || ""}
-                  problemMetadata={problem}
-                  categoryId={categoryId}
-                />
-              </>
-            )}
-          </div>
-        </div>
-      ) : (
-        // 🔹 DESKTOP VIEW
-        <div className="grid grid-cols-2 gap-4 h-full">
-          <div className="flex flex-col h-full gap-2">
-            { intuitionApproved ? (
-              <>
-                <div className="h-[100%] overflow-y-auto rounded-box bg-base-100">
-                <ProblemView problem={problem} categoryId={categoryId}/>
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="h-[60%] overflow-y-auto rounded-box bg-base-100">
-                <ProblemView problem={problem} categoryId={categoryId}/>
-                </div>
-                <div className="h-[40%] rounded-box p-4 shadow ">
+            <div className="h-[40%] relative rounded-box bg-base-100">
+              {!intuitionApproved ? (
+                <div className="w-full h-full flex items-center justify-center text-center relative p-2">
                   <AITile fullScreen setIntuitionApproved={setIntuitionApproved} intuitionApproved={intuitionApproved} problemMetadata={problem}/>
                 </div>
-              </>
-            )
-              
-            }
-           
+              ) : (
+                <>
+                  <MonacoEditor
+                    isUnlocked
+                    onSuccess={handleTestSuccess}
+                    problemId={questionId}
+                    customTestCases={problem.custom_test_cases || []}
+                    starterCode={problem.starterCode?.javascript || ""}
+                    problemMetadata={problem}
+                    categoryId={categoryId}
+                  />
+                </>
+              )}
+            </div>
           </div>
+        ) : (
+          // 🔹 DESKTOP VIEW
+          <div className="grid grid-cols-2 gap-4 h-full">
+            <div className="flex flex-col h-full gap-2">
+              { intuitionApproved ? (
+                <>
+                  <div className="h-[100%] overflow-y-auto rounded-box bg-base-100">
+                  <ProblemView problem={problem} categoryId={categoryId}/>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="h-[60%] overflow-y-auto rounded-box bg-base-100 p-2">
+                  <ProblemView problem={problem} categoryId={categoryId}/>
+                  </div>
+                  <div className="h-[40%] rounded-box p-4 shadow p-2">
+                    <AITile fullScreen setIntuitionApproved={setIntuitionApproved} intuitionApproved={intuitionApproved} problemMetadata={problem}/>
+                  </div>
+                </>
+              )
+                
+              }
+            
+            </div>
 
-          <div className="relative h-full rounded-box">
-            <MonacoEditor
-              className="h-full"
-              isUnlocked={intuitionApproved}
-              onSuccess={handleTestSuccess}
-              problemId={questionId}
-              customTestCases={problem.custom_test_cases || []}
-              starterCode={problem.starterCode?.javascript || ""}
-              problemMetadata={problem}
-              categoryId={categoryId}
-            />
+            <div className="relative h-full rounded-box">
+              <MonacoEditor
+                className="h-full"
+                isUnlocked={intuitionApproved}
+                onSuccess={handleTestSuccess}
+                problemId={questionId}
+                customTestCases={problem.custom_test_cases || []}
+                starterCode={problem.starterCode?.javascript || ""}
+                problemMetadata={problem}
+                categoryId={categoryId}
+              />
+            </div>
           </div>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
+    </ErrorBoundary>
   );
 };
 
