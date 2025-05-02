@@ -17,6 +17,16 @@ import './index.css';
 import CategoryProblems from 'pages/CategoryProblems/CategoryProblems';
 import Profile from 'pages/Profile/Profile';
 import ProfileEdit from 'pages/ProfileEdit/ProfileEdit';
+import { useThemeStore } from './stores/themeStore';
+import { lightTheme, darkTheme } from './styles/themes';
+import { ThemeProvider } from 'styled-components';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Register, Welcome, Login, ForgotPassword, Verify, QuestionList, CodingSession } from './pages';
+import './global.css';
+import { Snackbar, SplashScreen } from './components';
+import './styles/global.css'
+import useAnamSessionToken from './hooks/useAnamSessionToken';
+import { ErrorBoundary } from "react-error-boundary";
 
 const App = () => {
   // Get theme state
@@ -25,6 +35,16 @@ const App = () => {
   const { checkAuth, loading: authLoading, isAuthenticated } = useAuthStore();
   // Local loading state specifically for the initial auth check on app load
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+  const [showSplash, setShowSplash] = useState(true);
+  const [fadeOut, setFadeOut] = useState(false);
+
+  window.addEventListener('error', (e) => {
+    if (
+      e.message === 'ResizeObserver loop completed with undelivered notifications.'
+    ) {
+      e.stopImmediatePropagation();
+    }
+  });
 
   // Apply data-theme attribute for CSS variable theming
   useEffect(() => {
@@ -60,8 +80,32 @@ const App = () => {
       );
   }
 
+  useEffect(() => {
+    // Fade out before removing splash
+    const timer1 = setTimeout(() => setFadeOut(true), 1000); // start fade after 1s
+    const timer2 = setTimeout(() => setShowSplash(false), 2000); // fully hide after fade
+
+    return () => {
+      clearTimeout(timer1);
+      clearTimeout(timer2);
+    };
+  }, []);
+
+  if (showSplash) {
+    return (
+      <div
+        className={`transition-opacity duration-500 ease-in-out ${
+          fadeOut ? 'opacity-0' : 'opacity-100'
+        }`}
+      >
+        <SplashScreen />
+      </div>
+    );
+  }
+
   return (
     <>
+      <ErrorBoundary fallback={<div>Something went wrong! Please try again later</div>}>
       <Snackbar />
       <Router>
         <Routes>
@@ -95,6 +139,7 @@ const App = () => {
 
         </Routes>
       </Router>
+      </ErrorBoundary>
     </>
   );
 };

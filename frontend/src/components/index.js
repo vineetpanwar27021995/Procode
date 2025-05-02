@@ -4,3 +4,7 @@ export { default as Input } from './Input/Input';
 export { default as Snackbar } from './Snackbar/Snackbar';
 export { default as ProtectedRoute } from './ProtectedRoute/ProtectedRoute';
 export { default as PublicRoute } from './PublicRoute/PublicRoute';
+export { default as MonacoEditor } from './MonacoEditor/MonacoEditor';
+export { default as ProblemView } from './ProblemView/ProblemView';
+export { default as AITile } from './AITile/AITile';
+export { default as SplashScreen } from './SplashScreen/SplashScreen';

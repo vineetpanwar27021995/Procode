@@ -5,7 +5,6 @@ const rateLimit = require('express-rate-limit');
 const cors = require('cors');
 const { handleErrors } = require('./utils/errorHandler');
 const { CORS, RATE_LIMIT } = require('./config/constants');
-
 const app = express();
 
 // Middleware
@@ -30,6 +29,13 @@ app.use('/api/db', require('./routes/firestore.routes'));
 app.use('/api/analyze', require('./routes/analyzeIntution.routes'));
 app.use('/api/problems', require('./routes/problems.routes'));
 app.use('/api/user', require('./routes/user.routes'));
+app.use('/api/', require('./routes/analyzeIntution.routes'));
+app.use("/api/", require("./routes/judge.routes"));
+app.use("/api/", require("./routes/judgeBatch.routes"));
+app.use("/api/", require("./routes/fetchProblemData.route"));
+app.use('/api', require('./routes/getANAMToken.routes'));
+app.use('/api', require('./routes/getPriorCodeSubmission.routes'));
+app.use('/api', require('./routes/saveCodeChanges.routes'));
 
 app.get('/', (req, res) => {
   res.send('🚀 Hello from ProCode on GCP!');
