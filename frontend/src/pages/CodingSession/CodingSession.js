@@ -5,6 +5,7 @@ import Confetti from 'react-confetti';
 import useWindowSize from 'react-use/lib/useWindowSize';
 import { baseURL } from '../../utils/getBaseURL';
 import { useAnamStore } from '../../stores/anamStore';
+import Loader from 'components/Loader/Loader';
 
 
 const CodingSession = () => {
@@ -47,10 +48,8 @@ const CodingSession = () => {
   };
 
   if (!problem) {
-    return (<div className="w-full h-screen flex flex-col items-center justify-center space-y-4">
-    <span className="loading loading-ring loading-xl text-[#22C55E]"></span>
-    <span className="text-[#22C55E] text-xl font-medium">Loading your question...</span>
-  </div>
+    return (
+      <Loader message='Hang up tight!' />
       )
   }
 

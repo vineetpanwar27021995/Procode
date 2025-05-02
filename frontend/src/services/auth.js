@@ -109,10 +109,11 @@ export const authService = {
             email: decodedToken.email,
             name: decodedToken.name, // Or displayName
             emailVerified: decodedToken.email_verified,
+            photoUrl: decodedToken.picture
             // Add any other relevant claims you need
         };
 
-        console.log('getCurrentUser: Token decoded and valid.');
+        console.log('getCurrentUser: Token decoded and valid.',decodedToken,user);
         return user;
 
     } catch (error) {

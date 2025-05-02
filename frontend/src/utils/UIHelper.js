@@ -10,3 +10,16 @@ export const getDifficultyClass = (difficulty) => {
     if (difficulty === 'Medium') return 'medium';
     return 'hard';
   };
+
+  export function getBgColorClass(difficulty) {
+    switch (difficulty.toLowerCase()) {
+      case 'easy':
+        return 'bg-easy-color';
+      case 'medium':
+        return 'bg-medium-color';
+      case 'hard':
+        return 'bg-hard-color';
+      default:
+        return ''; // fallback if unknown
+    }
+  }
