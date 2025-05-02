@@ -1,0 +1,452 @@
+/* pages/Profile/ProfileScreen.module.css */
+/* Uses global CSS variables */
+
+/* --- Define specific colors if not global --- */
+:root {
+    --profile-tab-active-border: var(--welcome-button-primary-bg, #007bff);
+    --profile-tab-text: var(--welcome-subtitle-color, #666);
+    --profile-tab-active-text: var(--welcome-text-color, #111);
+    --profile-card-bg: var(--welcome-card-bg-light, #ffffff);
+    --profile-card-border: var(--welcome-border-color-light, #e2e8f0);
+    --profile-level-bar-bg: var(--welcome-progress-bg-light, #e2e8f0);
+    --profile-level-bar-fill: #facc15; /* Example yellow */
+    --submission-easy-bg: #dcfce7; /* green 100 */
+    --submission-medium-bg: #fff7ed; /* orange 100 */
+    --submission-hard-bg: #fee2e2; /* red 100 */
+    --submission-easy-text: #16a34a; /* green 600 */
+    --submission-medium-text: #f97316; /* orange 500 */
+    --submission-hard-text: #ef4444; /* red 500 */
+    --badge-bg: var(--welcome-card-bg-light, #f3f4f6);
+    --badge-icon-color: var(--welcome-icon-color, #6b7280);
+    --achievement-icon-bg: #e0e7ff; /* Example light indigo */
+    --achievement-meta-text: #6b7280; /* gray 500 */
+    --activity-card-bg: var(--welcome-card-bg-light, #ffffff);
+    --activity-icon-quizzes: #3b82f6; /* blue 500 */
+    --activity-icon-leaderboard: #f59e0b; /* amber 500 */
+    --activity-icon-accuracy: #10b981; /* emerald 500 */
+    --activity-icon-recall: #8b5cf6; /* violet 500 */
+    --radar-grid-color: #e5e7eb; /* gray 200 */
+    --radar-strong-stroke: #3b82f6; /* blue 500 */
+    --radar-strong-fill: #60a5fa; /* blue 400 */
+    --radar-weak-stroke: #f97316; /* orange 500 */
+    --radar-weak-fill: #fb923c; /* orange 400 */
+    --heatmap-empty: #ebedf0;
+    --heatmap-1: #9be9a8;
+    --heatmap-2: #40c463;
+    --heatmap-3: #30a14e;
+    --heatmap-4: #216e39;
+}
+
+[data-theme="dark"] {
+    --profile-tab-active-border: var(--welcome-button-primary-bg, #4a90e2);
+    --profile-tab-text: var(--welcome-subtitle-color, #9ca3af);
+    --profile-tab-active-text: var(--welcome-text-color, #f3f4f6);
+    --profile-card-bg: var(--welcome-card-bg, #2d3748);
+    --profile-card-border: var(--welcome-border-color, #4a5568);
+    --profile-level-bar-bg: var(--welcome-progress-bg, #4a5568);
+    --profile-level-bar-fill: #facc15; /* Keep yellow or adjust */
+    --submission-easy-bg: #14532d; /* dark green */
+    --submission-medium-bg: #7c2d12; /* dark orange */
+    --submission-hard-bg: #7f1d1d; /* dark red */
+    --submission-easy-text: #4ade80; /* light green */
+    --submission-medium-text: #fb923c; /* light orange */
+    --submission-hard-text: #f87171; /* light red */
+    --badge-bg: var(--welcome-card-bg, #374151);
+    --badge-icon-color: var(--welcome-icon-color, #9ca3af);
+    --achievement-icon-bg: #3730a3; /* Example dark indigo */
+    --achievement-meta-text: #9ca3af; /* gray 400 */
+    --activity-card-bg: var(--welcome-card-bg, #2d3748);
+    --activity-icon-quizzes: #60a5fa; /* light blue */
+    --activity-icon-leaderboard: #fcd34d; /* light amber */
+    --activity-icon-accuracy: #34d399; /* light emerald */
+    --activity-icon-recall: #a78bfa; /* light violet */
+    --radar-grid-color: #4b5563; /* gray 600 */
+    --radar-strong-stroke: #60a5fa; /* light blue */
+    --radar-strong-fill: #93c5fd; /* lighter blue */
+    --radar-weak-stroke: #fb923c; /* light orange */
+    --radar-weak-fill: #fdba74; /* lighter orange */
+    --heatmap-empty: #161b22;
+    --heatmap-1: #0e4429;
+    --heatmap-2: #006d32;
+    --heatmap-3: #26a641;
+    --heatmap-4: #39d353;
+}
+
+/* --- Container & Header --- */
+.profileContainer {
+  background-color: var(--welcome-bg-color);
+  color: var(--welcome-text-color);
+  min-height: 100vh;
+  padding: 15px;
+  font-family: var(--global-font-family, sans-serif);
+}
+
+.profileHeader {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  width: 100%;
+}
+
+.backButton {
+  background: none;
+  border: none;
+  color: var(--welcome-text-color);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  font-size: 0.9rem;
+  padding: 5px 0;
+  margin-right: auto; /* Push title to center */
+}
+.backButton:hover {
+    opacity: 0.8;
+}
+
+/* --- User Info --- */
+.userInfoSection {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.profilePicture {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: var(--profile-card-bg); /* Placeholder bg */
+    border: 2px solid var(--profile-card-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    margin-bottom: 0.75rem;
+}
+.profilePicture img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.profilePicture svg { /* For fallback icon */
+    color: var(--welcome-subtitle-color);
+}
+
+.userName {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--welcome-text-color);
+}
+
+/* --- Tabs --- */
+.tabContainer {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 1.5rem;
+}
+
+.tabButton {
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent; /* Placeholder for active state */
+    padding: 0; /* Adjust padding */
+    margin-bottom: -1px; /* Overlap border */
+    cursor: pointer;
+    color: var(--profile-tab-text);
+    font-weight: 500;
+    font-size: 0.875rem; /* text-sm */
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: color 0.2s ease, border-color 0.2s ease;
+}
+.tabButton:hover {
+    color: var(--profile-tab-active-text);
+}
+.tabActive {
+    color: var(--profile-tab-active-text);
+    border-bottom-color: var(--profile-tab-active-border);
+    font-weight: 600;
+}
+
+/* --- Tab Content --- */
+.tabContentContainer {
+    /* Add padding or styles if needed */
+}
+.tabContent {
+    /* General styles for tab content area */
+    padding-top: 0.5rem;
+}
+
+/* --- Stats Tab Specific --- */
+.statsTab {
+    display: flex;
+    flex-direction: column;
+}
+.statsSection {
+    /* Styles for sections like Submissions, Badges, etc. */
+}
+.statsTitle {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--welcome-subtitle-color);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.levelCard {
+    background-color: var(--profile-card-bg);
+    border-radius: 8px;
+    padding: 15px;
+    border: 1px solid var(--profile-card-border);
+}
+.levelHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+.levelText {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+.levelPoints {
+    font-size: 0.8rem;
+    color: var(--welcome-subtitle-color);
+}
+.levelProgressBarContainer {
+    width: 100%;
+    height: 8px;
+    background-color: var(--profile-level-bar-bg);
+    border-radius: 4px;
+    overflow: hidden;
+}
+.levelProgressBar {
+    height: 100%;
+    background-color: var(--profile-level-bar-fill);
+    border-radius: 4px;
+    transition: width 0.5s ease;
+}
+
+
+.submissionGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+}
+.submissionCard {
+    background-color: var(--profile-card-bg);
+    border-radius: 8px;
+    padding: 15px;
+    text-align: center;
+    border: 1px solid var(--profile-card-border);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.submissionCard span:first-child { /* Difficulty Label */
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+}
+.submissionCard span:last-child { /* Count */
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+.submissionCard.easy span:first-child { color: var(--submission-easy-text); }
+.submissionCard.medium span:first-child { color: var(--submission-medium-text); }
+.submissionCard.hard span:first-child { color: var(--submission-hard-text); }
+/* Optional: Add subtle background based on difficulty */
+/* .submissionCard.easy { background-color: var(--submission-easy-bg); } */
+/* .submissionCard.medium { background-color: var(--submission-medium-bg); } */
+/* .submissionCard.hard { background-color: var(--submission-hard-bg); } */
+
+
+.badgeGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 1rem;
+}
+.badgeCard {
+    background-color: var(--badge-bg);
+    border-radius: 8px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border: 1px solid var(--profile-card-border);
+}
+.badgeIcon {
+    font-size: 2rem;
+    color: var(--badge-icon-color);
+    margin-bottom: 0.5rem;
+}
+.badgeName {
+    font-size: 0.8rem;
+    color: var(--welcome-text-color);
+    font-weight: 500;
+}
+
+.heatmapContainer {
+    /* Styles for the heatmap container */
+    /* The library might need specific overrides */
+    padding: 10px;
+    /* background-color: var(--profile-card-bg); */
+    border-radius: 8px;
+    /* border: 1px solid var(--profile-card-border); */
+    overflow-x: auto; /* Allow scrolling if needed */
+}
+ 
+.heatmapContainer :global(.react-calendar-heatmap .color-empty) { fill: var(--heatmap-empty); }
+.heatmapColorEmpty { fill: var(--heatmap-empty); }
+.heatmapColor1 { fill: var(--heatmap-1); }
+.heatmapColor2 { fill: var(--heatmap-2); }
+.heatmapColor3 { fill: var(--heatmap-3); }
+.heatmapColor4 { fill: var(--heatmap-4); }
+/* Style weekday labels and month labels */
+.heatmapContainer :global(.react-calendar-heatmap text) {
+    fill: var(--welcome-subtitle-color);
+    font-size: 9px;
+}
+
+
+.radarChartContainer {
+    /* background-color: var(--profile-card-bg); */
+    border-radius: 8px;
+    padding: 10px 0; /* Adjust padding */
+    /* border: 1px solid var(--profile-card-border); */
+    margin-bottom: 1rem; /* Space below each chart */
+}
+
+/* --- Achievements Tab Specific --- */
+.achievementList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+.achievementItem {
+    background-color: var(--profile-card-bg);
+    border-radius: 8px;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border: 1px solid var(--profile-card-border);
+}
+.achievementIcon {
+    font-size: 1.8rem; /* Adjust size */
+    flex-shrink: 0;
+    /* background-color: var(--achievement-icon-bg); */
+    /* border-radius: 50%; */
+    /* width: 40px; */
+    /* height: 40px; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.achievementDetails {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+.achievementTitle {
+    font-weight: 500;
+    font-size: 0.95rem;
+    margin-bottom: 0.25rem;
+}
+.achievementMeta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    color: var(--achievement-meta-text);
+}
+.achievementMeta span {
+    /* Add specific styles if needed */
+}
+.achievementMeta svg {
+    margin-right: -0.25rem; /* Adjust icon spacing */
+}
+
+/* --- Activity Tab Specific --- */
+.activityGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 columns */
+    gap: 1rem;
+    margin-bottom: 2rem; /* Space before potential charts */
+}
+.activityCard {
+    background-color: var(--activity-card-bg);
+    border-radius: 8px;
+    padding: 20px 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border: 1px solid var(--profile-card-border);
+}
+.activityIcon {
+    font-size: 1.75rem;
+    margin-bottom: 0.75rem;
+}
+.activityValue {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--welcome-text-color);
+    margin-bottom: 0.25rem;
+}
+.activityLabel {
+    font-size: 0.8rem;
+    color: var(--welcome-subtitle-color);
+}
+/* Specific icon colors */
+.iconQuizzes { color: var(--activity-icon-quizzes); }
+.iconLeaderboard { color: var(--activity-icon-leaderboard); }
+.iconAccuracy { color: var(--activity-icon-accuracy); }
+.iconRecall { color: var(--activity-icon-recall); }
+
+.placeholder {
+    border: 2px dashed var(--welcome-border-color);
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    color: var(--welcome-subtitle-color);
+    margin-bottom: 1rem;
+    min-height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.errorText {
+    color: var(--alert-error-text-color, #f87171);
+    font-size: 0.875rem;
+    text-align: center;
+    margin-top: 0.5rem;
+}
+
+/* Ensure heatmap tooltips are styled */
+/* If using react-tooltip library, import its CSS */
+/* Or style the default browser tooltip if using data-tip only */
+
+:global(.rt-tooltip) { /* Target tooltip globally */
+    background-color: var(--welcome-card-bg) !important;
+    color: var(--welcome-text-color) !important;
+    border: 1px solid var(--welcome-border-color) !important;
+    border-radius: 4px !important;
+    padding: 4px 8px !important;
+    font-size: 0.8rem !important;
+    z-index: 999 !important; /* Ensure tooltip is on top */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+[data-theme="dark"] :global(.rt-tooltip) {
+     box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+}

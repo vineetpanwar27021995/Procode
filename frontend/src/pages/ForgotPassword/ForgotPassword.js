@@ -12,11 +12,11 @@ const ForgotPassword = () => {
   const { showSnackbar } = useSnackbarStore(); 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (error) {
-        showSnackbar(error.message || 'Failed to send reset email', 'error');
-    }
-  }, [error, showSnackbar]);
+  // useEffect(() => {
+  //   if (error) {
+  //       showSnackbar(error.message || 'Failed to send reset email', 'error');
+  //   }
+  // }, [error, showSnackbar]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

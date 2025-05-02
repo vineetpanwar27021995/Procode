@@ -33,7 +33,7 @@ const Login = () => {
       try {
         await login(email, password);
         showSnackbar('Login successful!', 'success');
-        // navigate('/dashboard');
+        navigate('/home');
       } catch (err) {
         console.error("Login submit error:", err);
         if (!error) {

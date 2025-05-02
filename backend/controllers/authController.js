@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const { admin, auth, db } = require('../config/firebase');
 const { JWT, EMAIL_VERIFICATION } = require('../config/constants');
-const { sendVerificationEmail } = require('../services/email.service');
+const { sendVerificationEmail, sendPasswordResetEmail } = require('../services/email.service');
 const {AppError} = require('../utils/errorHandler');
 const axios = require('axios');
 
@@ -89,14 +89,43 @@ exports.login = async (req, res, next) => {
   }
 };
 
-
 exports.forgotPassword = async (req, res, next) => {
   try {
     const { email } = req.body;
-    const link = await auth.generatePasswordResetLink(email);
-    res.status(200).json({ message: 'Password reset link sent', link });
+    if (!email) {
+        return next(new AppError('Email is required.', 400));
+    }
+
+    console.log(`Initiating password reset for: ${email}`);
+
+    // Configure action code settings (redirect URL after reset)
+    const actionCodeSettings = {
+        url: process.env.PASSWORD_RESET_REDIRECT_URL || 'http://localhost:3000/login?passwordReset=true', // Example redirect URL
+        handleCodeInApp: false
+    };
+
+    // Generate the password reset link using the Admin SDK
+    const link = await auth.generatePasswordResetLink(email, actionCodeSettings);
+    console.log(`Password reset link generated for ${email}`);
+
+    // --- MODIFIED: Use Option B - Send the email yourself ---
+    try {
+      // Call your custom email sending function with the generated link
+      await sendPasswordResetEmail(email, link);
+      console.log(`Custom password reset email sent to ${email}`);
+      // Send success response to the client
+      res.status(200).json({ message: 'Password reset email sent successfully. Please check your inbox.' });
+    } catch (emailError) {
+      console.error(`Failed to send custom password reset email to ${email}:`, emailError);
+      // Pass the email sending error to the error handler
+      return next(new AppError(emailError.message || 'Failed to send password reset email.', 500));
+    }
+
   } catch (err) {
-    next(new AppError(err.message, 400));
+    // Catch errors from generatePasswordResetLink (e.g., user not found)
+    console.error("Error generating password reset link:", err);
+    // Provide a generic message to avoid revealing if an email exists
+    next(new AppError(err.message || 'Failed to initiate password reset.', 400));
   }
 };
 
@@ -195,8 +224,6 @@ exports.resendVerificationCode = async (req, res, next) => {
     next(new AppError(err.message, 400)); // Use your custom error handler
   }
 };
-
-
 
 exports.googleLogin = async (req, res, next) => {
   try {

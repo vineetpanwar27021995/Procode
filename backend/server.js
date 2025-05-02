@@ -17,7 +17,6 @@ app.use(cors({
   credentials: true
 }));
 
-// Rate limiting
 const limiter = rateLimit({
   windowMs: RATE_LIMIT.WINDOW_MS,
   max: RATE_LIMIT.MAX,
@@ -25,12 +24,12 @@ const limiter = rateLimit({
 });
 app.use('/api', limiter);
 
-// Routes
 app.use('/api/auth', require('./routes/auth.routes'));
 app.use('/api/db', require('./routes/firestore.routes'));
 app.use('/api/analyze', require('./routes/analyzeIntution.routes'));
+app.use('/api/problems', require('./routes/problems.routes'));
+app.use('/api/user', require('./routes/user.routes'));
 
-// Health check
 app.get('/', (req, res) => {
   res.send('🚀 Hello from ProCode on GCP!');
 });
@@ -43,7 +42,6 @@ app.get('/api/test', (req, res) => {
   });
 });
 
-// Error handling
 app.use(handleErrors);
 
 const PORT = process.env.PORT || 8080;

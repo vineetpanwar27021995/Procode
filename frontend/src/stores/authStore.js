@@ -116,12 +116,13 @@ export const useAuthStore = create((set) => ({
         });
         try {
             const user = await authService.getCurrentUser();
-            set({
-                user,
-                isAuthenticated: true,
-                loading: false
-            });
-            return user;
+                set({
+                    user,
+                    isAuthenticated: user? true:false,
+                    loading: false
+                });
+                return user;
+            
         } catch (error) {
             set({
                 user: null,

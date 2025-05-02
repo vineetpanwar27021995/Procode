@@ -1,0 +1,11 @@
+.snackbar{
+    color: var(--welcome-text-color);
+}
+
+.snackbar span{
+    color: var(--welcome-text-color);
+}
+
+.snackbar svg{
+    color: var(--welcome-text-color);
+}

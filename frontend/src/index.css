@@ -1,0 +1,134 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Global CSS (e.g., index.css or themes.css) */
+
+/* Define CSS Variables - Default (Light Theme) */
+:root {
+    --welcome-bg-color: #f0f0f5; /* Example light background */
+    --welcome-text-color: #333333; /* Example light text */
+    --welcome-title-color: #4a90e2;
+    --welcome-subtitle-color: #555555;
+    --welcome-icon-color: #007bff; /* Example light primary blue */
+    --welcome-button-primary-bg: #007bff;
+    --welcome-button-primary-text: #ffffff;
+    --welcome-button-primary-hover-bg: #0056b3;
+    --welcome-button-secondary-bg: transparent;
+    --welcome-button-secondary-text: #007bff;
+    --welcome-button-secondary-hover-bg: rgba(0, 123, 255, 0.1);
+  
+    /* Add other global variables for other components here */
+    --global-font-family: 'Inter', sans-serif; /* Example */
+    --global-link-color: var(--welcome-icon-color); /* Re-use variable */
+
+  /* Light Theme Topic Colors */
+  --topic-blue-bg: #e0f2fe;       /* light sky 100 */
+  --topic-blue-icon-bg: #bae6fd; /* light sky 200 */
+  --topic-blue-icon: #0ea5e9;    /* sky 500 */
+  --topic-pink-bg: #fce7f3;       /* pink 100 */
+  --topic-pink-icon-bg: #fbcfe8; /* pink 200 */
+  --topic-pink-icon: #ec4899;    /* pink 500 */
+  --topic-orange-bg: #fff7ed;     /* orange 100 */
+  --topic-orange-icon-bg: #fed7aa;/* orange 200 */
+  --topic-orange-icon: #f97316;  /* orange 500 */
+  --topic-green-bg: #dcfce7;      /* green 100 */
+  --topic-green-icon-bg: #bbf7d0;/* green 200 */
+  --topic-green-icon: #22c55e;   /* green 500 */
+  --topic-purple-bg: #f3e8ff;     /* purple 100 */
+  --topic-purple-icon-bg: #e9d5ff;/* purple 200 */
+  --topic-purple-icon: #a855f7;  /* purple 500 */
+  --topic-yellow-bg: #fef9c3;     /* yellow 100 */
+  --topic-yellow-icon-bg: #fef08a;/* yellow 200 */
+  --topic-yellow-icon: #eab308;  /* yellow 500 */
+
+  /* Action Button Colors */
+  --action-primary-bg: var(--welcome-button-primary-bg);
+  --action-primary-text: var(--welcome-button-primary-text);
+  --action-primary-hover-bg: var(--welcome-button-primary-hover-bg);
+  --action-secondary-bg: var(--welcome-card-bg, #f3f4f6); /* Use card bg or light gray */
+  --action-secondary-text: var(--welcome-text-color);
+  --action-secondary-hover-bg: var(--welcome-card-bg-hover, #e5e7eb);
+  --dark-yellow: #fac31d;
+  --dark-green: #28c244;
+  --dark-red: #f8615c;
+  }
+  
+  /* Define CSS Variables - Dark Theme Override */
+  /* Apply this class or attribute (e.g., <body data-theme="dark">) */
+  [data-theme="dark"] {
+    --welcome-bg-color: #1a1a2e; /* Original dark background */
+    --welcome-text-color: #e0e0e0; /* Original light text */
+    --welcome-title-color: #4a90e2;
+    --welcome-subtitle-color: #c0c0c0;
+    --welcome-icon-color: #4a90e2; /* Original dark primary blue */
+    --welcome-button-primary-bg: #4a90e2;
+    --welcome-button-primary-text: #ffffff;
+    --welcome-button-primary-hover-bg: #3a7bc8;
+    --welcome-button-secondary-bg: transparent;
+    --welcome-button-secondary-text: #4a90e2;
+    --welcome-button-secondary-hover-bg: rgba(74, 144, 226, 0.1);
+  
+    /* Override other global variables for dark theme */
+     --global-link-color: var(--welcome-icon-color);
+     /* Dark Theme Topic Colors */
+     --topic-blue-bg: #1e3a8a;       /* blue 900 */
+     --topic-blue-icon-bg: #1d4ed8; /* blue 700 */
+     --topic-blue-icon: #93c5fd;    /* blue 300 */
+     --topic-pink-bg: #831843;       /* pink 900 */
+     --topic-pink-icon-bg: #be185d; /* pink 700 */
+     --topic-pink-icon: #f9a8d4;    /* pink 300 */
+     --topic-orange-bg: #7c2d12;     /* orange 900 */
+     --topic-orange-icon-bg: #c2410c;/* orange 700 */
+     --topic-orange-icon: #fdba74;  /* orange 300 */
+     --topic-green-bg: #14532d;      /* green 900 */
+     --topic-green-icon-bg: #16a34a;/* green 700 */
+     --topic-green-icon: #86efac;   /* green 300 */
+     --topic-purple-bg: #581c87;     /* purple 900 */
+     --topic-purple-icon-bg: #7e22ce;/* purple 700 */
+     --topic-purple-icon: #d8b4fe;  /* purple 300 */
+     --topic-yellow-bg: #713f12;     /* yellow 900 */
+     --topic-yellow-icon-bg: #a16207;/* yellow 700 */
+     --topic-yellow-icon: #fde047;  /* yellow 300 */
+   
+      /* Dark Action Button Colors */
+     --action-primary-bg: var(--welcome-button-primary-bg);
+     --action-primary-text: var(--welcome-button-primary-text);
+     --action-primary-hover-bg: var(--welcome-button-primary-hover-bg);
+     --action-secondary-bg: var(--welcome-card-bg, #374151); /* Use dark card bg or gray */
+     --action-secondary-text: var(--welcome-text-color);
+     --action-secondary-hover-bg: var(--welcome-card-bg-hover, #4b5563);
+  }
+  
+  /* Optional: Apply base text color and background to the body */
+  body {
+    background-color: var(--welcome-bg-color);
+    color: var(--welcome-text-color);
+    font-family: var(--global-font-family);
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  .easy{
+    color:var(--dark-green) !important;
+  }
+
+  .medium{
+    color:var(--dark-yellow) !important;
+  }
+
+  .hard{
+    color: var(--dark-red) !important;
+  }
+
+  .easy-border{
+    border: 1px solid var(--dark-green) !important;
+  } 
+
+  .medium-border{
+    border: 1px solid var(--dark-yellow) !important;
+  } 
+
+  .hard-border{
+    border: 1px solid var(--dark-red) !important;
+  }
+

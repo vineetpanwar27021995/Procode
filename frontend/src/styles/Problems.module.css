@@ -1,0 +1,230 @@
+
+.problemsContainer {
+    background-color: var(--welcome-bg-color);
+    color: var(--welcome-text-color);
+    min-height: 100vh;
+    padding: 2rem 1rem; /* Adjusted padding */
+    font-family: var(--global-font-family, sans-serif);
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    position: relative;
+    width: 100%;
+  }
+  
+  .backButton {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 10; 
+  }
+  
+  .backButton button {
+    color: var(--welcome-text-color) !important;
+    padding: 0 !important;
+    text-decoration: none !important;
+    font-size: 0.875rem;
+  }
+  
+  .backButton span {
+      margin-left: 4px;
+  }
+  .backButton:hover {
+      opacity: 0.8;
+  }
+  
+  .screenTitle {
+    font-size: 1.5rem; /* Slightly larger */
+    font-weight: 600; /* semibold */
+    margin: 0 auto; /* Center title between buttons */
+    flex-grow: 1; /* Allow title to take space */
+    text-align: center;
+    padding-left: 40px; /* Approx space for back button */
+    padding-right: 40px; /* Approx space for play button */
+  }
+  
+  .playButton {
+    background-color: var(--action-primary-bg); /* Use primary action color */
+    color: var(--action-primary-text);
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    flex-shrink: 0; /* Prevent shrinking */
+  }
+  .playButton:hover {
+      background-color: var(--action-primary-hover-bg);
+  }
+  
+  .filterSection {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto; /* Allow horizontal scrolling */
+    padding-bottom: 10px; /* Space for scrollbar if visible */
+    margin-bottom: 0.5rem;
+    /* Hide scrollbar visually */
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+  .filterSection::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
+  
+  .filterButton {
+    background-color: var(--welcome-card-bg, #374151); /* Use card bg for dark */
+    color: var(--welcome-text-color);
+    border: 1px solid var(--welcome-border-color, #4a5568);
+    border-radius: 15px; /* Pill shape */
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    white-space: nowrap; /* Prevent wrapping */
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  }
+  .filterButton:hover {
+    background-color: var(--welcome-card-bg-hover, #4b5563);
+    border-color: var(--welcome-border-color-hover, #555);
+  }
+  [data-theme="light"] .filterButton {
+      background-color: var(--welcome-card-bg-light, #e5e7eb);
+      color: var(--welcome-text-color);
+      border-color: var(--welcome-border-color-light, #d1d5db);
+  }
+  [data-theme="light"] .filterButton:hover {
+      background-color: var(--welcome-card-bg-hover-light, #d1d5db);
+  }
+  
+  .actionSection {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  
+  .actionButton { /* Base styles for action buttons */
+      border: none;
+      border-radius: 8px;
+      padding: 10px 15px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: background-color 0.2s ease;
+      flex-grow: 1; /* Make buttons share space */
+  }
+
+  .filterButtonActive {
+    background-color: var(--filter-active-bg) !important; /* Use !important if needed to override other styles */
+    color: var(--filter-active-text) !important;
+    border-color: var(--filter-active-border) !important;
+    font-weight: 600; /* Make active button text bolder */
+}
+  
+  .actionButtonPrimary {
+    composes: actionButton; /* Inherit base styles */
+    background-color: var(--action-primary-bg);
+    color: var(--action-primary-text);
+  }
+  .actionButtonPrimary:hover {
+      background-color: var(--action-primary-hover-bg);
+  }
+  
+  .actionButtonSecondary {
+    composes: actionButton; /* Inherit base styles */
+    background-color: var(--action-secondary-bg);
+    color: var(--action-secondary-text);
+    border: 1px solid var(--welcome-border-color, #4a5568);
+  }
+  .actionButtonSecondary:hover {
+      background-color: var(--action-secondary-hover-bg);
+  }
+  [data-theme="light"] .actionButtonSecondary {
+      border-color: var(--welcome-border-color-light, #d1d5db);
+  }
+  
+  
+  .topicsSection {
+    margin-bottom: 1rem; /* Adjust spacing */
+  }
+  
+  .sectionTitle {
+    font-size: 1.125rem; /* text-lg */
+    font-weight: 600; /* semibold */
+    color: var(--welcome-text-color);
+    margin-bottom: 1rem;
+  }
+  
+  .topicsGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Always 2 columns */
+    gap: 1rem;
+  }
+  
+  .topicCard {
+    border: none; /* Remove default button border */
+    padding: 15px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Align content to start */
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    min-height: 100px; /* Ensure cards have some height */
+    text-align: left;
+  }
+  .topicCard:hover {
+      transform: translateY(-2px); /* Slight lift on hover */
+  }
+  
+  /* Specific color classes using CSS variables */
+  .topicColorBlue { background-color: var(--topic-blue-bg); }
+  .topicColorPink { background-color: var(--topic-pink-bg); }
+  .topicColorOrange { background-color: var(--topic-orange-bg); }
+  .topicColorGreen { background-color: var(--topic-green-bg); }
+  .topicColorPurple { background-color: var(--topic-purple-bg); }
+  .topicColorYellow { background-color: var(--topic-yellow-bg); }
+  
+  .topicColorBlue .topicIconWrapper { background-color: var(--topic-blue-icon-bg); }
+  .topicColorPink .topicIconWrapper { background-color: var(--topic-pink-icon-bg); }
+  .topicColorOrange .topicIconWrapper { background-color: var(--topic-orange-icon-bg); }
+  .topicColorGreen .topicIconWrapper { background-color: var(--topic-green-icon-bg); }
+  .topicColorPurple .topicIconWrapper { background-color: var(--topic-purple-icon-bg); }
+  .topicColorYellow .topicIconWrapper { background-color: var(--topic-yellow-icon-bg); }
+  
+  .topicColorBlue .topicIcon { color: var(--topic-blue-icon); }
+  .topicColorPink .topicIcon { color: var(--topic-pink-icon); }
+  .topicColorOrange .topicIcon { color: var(--topic-orange-icon); }
+  .topicColorGreen .topicIcon { color: var(--topic-green-icon); }
+  .topicColorPurple .topicIcon { color: var(--topic-purple-icon); }
+  .topicColorYellow .topicIcon { color: var(--topic-yellow-icon); }
+  
+  .topicIconWrapper {
+      padding: 8px;
+      border-radius: 8px;
+      margin-bottom: 0.75rem; /* Space below icon */
+      display: inline-flex; /* Fit content */
+  }
+  
+  .topicIcon {
+    font-size: 1.5rem; /* Adjust icon size */
+  }
+  
+  .topicName {
+    font-size: 1rem;
+    font-weight: 500; /* Medium */
+    color: var(--welcome-text-color); /* Use standard text color */
+  }
+  
+  

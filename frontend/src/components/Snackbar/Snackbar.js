@@ -3,6 +3,7 @@ import { useSnackbarStore } from '../../stores/snackbarStore';
 import { AiOutlineCheckCircle, AiOutlineInfoCircle, AiOutlineWarning, AiOutlineCloseCircle } from 'react-icons/ai';
 import { MdErrorOutline } from 'react-icons/md';
 import { IoClose } from 'react-icons/io5';
+import styles from '../../styles/Snackbar.module.css'
 
 const Snackbar = () => {
   const { message, type, isVisible, hideSnackbar } = useSnackbarStore();
@@ -33,9 +34,9 @@ const Snackbar = () => {
   };
 
   return (
-    <div className="fixed top-5 right-5 z-50 w-full max-w-xs">
-      <div className={`alert ${typeClasses[type] || 'alert-info'} shadow-lg transition-all duration-300`}>
-        <div className="flex-1 flex items-center gap-2">
+    <div className="fixed top-5 right-5 z-50 max-w-xs">
+      <div className={`alert ${typeClasses[type] || 'alert-info'} shadow-lg transition-all duration-300 d-flex ${styles.snackbar}  gap-2`}>
+        <div className={"flex-1 flex items-center gap-2"}>
           {typeIcons[type] || <AiOutlineInfoCircle size={24} />}
           <span>{message}</span>
         </div>

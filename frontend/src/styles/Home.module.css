@@ -1,0 +1,367 @@
+/* pages/Home/HomeScreen.module.css */
+/* Uses global CSS variables like --welcome-bg-color, --welcome-text-color etc. */
+/* Assumes global.css defines these variables for :root and [data-theme="dark"] */
+
+/* --- Add a green text color variable if not already defined globally --- */
+:root {
+  /* ... other global variables ... */
+  --text-color-green: #16a34a; /* Example green */
+  --text-color-green-dark: #4ade80; /* Example lighter green for dark theme */
+  --category-card-bg: var(--welcome-card-bg-light, #ffffff);
+  --category-card-border: var(--welcome-border-color-light, #e2e8f0);
+  --category-card-hover-bg: #f9fafb;
+  --welcome-link-color: var(--welcome-button-secondary-text, #007bff); /* Example link color */
+}
+[data-theme="dark"] {
+   /* ... other global variables ... */
+   --text-color-green: var(--text-color-green-dark);
+   --category-card-bg: var(--welcome-card-bg, #2d3748);
+   --category-card-border: var(--welcome-border-color, #4a5568);
+   --category-card-hover-bg: #374151;
+   --welcome-link-color: var(--welcome-button-secondary-text, #4a90e2); /* Example dark link color */
+}
+/* --- End Green Variable --- */
+
+
+.homeContainer {
+background-color: var(--welcome-bg-color);
+color: var(--welcome-text-color);
+min-height: 100vh;
+padding: 20px 15px; /* Adjusted padding */
+font-family: var(--global-font-family, sans-serif);
+display: flex;
+flex-direction: column;
+}
+
+.header {
+display: flex;
+align-items: center;
+margin-bottom: 1rem;
+width: 100%;
+}
+
+.backButton {
+background: none;
+border: none;
+color: var(--welcome-text-color);
+cursor: pointer;
+display: flex;
+align-items: center;
+font-size: 0.9rem;
+padding: 5px 0; /* Adjust padding */
+margin-right: auto; /* Push other elements right */
+}
+.backButton span {
+  margin-left: 4px;
+}
+.backButton:hover {
+  opacity: 0.8;
+}
+
+.greetingSection {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: 0.5rem;
+}
+
+.greetingTitle {
+font-size: 1.8rem; /* ~text-3xl */
+font-weight: 500; /* bold */
+color: var(--welcome-title-color); /* Use title color variable */
+margin: 0;
+}
+
+.greetingSubtitle {
+font-size: 2.25rem; /* ~text-base */
+color: var(--welcome-subtitle-color);
+margin-top: 4px;
+max-width: 70%;
+line-height: 1;
+margin-bottom: 0.75rem;
+margin-top: 1rem;
+font-weight: 700; /* bold */
+
+}
+
+.profileIcon {
+/* Use theme variables for background/color */
+background-color: var(--welcome-icon-container-bg, #4a5568); /* Example dark grey */
+color: var(--welcome-icon-container-text, #e2e8f0); /* Example light grey */
+border-radius: 50%;
+width: 40px;
+height: 40px;
+display: flex;
+align-items: center;
+justify-content: center;
+border: 1px solid var(--welcome-border-color, #444); /* Example border */
+}
+/* Light theme override example */
+[data-theme="light"] .profileIcon {
+  background-color: var(--welcome-icon-container-bg-light, #e2e8f0);
+  color: var(--welcome-icon-container-text-light, #4a5568);
+  border-color: var(--welcome-border-color-light, #ccc);
+}
+
+
+.pathsInfo {
+font-size: 0.875rem; /* text-sm */
+color: var(--welcome-subtitle-color);
+margin-bottom: 2rem;
+}
+
+.section {
+margin-bottom: 2rem;
+}
+
+/* Section Header for Explore Categories and others */
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem; /* Add margin below header */
+}
+
+.sectionTitle {
+font-size: 1.125rem; /* text-lg */
+font-weight: 600; /* semibold */
+color: var(--welcome-text-color);
+margin-bottom: 1rem;
+}
+
+/* View All Button */
+.viewAllButton {
+  background: none;
+  border: none;
+  color: var(--welcome-link-color); /* Use link color variable */
+  font-size: 0.875rem; /* text-sm */
+  font-weight: 500;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 5px;
+}
+.viewAllButton:hover {
+  text-decoration: underline;
+  opacity: 0.8;
+}
+
+.taskList {
+list-style: none;
+padding: 0;
+margin: 0;
+display: flex;
+flex-direction: column;
+gap: 0.8rem;
+}
+
+.taskItem {
+/* Use theme variables for card background/border */
+/* background-color: var(--welcome-card-bg, #2d3748); /* Example dark card */
+/* border: 1px solid var(--welcome-border-color, #4a5568); Example dark border */ 
+padding: 12px 0px;
+border-radius: 8px; /* rounded-lg */
+display: flex;
+align-items: center;
+gap: 1rem;
+transition: background-color 0.2s ease;
+}
+/* Light theme override example */
+[data-theme="light"] .taskItem {
+  /* background-color: var(--welcome-card-bg-light, #ffffff);
+  border-color: var(--welcome-border-color-light, #e2e8f0); */
+}
+
+.taskIcon {
+color: var(--welcome-icon-color); /* Use primary icon color */
+font-size: 1.5rem; /* Adjust icon size */
+flex-shrink: 0;
+}
+
+.taskDetails {
+display: flex;
+flex-direction: column;
+flex-grow: 1;
+overflow: hidden; /* Prevent text overflow */
+}
+
+.taskTitle {
+font-size: 0.95rem; /* Slightly smaller than base */
+font-weight: 600; /* medium */
+color: var(--welcome-text-color);
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
+}
+
+.taskDetail {
+font-size: 0.8rem; /* Smaller */
+color: var(--welcome-subtitle-color);
+margin-top: 2px;
+}
+/* Difficulty colors - add more as needed */
+.easy { color: #22c55e; } /* Green */
+.medium { color: #f97316; } /* Orange */
+.hard { color: #ef4444; } /* Red */
+[data-theme="dark"] .easy { color: #4ade80; }
+[data-theme="dark"] .medium { color: #fb923c; }
+[data-theme="dark"] .hard { color: #f87171; }
+
+
+/* Category Grid for Explore Section */
+.categoryGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* Responsive grid */
+  gap: 0.75rem; /* Slightly smaller gap */
+}
+
+.categoryCard {
+  background-color: var(--category-card-bg);
+  border: 1px solid var(--category-card-border);
+  padding: 12px;
+  border-radius: 8px;
+  text-align: center;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  cursor: pointer;
+  min-height: 60px; /* Give cards some minimum height */
+  display: flex; /* Center content vertically */
+  align-items: center;
+  justify-content: center;
+}
+.categoryCard:hover {
+  background-color: var(--category-card-hover-bg);
+  transform: translateY(-2px);
+}
+
+.categoryName {
+  font-size: 0.875rem; /* text-sm */
+  font-weight: 500;
+  color: var(--welcome-text-color);
+  display: block; /* Ensure it takes full width for centering */
+}
+
+/* Styles for Carousel */
+.recapCarouselContainer {
+  background-color: var(--welcome-carousel-bg, transparent); /* Make carousel bg transparent */
+  padding: 4px 0; /* Adjust padding */
+  /* Add styles if needed */
+}
+[data-theme="light"] .recapCarouselContainer {
+   background-color: var(--welcome-carousel-bg-light, transparent);
+}
+
+.recapCarouselItem {
+  flex: 0 0 auto; /* Prevent items from shrinking/growing */
+}
+
+
+.recapCard {
+background-color: var(--welcome-card-bg, #2d3748); /* Example dark card */
+border: 1px solid var(--welcome-border-color, #4a5568); /* Example dark border */
+padding: 15px;
+border-radius: 10px; /* Slightly more rounded */
+display: flex;
+flex-direction: column;
+width: 180px; /* Example fixed width for items in carousel */
+height: 100%; /* Make card fill carousel item height */
+min-height: 80px; /* Ensure minimum height */
+}
+/* Light theme override example */
+[data-theme="light"] .recapCard {
+  background-color: var(--welcome-card-bg-light, #ffffff);
+  border-color: var(--welcome-border-color-light, #e2e8f0);
+}
+
+.recapCardHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  /* margin-bottom: 1rem; Removed margin */
+}
+
+.recapIcon {
+color: var(--welcome-icon-color);
+font-size: 1.3rem;
+flex-shrink: 0;
+}
+
+.recapDetails {
+display: flex;
+flex-direction: column;
+overflow: hidden; /* Prevent text overflow */
+flex-grow: 1; /* Allow details to take space */
+}
+
+.recapTitle {
+font-size: 0.9rem;
+font-weight: 500;
+color: var(--welcome-text-color);
+white-space: nowrap; /* Prevent title wrapping */
+overflow: hidden;
+text-overflow: ellipsis;
+margin-bottom: 0.25rem; /* Space below title */
+}
+
+.recapDetail {
+font-size: 0.75rem;
+color: var(--welcome-subtitle-color);
+/* margin-top: 2px; Removed */
+}
+
+.progressBarContainer {
+width: 100%;
+background-color: var(--welcome-progress-bg, #4a5568); /* Darker background */
+border-radius: 5px;
+height: 6px;
+overflow: hidden;
+margin-top: auto; /* Push progress bar and text to bottom */
+margin-bottom: 0.5rem;
+}
+/* Light theme override example */
+[data-theme="light"] .progressBarContainer {
+  background-color: var(--welcome-progress-bg-light, #e2e8f0);
+}
+
+.progressBar {
+height: 100%;
+background-color: var(--welcome-progress-fill, var(--welcome-button-primary-bg)); /* Use primary button color */
+border-radius: 5px;
+transition: width 0.5s ease-in-out;
+}
+
+/* Footer for recap card to hold progress and timestamp */
+.recapFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.5rem; /* Space above footer */
+}
+
+.progressText {
+font-size: 0.7rem;
+color: var(--welcome-subtitle-color);
+/* text-align: center; Removed */
+}
+
+/* Style for the relative timestamp */
+.recapTimestamp {
+  font-size: 0.7rem;
+  color: var(--text-color-green); /* Use green color variable */
+  font-style: italic; /* Optional: make it italic */
+  white-space: nowrap; /* Prevent wrapping */
+}
+
+/* Style for error text */
+.errorText {
+  color: var(--alert-error-text-color, #f87171); /* Use error color variable or default */
+  font-size: 0.875rem;
+}
+
+.noRecap {
+  font-size: 0.875rem;
+  color: var(--welcome-subtitle-color);
+  text-align: center;
+  width: 100%;
+  padding: 20px;
+}
