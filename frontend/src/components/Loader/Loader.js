@@ -8,7 +8,7 @@ const Loader = ({ message = "Loading..." }) => {
       <div className={styles.loaderContent}>
         <RiCodeSSlashFill className={styles.loaderIcon} />
         {/* Optional: Add a message below the icon */}
-        <p className={styles.loaderMessage}>{message}</p>
+        {/* <p className={styles.loaderMessage}>{message}</p> */}
       </div>
     </div>
   );
