@@ -6,6 +6,8 @@ import { createClient } from '@anam-ai/js-sdk';
 import useAnamSessionToken from '../../hooks/useAnamSessionToken';
 import debounce from 'lodash/debounce';
 import { useAnamStore } from '../../stores/anamStore';
+import { getDifficultyClass, getDifficultyBorderClass } from "../../utils/UIHelper";
+
 const PERSONA_ID = process.env.REACT_APP_ANAM_PERSONA_ID;
 
 const AITile = ({ fullScreen = false, setIntuitionApproved, intuitionApproved, problemMetadata }) => {
@@ -145,47 +147,41 @@ const AITile = ({ fullScreen = false, setIntuitionApproved, intuitionApproved, p
     }
   },[intuitionApproved])
 
-  const handleDrag = (e) => {
-    const tile = tileRef.current;
-    const x = e.clientX || (e.touches && e.touches[0]?.clientX);
-    const y = e.clientY || (e.touches && e.touches[0]?.clientY);
-    tile.style.left = `${x - tile.offsetWidth / 2}px`;
-    tile.style.top = `${y - tile.offsetHeight / 2}px`;
-  };
-
   if (fullScreen) {
     return (
-      <div className="w-full h-full flex items-center justify-center text-center text-base-content font-semibold relative rounded-md border border-[#22C55E] p-2">
+      <div className={`w-full h-full flex items-center justify-center text-center text-base-content font-semibold relative rounded-md border ${getDifficultyBorderClass(problemMetadata.difficulty)} p-2`}>
           
-          {loading ?  (
+        <>
+          {loading && (
         <div className="flex flex-col items-center justify-center space-y-4">
-          <span className="loading loading-bars loading-xl text-[#22C55E]"></span>
+          <span className={`loading loading-bars loading-xl ${getDifficultyClass(problemMetadata.difficulty)} `}></span>
         </div>
-          ) : (
-            <>
-              <video id="video-id" width="100%" autoPlay playsInline></video>
-              <audio id="audio-id" autoPlay></audio>
-            </>
           )
           }
+          <div className={`${loading ? 'hidden' : ''}`}>
+            <video id="video-id" width="100%" autoPlay playsInline></video>
+            <audio id="audio-id" autoPlay></audio>
+          </div>
+        </>
       </div>
     );
   }
 
   return (
     <>
-    <div className="rounded-md border border-[#22C55E] p-2">
-      {loading ? (
+    <div className={`rounded-md border ${getDifficultyBorderClass(problemMetadata.difficulty)} p-2`}>
+      <>
+      {loading && (
         <div className="flex flex-col items-center justify-center space-y-4">
-          <span className="loading loading-bars loading-xl text-[#22C55E]"></span>
+          <span className={`loading loading-bars loading-xl ${getDifficultyClass(problemMetadata.difficulty)} `}></span>
         </div>
-      ) : (
-        <>
-          <video id="video-id" className="w-inherit h-inherit object-cover" autoPlay playsInline muted></video>
-          <audio id="audio-id" autoPlay></audio>
+          )
+          }
+          <div className={`${loading ? 'hidden' : ''}`}>
+            <video id="video-id" width="100%" autoPlay playsInline></video>
+            <audio id="audio-id" autoPlay></audio>
+          </div>
         </>
-      )
-    }
     </div>
     </>
 
