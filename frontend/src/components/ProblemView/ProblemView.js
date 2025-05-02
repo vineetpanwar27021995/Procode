@@ -1,10 +1,12 @@
 import React from "react";
-import bgImage from "../../assets/ProcodeBackground.png";
 import { useNavigate } from "react-router-dom";
 import useWindowSize from 'react-use/lib/useWindowSize';
-import {getDifficultyBorderClass, getDifficultyClass} from "../../utils/UIHelper";
+import {getDifficultyBorderClass, getDifficultyClass, getBgColorClass} from "../../utils/UIHelper";
+import {useThemeStore} from '../../stores/themeStore'
 
 const ProblemView = ({ problem, categoryId }) => {
+  const darkMode = useThemeStore((state) => state.darkMode);
+
 const navigate = useNavigate();
 const { width } = useWindowSize();
 const isMobile = width < 768;
@@ -16,7 +18,7 @@ const handleBack = () => {
     navigate("/"); // fallback
   }
 };
-
+console.log(`darkMode`, darkMode);
   const descriptionOnly = problem.description.split("**Example")[0];
 
   const rawExamples =
@@ -32,11 +34,7 @@ const handleBack = () => {
 
   return (
     <div
-      className="p-4 space-y-4 h-full bg-cover bg-center bg-no-repeat rounded-xl text-white"
-      style={{
-        backgroundImage: `url(${bgImage})`,
-        backgroundBlendMode: "overlay",
-      }}
+      className={`space-y-4 h-full bg-cover bg-center bg-no-repeat rounded-xl ${darkMode ? 'text-white' : 'text-black'}`}
     >
       <div className="space-y-4 h-full rounded-xl">
         <div className="flex items-center justify-between">
@@ -73,16 +71,16 @@ const handleBack = () => {
 
         </div>
 
-        <div className="p-2">
+        <div className={`p-2`}>
           <p
-            className="text-white text-base font-medium"
+            className={`${darkMode ? 'text-white' : 'text-black'} text-base font-medium`}
             dangerouslySetInnerHTML={{
               __html: descriptionOnly,
             }}
           />
 
           {examples.length > 0 && (
-            <div className="mt-4 bg-black bg-opacity-40 text-white rounded-lg p-4 text-sm font-mono space-y-4">
+            <div className={`mt-4 bg-black bg-opacity-40 text-white rounded-lg p-4 text-sm font-mono space-y-4 ${getBgColorClass(problem.difficulty)}`}>
               {examples.map((ex, i) => (
                 <div key={i}>
                   <div className={`text-gray-300 mb-1 font-semibold`}>{ex.label}</div>

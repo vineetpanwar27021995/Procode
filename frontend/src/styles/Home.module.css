@@ -208,14 +208,6 @@ font-size: 0.8rem; /* Smaller */
 color: var(--welcome-subtitle-color);
 margin-top: 2px;
 }
-/* Difficulty colors - add more as needed */
-.easy { color: #22c55e; } /* Green */
-.medium { color: #f97316; } /* Orange */
-.hard { color: #ef4444; } /* Red */
-[data-theme="dark"] .easy { color: #4ade80; }
-[data-theme="dark"] .medium { color: #fb923c; }
-[data-theme="dark"] .hard { color: #f87171; }
-
 
 /* Category Grid for Explore Section */
 .categoryGrid {

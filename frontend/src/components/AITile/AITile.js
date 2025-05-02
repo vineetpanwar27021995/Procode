@@ -7,12 +7,14 @@ import useAnamSessionToken from '../../hooks/useAnamSessionToken';
 import debounce from 'lodash/debounce';
 import { useAnamStore } from '../../stores/anamStore';
 import { getDifficultyClass, getDifficultyBorderClass } from "../../utils/UIHelper";
+import {useUserStore} from '../../stores/userStore';
 
 const PERSONA_ID = process.env.REACT_APP_ANAM_PERSONA_ID;
 
 const AITile = ({ fullScreen = false, setIntuitionApproved, intuitionApproved, problemMetadata }) => {
   const { sessionToken, refreshSessionToken } = useAnamSessionToken();
   const setConversationHistory = useAnamStore((state) => state.setConversationHistory);
+  const userProfile = useUserStore((state) => state.userProfile);
 
   const tileRef = useRef();
   const anamClientRef = useRef(null);
@@ -26,7 +28,6 @@ const AITile = ({ fullScreen = false, setIntuitionApproved, intuitionApproved, p
 
   const initAnam = async () => {
     try {
-
       console.log('Session token from AITile.js...');
       let token = sessionToken;
       if (!token) {
@@ -111,7 +112,7 @@ const AITile = ({ fullScreen = false, setIntuitionApproved, intuitionApproved, p
       setTimeout(async () => {
         anamClient.muteInputAudio();
         await anamClient.talk(
-          `Hi! I'm Daniel, your interviewer. Let's get started with the question. I’ll read it out for you, and you'll have 2 minutes to think about your approach. Feel free to share your intuition, and if it's on the right track, you can proceed to code. Best of luck! <break time='2s'/> 
+          `Hey ${userProfile?.name || ''}! I’m Daniel — let’s dive into a question together. I’ll read it out, you take a minute to think it through, and we’ll talk about your approach. If it makes sense, you can start coding. Let’s crush this! <break time='1s'/> 
           Your coding question is ${problemMetadata.short_description}`
         );
         anamClient.unmuteInputAudio();

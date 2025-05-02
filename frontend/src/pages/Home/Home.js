@@ -280,7 +280,7 @@ const Home = () => {
   return (
     <div className={styles.homeContainer}>
       {/* Greeting Section */}
-      <div className={styles.greetingSection}>
+      <div className={styles.greetingSection+' mb-4'}>
         <div>
           {userError && <h1 className={`${styles.greetingTitle} ${styles.errorText}`}>Error loading profile!</h1>}
           {!userError && <h1 className={styles.greetingTitle}>Hello, {userName}!</h1>}
@@ -289,6 +289,8 @@ const Home = () => {
               {userImage ? <img src={userImage} alt={userName} className={styles.profileImage} /> : <FiUser size={25} />}
         </div>
       </div>
+
+      <div className='divider m-0'></div>
 
       {/* Subtitles */}
       {!userError && (
@@ -305,7 +307,7 @@ const Home = () => {
       <section className={styles.section}>
         <h3 className={styles.sectionTitle}>Upcoming Task</h3>
         {computedUpcomingTasks.length > 0 ? (
-          <ul className={styles.taskList}>
+          <ul className={styles.taskList+' px-4'}>
             {computedUpcomingTasks.map((task,index) => {
               // Assign icon based on index in the shuffled list
               const IconComponent = shuffledIcons[index % shuffledIcons.length] || CodeIcon; // Fallback icon
@@ -317,7 +319,7 @@ const Home = () => {
                 <div className={styles.taskIcon}><IconComponent /></div>
                 <div className={styles.taskDetails}>
                   <span className={styles.taskTitle}>{task.name || 'Unknown Task'}</span>
-                  <span className={`${styles.taskDetail} ${styles[task.difficulty?.toLowerCase()] || ''}`}>{task.difficulty || 'Unknown'}</span>
+                  <span className={`${styles.taskDetail} ${task.difficulty?.toLowerCase() || ''} font-bold`}>{task.difficulty || 'Unknown'}</span>
                 </div>
               </li>
             )})}
@@ -336,7 +338,7 @@ const Home = () => {
             </button>
         </div>
         {nextCategories.length > 0 ? (
-            <div className={styles.categoryGrid}>
+            <div className={styles.categoryGrid+' px-4'}>
                 {nextCategories.map(categoryName => (
                     <div key={categoryName} className={styles.categoryCard} onClick={()=>handleCategory(categoryName)}>
                         <span className={styles.categoryName}>{categoryName}</span>
@@ -358,7 +360,7 @@ const Home = () => {
                 View All <MdArrowForward />
             </button>
         </div>
-        <div className={`carousel carousel-center w-full space-x-4 rounded-box ${styles.recapCarouselContainer}`}>
+        <div className={`carousel carousel-center w-full space-x-4 rounded-box px-4 ${styles.recapCarouselContainer}`}>
           {userProfile?.submissions && categories && Object.keys(categories).length > 0 && Object.keys(userProfile.submissions).length > 0 ? (
             Object.entries(userProfile.submissions).map(([key, value]) => {
                let categoryKey = null;

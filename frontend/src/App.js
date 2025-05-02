@@ -24,12 +24,15 @@ import { ErrorBoundary } from "react-error-boundary";
 import { CodingSession, QuestionList } from 'pages';
 import BottomNavBar from 'components/BottomNavBar/BottomNavBar';
 import Loader from 'components/Loader/Loader';
+import { useUserStore } from 'stores/userStore';
 
 const App = () => {
   // Get theme state
   const { darkMode } = useThemeStore();
   // Get auth state and checkAuth action
   const { checkAuth, loading: authLoading, isAuthenticated } = useAuthStore();
+  const updateProfile = useUserStore((state) => state.updateProfile);
+
   // Local loading state specifically for the initial auth check on app load
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const [showSplash, setShowSplash] = useState(true);
@@ -57,8 +60,10 @@ const App = () => {
       try {
         // Call the checkAuth action from the store.
         // This should use authService.getCurrentUser() which checks localStorage token.
-        await checkAuth();
-        console.log("App Mount: Auth check complete."); // Debug log
+        const user = await checkAuth();
+        updateProfile(user);
+
+        console.log("App Mount: Auth check complete.",user); // Debug log
       } catch (err) {
         console.error("App Mount: Error during initial auth check:", err);
         // Error state should be handled within the store's checkAuth function

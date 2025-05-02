@@ -11,7 +11,7 @@ const Snackbar = () => {
   useEffect(() => {
     if (isVisible) {
       const timer = setTimeout(() => {
-        // hideSnackbar();
+        hideSnackbar();
       }, 5000);
       return () => clearTimeout(timer);
     }

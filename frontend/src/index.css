@@ -43,9 +43,9 @@
   --action-secondary-bg: var(--welcome-card-bg, #f3f4f6); /* Use card bg or light gray */
   --action-secondary-text: var(--welcome-text-color);
   --action-secondary-hover-bg: var(--welcome-card-bg-hover, #e5e7eb);
-  --dark-yellow: #fac31d;
-  --dark-green: #28c244;
-  --dark-red: #f8615c;
+  --dark-yellow: #c45704;
+  --dark-green: #096103;
+  --dark-red: #8f1111;
   }
   
   [data-theme="dark"] {
@@ -120,6 +120,16 @@
 
   .hard-border{
     border: 1px solid var(--dark-red) !important;
+  }
+
+  .bg-easy-color {
+    background-color:var(--dark-green) !important;
+  }
+  .bg-medium-color {
+    background-color:var(--dark-yellow) !important;
+  }
+  .bg-hard-color {
+    background-color:var(--dark-red) !important;
   }
 
   /* In index.css */
