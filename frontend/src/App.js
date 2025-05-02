@@ -23,6 +23,7 @@ import useAnamSessionToken from './hooks/useAnamSessionToken';
 import { ErrorBoundary } from "react-error-boundary";
 import { CodingSession, QuestionList } from 'pages';
 import BottomNavBar from 'components/BottomNavBar/BottomNavBar';
+import Loader from 'components/Loader/Loader';
 
 const App = () => {
   // Get theme state
@@ -69,34 +70,32 @@ const App = () => {
     verifyAuth();
   }, [checkAuth]); 
 
-  useEffect(() => {
-    // Fade out before removing splash
-    const timer1 = setTimeout(() => setFadeOut(true), 1000); // start fade after 1s
-    const timer2 = setTimeout(() => setShowSplash(false), 2000); // fully hide after fade
+  // useEffect(() => {
+  //   // Fade out before removing splash
+  //   const timer1 = setTimeout(() => setFadeOut(true), 1000); // start fade after 1s
+  //   const timer2 = setTimeout(() => setShowSplash(false), 1500); // fully hide after fade
 
-    return () => {
-      clearTimeout(timer1);
-      clearTimeout(timer2);
-    };
-  }, []);
+  //   return () => {
+  //     clearTimeout(timer1);
+  //     clearTimeout(timer2);
+  //   };
+  // }, []);
 
-  if (showSplash) {
-    return (
-      <div
-        className={`transition-opacity duration-500 ease-in-out ${
-          fadeOut ? 'opacity-0' : 'opacity-100'
-        }`}
-      >
-        <SplashScreen />
-      </div>
-    );
-  }
+  // if (showSplash) {
+  //   return (
+  //     <div
+  //       className={`transition-opacity duration-500 ease-in-out ${
+  //         fadeOut ? 'opacity-0' : 'opacity-100'
+  //       }`}
+  //     >
+  //       <SplashScreen />
+  //     </div>
+  //   );
+  // }
 
   if (isCheckingAuth) {
     return (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', backgroundColor: '#1a1a2e', color: 'white' }}>
-            Loading Application...
-        </div>
+        <Loader message="Initializing..." />
     );
 }
 

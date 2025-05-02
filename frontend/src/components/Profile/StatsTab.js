@@ -228,30 +228,38 @@ const StatsTab = () => {
             <div className={styles.activityGrid}>
                 <div className={styles.activityCard}>
                     <FiCheckSquare className={`${styles.activityIcon} ${styles.iconQuizzes}`} />
+                    <div className='flex flex-col ml-2'>
                     <span className={styles.activityValue}>{calculatedStats.quizzes}</span>
                     <span className={styles.activityLabel}>Submissions</span> {/* Changed label */}
+                    </div>
                 </div>
                 <div className={styles.activityCard}>
                     <FiAward className={`${styles.activityIcon} ${styles.iconLeaderboard}`} />
+                    <div className='flex flex-col ml-2'>
                     <span className={styles.activityValue}>#{calculatedStats.leaderboardRank}</span>
                     <span className={styles.activityLabel}>Leaderboard</span>
+                    </div>
                 </div>
                 <div className={styles.activityCard}>
                     <FiPercent className={`${styles.activityIcon} ${styles.iconAccuracy}`} />
+                    <div className='flex flex-col ml-2'>
                     <span className={styles.activityValue}>{calculatedStats.accuracy}%</span>
                     <span className={styles.activityLabel}>Accuracy</span>
+                    </div>
                 </div>
                 <div className={styles.activityCard}>
                     <FiBarChart2 className={`${styles.activityIcon} ${styles.iconRecall}`} />
+                    <div className='flex flex-col ml-2'>
                     <span className={styles.activityValue}>{calculatedStats.recall}%</span>
                     <span className={styles.activityLabel}>Recall</span>
+                    </div>
                 </div>
             </div>
             {/* --- End Activity Grid Section --- */}
 
             {/* Heatmap Section */}
             <div className={styles.statsSection}>
-                <h4 className={styles.statsTitle}>CONTRIBUTION HEATMAP</h4>
+                <h4 className={styles.statsTitle}>SUBMISSIONS HEATMAP</h4>
                 <div className={styles.heatmapContainer}>
                     <CalendarHeatmap
                         startDate={moment().subtract(1, 'year').toDate()}

@@ -1,0 +1,76 @@
+/* components/FullScreenLoader/FullScreenLoader.module.css */
+
+/* Global theme variables */
+:root {
+  --loader-gradient-start: #3b82f6; /* blue-500 */
+  --loader-gradient-end: #a855f7;   /* purple-500 */
+  --loader-overlay-bg: rgba(26, 26, 46, 0.8); /* Dark overlay background */
+  --text-color: #ffffff;
+}
+
+[data-theme="light"] {
+  --loader-gradient-start: #2563eb; /* blue-600 */
+  --loader-gradient-end: #9333ea;   /* purple-600 */
+  --loader-overlay-bg: rgba(240, 240, 245, 0.8); /* Light overlay background */
+  --text-color: #1f2937; /* gray-800 */
+}
+
+.loaderOverlay {
+  position: fixed; /* Cover the entire screen */
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--loader-overlay-bg); /* Semi-transparent overlay */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999; /* Ensure it's on top */
+  backdrop-filter: blur(4px); /* Optional: blur background */
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.loaderContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.loaderIcon {
+  font-size: 15rem; /* Adjust size as needed */
+  margin-bottom: 1rem;
+  animation: pulseGradient 2s ease-in-out infinite;
+
+  /* Gradient effect */
+  background: linear-gradient(45deg, var(--loader-gradient-start), var(--loader-gradient-end));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  stroke: var(--welcome-icon-color);
+  stroke-width: 0.2;
+
+  /* Optional subtle shadow */
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
+}
+
+@keyframes pulseGradient {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.loaderMessage {
+  font-size: 1.25rem;
+  color: var(--text-color);
+  text-align: center;
+}

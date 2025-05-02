@@ -80,14 +80,14 @@
 /* Style for the always active middle button */
 .alwaysActiveRandom {
   background-color: var(--nav-active-bg); /* Always use active background */
-  color: var(--nav-icon-active-color); /* Always use active icon color */
+  color: white; /* Always use active icon color */
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Keep slight shadow */
 }
 /* Hover state for the middle button */
 .alwaysActiveRandom:hover {
     /* Override default hover, maybe slightly darken bg */
     background-color: color-mix(in srgb, var(--nav-active-bg) 90%, black);
-    color: var(--nav-icon-active-color); /* Keep icon color */
+    color: white; /* Keep icon color */
 }
 
 

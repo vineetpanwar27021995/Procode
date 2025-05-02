@@ -17,11 +17,11 @@ const ProtectedRoute = () => {
   // Optional: Show loading indicator while initial auth check is in progress
   // This prevents redirecting before the check completes on app load.
   // Note: This assumes 'loading' is true during the initial checkAuth call.
-  if (loading) {
-     // You can return a loading spinner component here
-     return <div>Loading...</div>;
-  }
-  console.log('protected',user,isAuthenticated)
+  // if (loading) {
+  //    // You can return a loading spinner component here
+  //    return <div>Loading...</div>;
+  // }
+  // console.log('protected',user,isAuthenticated)
 
   // If finished loading and not authenticated, redirect to login
   if (!isAuthenticated) {

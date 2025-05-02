@@ -1,17 +1,19 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import styles from '../../styles/Home.module.css'; // Adjust path if needed
-import { MdOutlineSort as SortIcon, MdOutlineCode as CodeIcon, MdOutlineHtml as HtmlIcon, MdOutlineTaskAlt as TaskIcon, MdArrowForward } from 'react-icons/md'; // Added MdArrowForward
+import { MdOutlineSort as SortIcon, MdOutlineCode as CodeIcon, MdOutlineHtml as HtmlIcon, MdOutlineTaskAlt as TaskIcon, MdArrowForward } from 'react-icons/md';
 import { FiUser } from 'react-icons/fi';
 import { useUserStore } from '../../stores/userStore'; // Adjust path as needed
 import { useProblemStore } from '../../stores/problemStore'; // Adjust path as needed
 import moment from 'moment';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import Loader from '../../components/Loader/Loader'; // ** Import Loader **
+// Import necessary icons if using them directly in this file
 import { FaCode, FaBug, FaBrain } from "react-icons/fa";
 import { SiLeetcode, SiCodemirror } from "react-icons/si";
 import { VscSymbolMethod } from "react-icons/vsc";
-import BottomNavBar from 'components/BottomNavBar/BottomNavBar';
+// Removed BottomNavBar import as it's likely rendered in App.js/Layout
 
-// Helper function to shuffle an array (Fisher-Yates)
+// --- Helper function to shuffle an array (Fisher-Yates) ---
 function shuffleArray(array) {
   let currentIndex = array.length, randomIndex;
   while (currentIndex !== 0) {
@@ -23,10 +25,10 @@ function shuffleArray(array) {
   return array;
 }
 
-const iconPool = [FaCode, FaBug, FaBrain, SiLeetcode, SiCodemirror, VscSymbolMethod];
-
-
-const shuffledIcons = shuffleArray(iconPool).slice(0, 5);
+// Example icon pool - move this or the logic to where icons are assigned if needed elsewhere
+const iconPool = [FaCode, FaBug, FaBrain, SiLeetcode, SiCodemirror, VscSymbolMethod, CodeIcon, SortIcon, HtmlIcon, TaskIcon];
+// Shuffle icons once on component load (or manage differently if icons need to be stable)
+const shuffledIcons = shuffleArray([...iconPool]); // Use spread to avoid mutating original pool
 
 const Home = () => {
   const navigate = useNavigate(); // Hook for navigation
@@ -37,41 +39,48 @@ const Home = () => {
 
   // Local state
   const [computedUpcomingTasks, setComputedUpcomingTasks] = useState([]);
-  const [nextCategories, setNextCategories] = useState([]); // State for next categories
-  const [computationLoading, setComputationLoading] = useState(true);
+  const [nextCategories, setNextCategories] = useState([]);
+  // --- MODIFIED: Combined loading/processing state ---
+  const [isProcessing, setIsProcessing] = useState(true); // Start as true until initial load/computation is done
   const [lastCompletedCategoryIndex, setLastCompletedCategoryIndex] = useState(-1);
 
   // Fetch initial data
   useEffect(() => {
+    let isMounted = true;
     const loadData = async () => {
       const fetches = [];
-      if (!userProfile && !userLoading) fetches.push(fetchUserProfile());
-      if ((!roadmap || roadmap.length === 0) && !problemsLoading) fetches.push(fetchRoadmap());
-      if ((!categories || Object.keys(categories).length === 0) && !problemsLoading) fetches.push(fetchCategories());
+      // Use store state directly for checking if fetch is needed
+      if (!useUserStore.getState().userProfile && !useUserStore.getState().loading) fetches.push(fetchUserProfile());
+      if ((!useProblemStore.getState().roadmap || useProblemStore.getState().roadmap.length === 0) && !useProblemStore.getState().loading) fetches.push(fetchRoadmap());
+      if ((!useProblemStore.getState().categories || Object.keys(useProblemStore.getState().categories).length === 0) && !useProblemStore.getState().loading) fetches.push(fetchCategories());
 
       if (fetches.length > 0) {
         console.log("Home Mount: Fetching initial data...");
-        setComputationLoading(true);
+        if (isMounted) setIsProcessing(true); // Ensure loading state is true
         await Promise.all(fetches).catch(err => {
           console.error("Error fetching initial data:", err);
+          // Errors are handled in stores, but stop processing state here if needed
+          // if (isMounted) setIsProcessing(false);
         });
+        // Don't set isProcessing to false here, let the computation effect handle it
       } else {
-         setComputationLoading(userLoading || problemsLoading);
+         // If no fetches needed, set initial processing state based on current store loading
+         if (isMounted) setIsProcessing(useUserStore.getState().loading || useProblemStore.getState().loading);
       }
     };
     loadData();
-  }, [fetchUserProfile, fetchRoadmap, fetchCategories]); // Run once
+    return () => { isMounted = false }; // Cleanup flag
+  // Only include fetch functions as dependencies, they are stable references
+  }, [fetchUserProfile, fetchRoadmap, fetchCategories]);
 
-  // --- UPDATED LOGIC: Function computes upcoming tasks (finish current category first) ---
+  // Function computes upcoming tasks AND the index of the *last completed* category
   const computeSuggestions = () => {
     console.log("Computing suggestions (finish current category first)...");
     const upcomingProblems = [];
-    let latestCompletedCategoryIndex = -1; // Index in roadmap of the category containing the latest submission
+    let latestCompletedCategoryIndex = -1;
 
-    if (!userProfile || !roadmap || !categories || roadmap.length === 0 || Object.keys(categories).length === 0) {
-      console.log("Required data not ready for computation.");
-      return { upcomingProblems, latestCompletedCategoryIndex }; // Return default values
-    }
+    // This function now assumes data (userProfile, roadmap, categories) exists
+    // The calling useEffect handles the checks
 
     const submissions = userProfile.submissions || {};
     const submittedProblemIds = new Set(Object.keys(submissions));
@@ -82,15 +91,15 @@ const Home = () => {
     for (const problemId in submissions) {
       const submission = submissions[problemId];
       let currentTimestampValue = 0;
-      let timestampSource = submission.TIMESTAMP; // Ensure this matches the actual field name in Firestore
+      let timestampSource = submission.TIMESTAMP;
 
       if (Array.isArray(timestampSource)) {
         timestampSource = timestampSource[timestampSource.length - 1];
       }
       if (timestampSource) {
-        if (timestampSource.toDate) { // Check for Firestore Timestamp
+        if (timestampSource.toDate) {
           currentTimestampValue = timestampSource.toDate().getTime();
-        } else { // Try parsing with moment
+        } else {
           const parsedMoment = moment(timestampSource);
           if (parsedMoment.isValid()) {
             currentTimestampValue = parsedMoment.valueOf();
@@ -105,14 +114,13 @@ const Home = () => {
 
     // 2. Find category and index of latest submission
     let latestCategory = null;
-    let latestCategoryKey = null; // The potentially sanitized key used in the categories object
+    let latestCategoryKey = null;
     if (latestProblemId) {
       for (const categoryKey in categories) {
         if (categories[categoryKey] && categories[categoryKey][latestProblemId]) {
-          // Find the original roadmap name corresponding to the sanitized key
           const originalCategoryName = roadmap.find(r_cat =>
              r_cat.replace(/[\s\/]+/g, '-').replace(/[^\w\-\&]/g, '').replace(/-+/g, '-') === categoryKey
-          ) || categoryKey; // Fallback to key if original not found
+          ) || categoryKey;
           latestCategory = originalCategoryName;
           latestCategoryKey = categoryKey;
           latestCompletedCategoryIndex = roadmap.findIndex(cat => cat === latestCategory);
@@ -123,123 +131,85 @@ const Home = () => {
     console.log(`Latest category worked on: ${latestCategory || 'None'} (Index: ${latestCompletedCategoryIndex})`);
 
     // 3. Determine the category to start searching for unsolved problems
-    let currentCategoryToSearchIndex = 0; // Default to first category in roadmap
-    let currentCategoryToSearchKey = null;
-    let currentCategoryToSearchName = null;
-
+    let currentCategoryToSearchIndex = 0;
     if (latestCategoryKey && categories[latestCategoryKey]) {
-        // Check if there are unsolved problems in the *latest* category
         const problemsInLatest = categories[latestCategoryKey];
         const problemIdsInLatest = Object.keys(problemsInLatest);
         const unsolvedInLatest = problemIdsInLatest.filter(id => !submittedProblemIds.has(id));
-
         if (unsolvedInLatest.length > 0) {
-            // If unsolved problems exist in the latest category, start there
             currentCategoryToSearchIndex = latestCompletedCategoryIndex;
-            currentCategoryToSearchKey = latestCategoryKey;
-            currentCategoryToSearchName = latestCategory;
             console.log(`Found ${unsolvedInLatest.length} unsolved in latest category '${latestCategory}'. Starting search there.`);
         } else {
-            // If latest category is finished, start searching from the *next* category in the roadmap
             currentCategoryToSearchIndex = (latestCompletedCategoryIndex + 1) % roadmap.length;
-            currentCategoryToSearchName = roadmap[currentCategoryToSearchIndex];
-            currentCategoryToSearchKey = currentCategoryToSearchName?.replace(/[\s\/]+/g, '-').replace(/[^\w\-\&]/g, '').replace(/-+/g, '-');
-            console.log(`Latest category '${latestCategory}' is complete. Starting search from next category '${currentCategoryToSearchName}'.`);
+            console.log(`Latest category '${latestCategory}' is complete. Starting search from next category '${roadmap[currentCategoryToSearchIndex]}'.`);
         }
     } else {
-        // No latest submission or category data missing, start from the beginning
-        currentCategoryToSearchName = roadmap[0];
-        currentCategoryToSearchKey = currentCategoryToSearchName?.replace(/[\s\/]+/g, '-').replace(/[^\w\-\&]/g, '').replace(/-+/g, '-');
         console.log("No latest category or data missing. Starting search from roadmap beginning.");
     }
 
-
-    // 4. Find next 3 unsolved problems, starting from the determined category
+    // 4. Find next 3 unsolved problems
     let foundCount = 0;
-    for (let i = 0; i < roadmap.length && foundCount < 3; i++) { // Loop through the entire roadmap once if needed
-        const indexToCheck = (currentCategoryToSearchIndex + i) % roadmap.length; // Wrap around roadmap
+    for (let i = 0; i < roadmap.length && foundCount < 5; i++) {
+        const indexToCheck = (currentCategoryToSearchIndex + i) % roadmap.length;
         const categoryNameOriginal = roadmap[indexToCheck];
         const categoryKey = categoryNameOriginal.replace(/[\s\/]+/g, '-').replace(/[^\w\-\&]/g, '').replace(/-+/g, '-');
         const problemsInCategory = categories[categoryKey];
-
-        if (!problemsInCategory) {
-            console.warn(`Category "${categoryNameOriginal}" (key: ${categoryKey}) from roadmap not found in fetched categories data.`);
-            continue; // Skip this category if data is missing
-        }
-
-        console.log(`Searching for unsolved problems in category: ${categoryNameOriginal}`);
-        const problemIdsInCategory = Object.keys(problemsInCategory).sort(); // Sort for consistent order
-
+        if (!problemsInCategory) continue;
+        const problemIdsInCategory = Object.keys(problemsInCategory).sort();
         for (const problemId of problemIdsInCategory) {
             if (!submittedProblemIds.has(problemId)) {
-                 // Check if already added (only relevant if looping multiple times, which we aren't here for the primary search)
-                 // if (!upcomingProblems.some(p => p.id === problemId)) { } // Not strictly needed in this loop structure
-                 upcomingProblems.push({
-                    ...problemsInCategory[problemId],
-                    id: problemId,
-                    category: categoryNameOriginal // Use original name
-                });
-                foundCount++;
-                if (foundCount === 5) break; // Stop once we have 3
+                 upcomingProblems.push({ ...problemsInCategory[problemId], id: problemId, category: categoryNameOriginal });
+                 foundCount++;
+                 if (foundCount === 5) break; // Stop once we have 3 (changed from 5)
             }
         }
-         if (foundCount === 5) break; // Exit outer loop if we found 3
+         if (foundCount === 5) break;
     }
 
-    // 5. Handle case where *all* problems in the entire roadmap are solved
-    if (foundCount === 0 && submittedProblemIds.size > 0) { // Check if nothing was found but user has submissions
-        console.log("All problems in the roadmap appear to be solved. Suggesting first 3 from roadmap start.");
-        // Suggest first 3 problems from the first category as a fallback
+    // 5. Handle all solved case
+    if (foundCount === 0 && submittedProblemIds.size > 0) {
+        console.log("All problems appear solved. Suggesting first 3 from roadmap.");
         const firstCategoryName = roadmap[0];
         const firstCategoryKey = firstCategoryName.replace(/[\s\/]+/g, '-').replace(/[^\w\-\&]/g, '').replace(/-+/g, '-');
         const firstCategoryProblems = categories[firstCategoryKey];
         if (firstCategoryProblems) {
             const firstProblemIds = Object.keys(firstCategoryProblems).sort();
-            for (let j = 0; j < firstProblemIds.length && foundCount < 3; j++) {
-                 const problemId = firstProblemIds[j];
-                 upcomingProblems.push({
-                     ...firstCategoryProblems[problemId],
-                     id: problemId,
-                     category: firstCategoryName
-                 });
+            for (let j = 0; j < firstProblemIds.length && foundCount < 5; j++) {
+                 upcomingProblems.push({ ...firstCategoryProblems[firstProblemIds[j]], id: firstProblemIds[j], category: firstCategoryName });
                  foundCount++;
             }
         }
     }
 
-
     console.log(`Computed upcoming tasks (${upcomingProblems.length}):`, upcomingProblems.map(p=>p.name));
     console.log(`Index of last completed category: ${latestCompletedCategoryIndex}`);
-    // Return object including the index of the last completed category
     return { upcomingProblems, latestCompletedCategoryIndex };
   };
 
   // Effect to compute suggestions when data is ready
   useEffect(() => {
+    // Check if all required data is loaded and available from stores
     const dataReady = !userLoading && !problemsLoading && userProfile && roadmap && roadmap.length > 0 && categories && Object.keys(categories).length > 0;
 
     if (dataReady) {
-        setComputationLoading(true);
+        console.log("Data ready, computing suggestions...");
+        setIsProcessing(true); // Indicate computation is starting
         const { upcomingProblems, latestCompletedCategoryIndex: completedIndex } = computeSuggestions();
         setComputedUpcomingTasks(upcomingProblems);
-        setLastCompletedCategoryIndex(completedIndex); // Store the index
+        setLastCompletedCategoryIndex(completedIndex);
 
+        // Calculate next 5 categories
         let nextCats = [];
         const roadmapLength = roadmap.length;
-
-        // Determine the index for the *next* category suggestions
         const nextCategorySuggestIndex = (completedIndex === -1) ? 0 : (completedIndex + 1) % roadmapLength;
-
-        // Check if the user might have completed the last category in the roadmap
-        // A better check might be if upcomingProblems is empty AND user has submissions
         const allSeeminglySolved = upcomingProblems.length === 0 && userProfile?.submissions && Object.keys(userProfile.submissions).length > 0;
 
-        if (allSeeminglySolved) {
+        if (allSeeminglySolved && roadmapLength > 0) { // Ensure roadmap exists before shuffling
              console.log("All categories seem complete or suggestions failed. Showing random categories.");
              nextCats = shuffleArray([...roadmap]).slice(0, 5);
-        } else {
+        } else if (roadmapLength > 0) { // Ensure roadmap exists before calculating sequential
             console.log("Calculating next sequential categories starting after index:", completedIndex);
-            const startIndex = nextCategorySuggestIndex; // Start from the category *after* the last completed one
+            const startIndex = nextCategorySuggestIndex;
             for (let i = 0; i < 5; i++) {
                 const index = (startIndex + i) % roadmapLength;
                 if (roadmap[index]) {
@@ -252,12 +222,16 @@ const Home = () => {
             }
         }
         setNextCategories(nextCats);
-
-        setComputationLoading(false);
+        console.log("Computation finished.");
+        setIsProcessing(false); // Computation finished
     } else {
-        setComputationLoading(userLoading || problemsLoading);
+        // If data isn't ready, set processing state based on store loading states
+        // This ensures loader shows if fetches are still in progress
+        console.log("Data not ready, setting isProcessing based on store loading.");
+        setIsProcessing(userLoading || problemsLoading);
     }
-  }, [userProfile, categories, roadmap, userLoading, problemsLoading]); // Dependencies
+  // Dependencies should include all data used in the effect and computation
+  }, [userProfile, categories, roadmap, userLoading, problemsLoading]); // Added computationLoading to dependencies
 
 
   // Extract user name
@@ -268,7 +242,9 @@ const Home = () => {
   const formatRelativeTime = (timestamp) => {
     if (!timestamp) return '';
     try {
-      return moment(timestamp).fromNow();
+      // Ensure timestamp is parsed correctly before formatting
+      const date = moment(timestamp.toDate ? timestamp.toDate() : timestamp);
+      return date.isValid() ? date.fromNow() : 'Invalid date';
     } catch (e) {
       console.error("Error formatting date with moment:", e);
       return 'Invalid date';
@@ -285,48 +261,60 @@ const Home = () => {
       navigate(`/category/${categoryId}`)
   }
 
-  const handleCodeSession = (problemKey,categoryKey) => {
-    console.log(problemKey, categoryKey)
-    navigate(`/${categoryKey}/solve/${problemKey}`)
-    // navigate('/questions')
+  const handleCodeSession = (problemId, categoryKey) => { // Accept sanitized key
+    if (!problemId || !categoryKey) {
+        console.error("Missing problemId or categoryKey for navigation");
+        return;
+    }
+    console.log(`Navigating to problem: ${problemId} in category: ${categoryKey}`);
+    // Use the sanitized category key in the URL
+    navigate(`/${categoryKey}/solve/${problemId}`);
   }
 
+  // --- RENDER: Use Loader if processing ---
+  if (isProcessing) {
+      return <Loader message="Loading Home..." />;
+  }
+
+  // --- Render actual content when not loading ---
   return (
     <div className={styles.homeContainer}>
       {/* Greeting Section */}
       <div className={styles.greetingSection}>
         <div>
-          {userLoading && <h1 className={styles.greetingTitle}>Loading profile...</h1>}
           {userError && <h1 className={`${styles.greetingTitle} ${styles.errorText}`}>Error loading profile!</h1>}
-          {!userLoading && !userError && <h1 className={styles.greetingTitle}>Hello, {userName}!</h1>}
+          {!userError && <h1 className={styles.greetingTitle}>Hello, {userName}!</h1>}
         </div>
-        <div className={styles.profileIcon} onClick={_=>navigate('/me')}>
-              {userImage ? <img src={userImage} alt={userName} /> : <FiUser size={25} />}
+        <div className={styles.profileIcon} onClick={_=>navigate('/me')}> {/* Navigate to /profile */}
+              {userImage ? <img src={userImage} alt={userName} className={styles.profileImage} /> : <FiUser size={25} />}
         </div>
       </div>
 
       {/* Subtitles */}
-      {!userLoading && !userError && (
+      {!userError && (
         <>
           <p className={styles.greetingSubtitle}>Next step for you</p>
           <p className={styles.pathsInfo}>We have more than 90+ paths</p>
         </>
       )}
       {userError && <p className={styles.errorText}>{userError}</p>}
+      {problemsError && <p className={styles.errorText}>Error loading problem data: {problemsError}</p>}
+
 
       {/* Upcoming Tasks Section */}
       <section className={styles.section}>
         <h3 className={styles.sectionTitle}>Upcoming Task</h3>
-        {computationLoading ? (
-          <p>Calculating next tasks...</p>
-        ) : computedUpcomingTasks.length > 0 ? (
+        {computedUpcomingTasks.length > 0 ? (
           <ul className={styles.taskList}>
             {computedUpcomingTasks.map((task,index) => {
-              const IconComponent = shuffledIcons[index];
+              // Assign icon based on index in the shuffled list
+              const IconComponent = shuffledIcons[index % shuffledIcons.length] || CodeIcon; // Fallback icon
+              // Find the sanitized category key for navigation
+              const categoryKey = task.category?.replace(/[\s\/]+/g, '-').replace(/[^\w\-\&]/g, '').replace(/-+/g, '-');
 
               return (
-              <li key={task.id} className={styles.taskItem} onClick={_=>handleCodeSession(task.id,task.category.replace(/[\s\/]+/g, '-').replace(/[^\w\-\&]/g, '').replace(/-+/g, '-'))}>
-                <div className={styles.taskIcon}><IconComponent /></div> {/* Placeholder */}
+              <li key={task.id} className={styles.taskItem} onClick={()=>handleCodeSession(task.id, categoryKey)}>
+                <div className={styles.taskIcon}><IconComponent /></div>
                 <div className={styles.taskDetails}>
                   <span className={styles.taskTitle}>{task.name || 'Unknown Task'}</span>
                   <span className={`${styles.taskDetail} ${styles[task.difficulty?.toLowerCase()] || ''}`}>{task.difficulty || 'Unknown'}</span>
@@ -335,7 +323,7 @@ const Home = () => {
             )})}
           </ul>
         ) : (
-          <p>No specific upcoming tasks found. Explore categories below!</p>
+          <p className={styles.noTasksText}>No specific upcoming tasks found. Explore categories below!</p>
         )}
       </section>
 
@@ -347,20 +335,18 @@ const Home = () => {
                 View All <MdArrowForward />
             </button>
         </div>
-        {computationLoading ? (
-            <p>Loading categories...</p>
-        ) : nextCategories.length > 0 ? (
+        {nextCategories.length > 0 ? (
             <div className={styles.categoryGrid}>
                 {nextCategories.map(categoryName => (
-                    <div key={categoryName} className={styles.categoryCard} onClick={_=>handleCategory(categoryName)}>
+                    <div key={categoryName} className={styles.categoryCard} onClick={()=>handleCategory(categoryName)}>
                         <span className={styles.categoryName}>{categoryName}</span>
                     </div>
                 ))}
             </div>
         ) : (
              roadmap && roadmap.length > 0 ?
-             <p>Explore the roadmap!</p> :
-             <p>No categories found in roadmap.</p>
+             <p className={styles.infoText}>Explore the roadmap!</p> : // Use infoText style
+             <p className={styles.infoText}>No categories found in roadmap.</p> // Use infoText style
         )}
       </section>
 
@@ -368,41 +354,38 @@ const Home = () => {
       <section className={styles.section}>
         <div className={styles.sectionHeader}>
             <h3 className={styles.sectionTitle +' m-0'}>Recap from last solved!!!</h3>
-            <button onClick={_=>navigate('/category/submissions')} className={styles.viewAllButton}>
+            <button onClick={()=>navigate('/category/submissions')} className={styles.viewAllButton}>
                 View All <MdArrowForward />
             </button>
         </div>
         <div className={`carousel carousel-center w-full space-x-4 rounded-box ${styles.recapCarouselContainer}`}>
           {userProfile?.submissions && categories && Object.keys(categories).length > 0 && Object.keys(userProfile.submissions).length > 0 ? (
             Object.entries(userProfile.submissions).map(([key, value]) => {
-               // --- Improved Category Key Finding ---
                let categoryKey = null;
                let originalCategoryName = null;
-               // Find the category key and original name based on problem ID 'key'
                for (const cKey in categories) {
-                   if (categories[cKey]?.[key]) { // Check if problem 'key' exists in this category's problems
+                   if (categories[cKey]?.[key]) {
                        categoryKey = cKey;
                        originalCategoryName = roadmap.find(r_cat =>
                            r_cat.replace(/[\s\/]+/g, '-').replace(/[^\w\-\&]/g, '').replace(/-+/g, '-') === categoryKey
-                       ) || categoryKey; // Find original name
-                       break; // Stop searching once found
+                       ) || categoryKey;
+                       break;
                    }
                }
-               // --- End Improved Finding ---
-
                const problemData = categoryKey ? categories[categoryKey]?.[key] : null;
-               const problemName = problemData?.name || key; // Use problem name or ID as fallback
-               const timestamp = value.TIMESTAMP; // Use correct timestamp field
+               const problemName = problemData?.name || key;
+               // Get the *last* timestamp if it's an array
+               const timestampSource = Array.isArray(value.TIMESTAMP) ? value.TIMESTAMP[value.TIMESTAMP.length - 1] : value.TIMESTAMP;
 
                return (
                  <div key={key} id={`recap-${key}`} className={`carousel-item ${styles.recapCarouselItem}`}>
-                   <div className={styles.recapCard} onClick={_=>handleCodeSession(problemData.id,categoryKey)}>
+                   <div className={styles.recapCard} onClick={()=>handleCodeSession(problemData?.id || key, categoryKey)}>
                      <div className={styles.recapCardHeader}>
                         <div className={styles.recapIcon}><TaskIcon /></div>{/* Placeholder */}
                         <div className={styles.recapDetails}>
                            <span className={styles.recapTitle}>{problemName}</span>
                            <span className={`${styles.recapDetail} ${styles.recapTimestamp}`}>
-                             {formatRelativeTime(timestamp[timestamp.length-1])}
+                             {formatRelativeTime(timestampSource)}
                            </span>
                         </div>
                      </div>
@@ -415,7 +398,8 @@ const Home = () => {
            )}
         </div>
       </section>
-
+      {/* Render BottomNavBar only if needed within this component */}
+      {/* <BottomNavBar /> */}
     </div>
   );
 };
