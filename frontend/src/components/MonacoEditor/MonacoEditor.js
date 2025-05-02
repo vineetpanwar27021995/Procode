@@ -8,6 +8,7 @@ import { useAnamStore } from '../../stores/anamStore';
 
 import { extractFunctionName } from "../../utils/extractFunctionName";
 import { wrapUserCode } from "../../utils/wrapUserCode";
+import { getDifficultyClass } from "../../utils/UIHelper";
 
 const LANGUAGE_MAP = {
   javascript: 63,
@@ -177,7 +178,7 @@ const MonacoEditor = ({
           {loading ? <LoaderCircle className="animate-spin" /> : "Run"}
         </button>
         <button
-          className="btn border border-[#22C55E] bg-black text-white ml-2"
+          className={`btn border ${getDifficultyClass(problemMetadata.difficulty)} bg-black text-white ml-2 `}
           onClick={handleSubmit}
           disabled={!isUnlocked || submitLoading}
         >
