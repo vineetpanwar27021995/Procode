@@ -91,7 +91,7 @@ const AITile = ({ fullScreen = false, setIntuitionApproved, intuitionApproved, p
           await anamClient.talk(response.hints.join(' ') || 'Try again with more detail.');
           anamClient.unmuteInputAudio();
         }
-      }, 1000); // Debounce 1000ms
+      }, 500); // Debounce 1000ms
 
       anamClient.addListener(
         AnamEvent.MESSAGE_STREAM_EVENT_RECEIVED,
@@ -159,8 +159,8 @@ const AITile = ({ fullScreen = false, setIntuitionApproved, intuitionApproved, p
         </div>
           )
           }
-          <div className={`${loading ? 'hidden' : ''}`}>
-            <video id="video-id" width="100%" autoPlay playsInline></video>
+          <div className={`w-full h-full ${loading ? ' hidden' : ''}`}>
+            <video id="video-id" className="w-full h-full object-cover rounded-md" autoPlay playsInline muted></video>
             <audio id="audio-id" autoPlay></audio>
           </div>
         </>
@@ -178,8 +178,8 @@ const AITile = ({ fullScreen = false, setIntuitionApproved, intuitionApproved, p
         </div>
           )
           }
-          <div className={`${loading ? 'hidden' : ''}`}>
-            <video id="video-id" width="100%" autoPlay playsInline></video>
+          <div className={`w-full h-full ${loading ? 'hidden' : ''}`}>
+            <video id="video-id w-full h-full object-cover rounded-md" width="100%" autoPlay playsInline muted></video>
             <audio id="audio-id" autoPlay></audio>
           </div>
         </>

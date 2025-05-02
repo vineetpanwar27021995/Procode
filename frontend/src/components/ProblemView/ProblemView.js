@@ -83,7 +83,7 @@ console.log(`darkMode`, darkMode);
             <div className={`mt-4 bg-black bg-opacity-40 text-white rounded-lg p-4 text-sm font-mono space-y-4 ${getBgColorClass(problem.difficulty)}`}>
               {examples.map((ex, i) => (
                 <div key={i}>
-                  <div className={`text-gray-300 mb-1 font-semibold`}>{ex.label}</div>
+                  <div className={`text-white mb-1 font-semibold`}>{ex.label}</div>
                   <pre className="whitespace-pre-wrap">{ex.code}</pre>
                 </div>
               ))}

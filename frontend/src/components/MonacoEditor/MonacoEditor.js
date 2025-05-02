@@ -5,10 +5,12 @@ import { LoaderCircle } from "lucide-react";
 import { baseURL } from "../../utils/getBaseURL";
 import { useAuthStore } from '../../stores/authStore';
 import { useAnamStore } from '../../stores/anamStore';
+import {useThemeStore} from '../../stores/themeStore'
 
 import { extractFunctionName } from "../../utils/extractFunctionName";
 import { wrapUserCode } from "../../utils/wrapUserCode";
-import { getDifficultyClass } from "../../utils/UIHelper";
+import {getDifficultyBorderClass, getDifficultyClass, getBgColorClass} from "../../utils/UIHelper";
+
 
 const LANGUAGE_MAP = {
   javascript: 63,
@@ -31,6 +33,9 @@ const MonacoEditor = ({
   const [loading, setLoading] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
   const monacoRef = useRef(null);
+
+  const darkMode = useThemeStore((state) => state.darkMode);
+  console.log(`darkMode`, darkMode);
 
   useEffect(() => {
     if (starterCode) {
@@ -171,14 +176,14 @@ const MonacoEditor = ({
           <option value="cpp">C++</option>
         </select>
         <button
-          className="btn btn-success ml-auto"
+          className={`btn btn-success ml-auto !text-[#fff] ${getBgColorClass(problemMetadata.difficulty)}`}
           onClick={handleRun}
           disabled={!isUnlocked || loading}
         >
           {loading ? <LoaderCircle className="animate-spin" /> : "Run"}
         </button>
         <button
-          className={`btn border ${getDifficultyClass(problemMetadata.difficulty)} bg-black text-white ml-2 `}
+          className={`btn border  ${darkMode ? 'bg-black' : 'bg-white'} ${getDifficultyBorderClass(problemMetadata.difficulty)} ${ darkMode ? '!text-[#fff]' : getDifficultyClass(problemMetadata.difficulty)} ml-2 `}
           onClick={handleSubmit}
           disabled={!isUnlocked || submitLoading}
         >
@@ -187,10 +192,10 @@ const MonacoEditor = ({
       </div>
 
       {/* Code Editor */}
-      <div className="flex-1 min-h-0 bg-base-100 rounded-box overflow-auto">
+      <div className={`flex-1 min-h-0 bg-base-100 rounded-box overflow-auto`}>
         <Editor
           height="100%"
-          theme="vs-dark"
+          theme={darkMode ? "vs-dark" : "vs-light"}
           language={language}
           value={code}
           onChange={(val) => setCode(val || "")}
