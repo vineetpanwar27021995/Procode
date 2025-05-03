@@ -2,10 +2,11 @@ const express = require('express');
 const router = express.Router();
 const { db } = require('../config/firebase');
 const { analyzeCodeAndConversation } = require('../services/codeReview.service');
+const verifyFirebaseToken = require('../middlewares/authMiddleware'); 
 
-router.post('/submit', async (req, res) => {
+router.post('/submit',verifyFirebaseToken, async (req, res) => {
   const {
-    uid,
+    uid=req.user?.uid,
     code,
     codeDescription,
     categoryId,
@@ -15,7 +16,13 @@ router.post('/submit', async (req, res) => {
   } = req.body;
 
   const timestamp = new Date().toISOString();
-
+  console.log("🚀 Submission received:", {uid:req.user,
+    code,
+    codeDescription,
+    categoryId,
+    questionId,
+    codeResults,
+    messages})
   if (!uid || !code || !codeDescription || !categoryId || !questionId || !messages) {
     return res.status(400).json({ error: "Missing required fields" });
   }

@@ -1,18 +1,19 @@
 const express = require('express');
 const router = express.Router();
 const { db } = require('../config/firebase');
+const verifyFirebaseToken = require('../middlewares/authMiddleware'); 
 
-router.post('/submission/load', async (req, res) => {
-  const { uid, questionId } = req.body;
+router.post('/submission/load',verifyFirebaseToken, async (req, res) => {
+  const { questionId } = req.body;
 
-  if (!uid || !questionId) {
-    return res.status(400).json({ error: 'Missing uid or questionId' });
-  }
-
+  // if (!uid || !questionId) {
+  //   return res.status(400).json({ error: 'Missing uid or questionId' });
+  // }
+console.log("🚀 Load submission received:", req.user)
   try {
     const docRef = db
       .collection('users')
-      .doc(uid)
+      .doc(req.user.uid)
       .collection('submissions')
       .doc(questionId);
 

@@ -4,9 +4,10 @@ import { authService } from '../services/auth'; // Keep for auth actions
 import { userService } from '../services/user'; // Adjust path if needed
 import { auth } from '../config/firebase'; // Import client auth instance
 import { onAuthStateChanged } from "firebase/auth"; // Import listener
-
+import { useUserStore } from './userStore';
 // --- Helper: Listen to Firebase Auth state changes ---
 let authListenerUnsubscribe = null;
+const clearUserProfile = useUserStore.getState().clearUserProfile; // Import clearUserProfile action
 
 export const initializeAuthListener = () => {
   if (authListenerUnsubscribe) {
@@ -141,6 +142,7 @@ export const useAuthStore = create((set) => ({
             const backendUser = await authService.login(email, password);
             // Listener will handle setting the final state
             // set({ loading: false }); // Let listener handle this
+            
             return backendUser;
         } catch (error) {
             set({ error: error.message || 'Login failed', loading: false, user: null, isAuthenticated: false });
@@ -192,6 +194,7 @@ export const useAuthStore = create((set) => ({
         await authService.logout();
         // Listener will set state, but clear immediately too
         set({ user: null, isAuthenticated: false, error: null, loading: false });
+        clearUserProfile(); // Clear user profile in user store
     },
 
 }));

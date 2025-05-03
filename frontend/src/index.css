@@ -137,7 +137,7 @@
   display: none;
 }
 
-#webpack-dev-server-client-overlay-div {
+iframe#webpack-dev-server-client-overlay {
   display: none !important;
 }
 

@@ -73,9 +73,9 @@
     padding-bottom: 0;
   }
   
-  .createAccountButton:hover {
+  /* .createAccountButton:hover {
     background-color: var(--welcome-button-secondary-hover-bg);
-  }
+  } */
   
   .signInButton svg,
   .createAccountButton svg {

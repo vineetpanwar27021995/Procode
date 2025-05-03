@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import Editor from "@monaco-editor/react";
-import axios from "axios";
+import api from "../../services/api";
 import { LoaderCircle } from "lucide-react";
 import { baseURL } from "../../utils/getBaseURL";
 import { useAuthStore } from '../../stores/authStore';
@@ -10,7 +10,8 @@ import {useThemeStore} from '../../stores/themeStore'
 import { extractFunctionName } from "../../utils/extractFunctionName";
 import { wrapUserCode } from "../../utils/wrapUserCode";
 import {getDifficultyBorderClass, getDifficultyClass, getBgColorClass} from "../../utils/UIHelper";
-
+import { useUserStore } from "stores/userStore";
+import { useSnackbarStore } from '../../stores/snackbarStore'; // Adjust path if needed
 
 const LANGUAGE_MAP = {
   javascript: 63,
@@ -33,6 +34,8 @@ const MonacoEditor = ({
   const [loading, setLoading] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
   const monacoRef = useRef(null);
+  const {fetchUserProfile} = useUserStore();
+  const { showSnackbar } = useSnackbarStore();
 
   const darkMode = useThemeStore((state) => state.darkMode);
   console.log(`darkMode`, darkMode);
@@ -49,10 +52,9 @@ const MonacoEditor = ({
     const loadExistingCode = async () => {
       try {
         const user = useAuthStore.getState().user;
-        // if (!user || !problemId || !categoryId) return;
+        if (!user || !problemId || !categoryId) return;
   
-        const res = await axios.post(`${baseURL}/api/submission/load`, {
-          uid: user?.uid || 'RNJzTCLbBlYb2N7KspJtn43mzhm1',
+        const res = await api.post(`/submission/load`, {
           categoryId,
           questionId: problemId,
         });
@@ -76,7 +78,7 @@ const MonacoEditor = ({
       stdin: testCase.endsWith("\n") ? testCase : testCase + "\n",
     }));
 
-    const res = await axios.post(`${baseURL}/api/judge/batch`, {
+    const res = await api.post(`/judge/batch`, {
       problem_id: problemMetadata.id,
       problemMetadata,
       submissions: batchSubmissions,
@@ -120,7 +122,8 @@ const MonacoEditor = ({
   const handleSubmit = async () => {
     try {
       const user = useAuthStore.getState().user;
-      // if (!user || !problemId || !categoryId) return;
+      if (!user || !problemId || !categoryId) return;
+      console.log("Submitting code...", user);
   
       setSubmitLoading(true);
 
@@ -138,8 +141,7 @@ const MonacoEditor = ({
       
       const conversationHistory = useAnamStore.getState().conversationHistory;
       
-      const analysisRes = await axios.post(`${baseURL}/api/submit`, {
-        uid: user?.uid || 'RNJzTCLbBlYb2N7KspJtn43mzhm1',
+      const analysisRes = await api.post(`/submit`, {
         code,
         categoryId,
         questionId: problemId,
@@ -147,14 +149,24 @@ const MonacoEditor = ({
         codeResults: results,
         messages: conversationHistory, // ✅ send full history
       });
+
       
       if (analysisRes.data.success) {
-        alert("Code submitted successfully! ✅");
+        console.log("Submission saved successfully! ✅", fetchUserProfile, typeof fetchUserProfile);
+        fetchUserProfile();
+        showSnackbar("Submission saved successfully! ✅", "success");
+
+        console.log("Code submitted successfully! ✅");
+        
       } else {
-        alert("Submission saved, but no complexity feedback.");
+      showSnackbar("Submission saved, but no complexity feedback", "info");
+
+        console.log("Submission saved, but no complexity feedback.");
       }
       if (allPassed) onSuccess?.();
+
     } catch (err) {
+      showSnackbar("❌ Submission failed", "error");
       console.error("❌ Submission failed:", err);
     } finally {
       setSubmitLoading(false);
