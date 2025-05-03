@@ -15,6 +15,8 @@ import Problems from './pages/Problems/Problems';
 // Corrected import name based on previous component creation
 import CategoryProblems from './pages/CategoryProblems/CategoryProblems';
 import ProfileScreen from './pages/Profile/Profile'; // Corrected import name
+import PrivacyPolicy from './pages/PrivacyPolicy/PrivacyPolicy'; // Corrected import name
+import DataDeletion from './pages/DataDeletion/DataDeletion'; // Corrected import name
 import ProfileEditScreen from './pages/ProfileEdit/ProfileEdit'; // Corrected import name
 import { CodingSession, QuestionList } from './pages'; // Assuming index export
 
@@ -112,6 +114,8 @@ const App = () => {
                 <Route path="/register" element={<Register />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/verify" element={<Verify />} />
+                <Route path="/data-deletion" element={<DataDeletion />} />
+                <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             </Route>
 
             {/* Protected Routes */}
