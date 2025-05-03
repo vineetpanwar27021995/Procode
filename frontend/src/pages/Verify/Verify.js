@@ -14,7 +14,7 @@ const Verify = () => {
     const loading = useAuthStore(state => state.loading);
     const error = useAuthStore(state => state.error);
     const resendVerification = useAuthStore(state => state.resendVerification);
-    const loadingResend = useAuthStore(state => state.loadingResend); // Assuming this exists
+    // const loadingResend = useAuthStore(state => state.loadingResend); // Assuming this exists
     const { showSnackbar } = useSnackbarStore();
     const navigate = useNavigate();
     const location = useLocation();
@@ -154,10 +154,10 @@ const Verify = () => {
                 onClick={handleResendCode}
                 // Use CSS module + Tailwind text size
                 className={`${styles.resendLink} text-sm`}
-                disabled={loadingResend || loading}
+                disabled={loading}
             >
                 {/* DaisyUI loading spinner */}
-                {loadingResend ? <span className="loading loading-spinner loading-xs mr-1"></span> : null}
+                {/* {loadingResend ? <span className="loading loading-spinner loading-xs mr-1"></span> : null} */}
                 Resend Code
             </Button>
         </div>

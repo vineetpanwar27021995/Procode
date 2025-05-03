@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { useThemeStore } from './stores/themeStore'; // Adjust path if needed
-import { useAuthStore } from './stores/authStore'; // Adjust path if needed
+import { useThemeStore } from './stores/themeStore';
+// --- MODIFIED: Import initializeAuthListener ---
+import { useAuthStore, initializeAuthListener } from './stores/authStore'; // Adjust path if needed
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 
 // Import Page Components (Adjust paths based on your project structure)
 import Welcome from './pages/Welcome/Welcome';
@@ -8,43 +10,63 @@ import Login from './pages/Login/Login';
 import Register from './pages/Register/Register';
 import ForgotPassword from './pages/ForgotPassword/ForgotPassword';
 import Verify from './pages/Verify/Verify';
-import Home from './pages/Home/Home'; // Create this component if it doesn't exist
-import Problems from './pages/Problems/Problems'; 
+import Home from './pages/Home/Home';
+import Problems from './pages/Problems/Problems';
+// Corrected import name based on previous component creation
+import CategoryProblems from './pages/CategoryProblems/CategoryProblems';
+import ProfileScreen from './pages/Profile/Profile'; // Corrected import name
+import ProfileEditScreen from './pages/ProfileEdit/ProfileEdit'; // Corrected import name
+import { CodingSession, QuestionList } from './pages'; // Assuming index export
 
-import './index.css';
-import CategoryProblems from 'pages/CategoryProblems/CategoryProblems';
-import Profile from 'pages/Profile/Profile';
-import ProfileEdit from 'pages/ProfileEdit/ProfileEdit';
-import { lightTheme, darkTheme } from './styles/themes';
-import { ThemeProvider } from 'styled-components';
-import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import { Snackbar, SplashScreen, ProtectedRoute,PublicRoute } from './components';
-import useAnamSessionToken from './hooks/useAnamSessionToken';
-import { ErrorBoundary } from "react-error-boundary";
-import { CodingSession, QuestionList } from 'pages';
-import BottomNavBar from 'components/BottomNavBar/BottomNavBar';
-import Loader from 'components/Loader/Loader';
-import { useUserStore } from 'stores/userStore';
+// Import Route Wrapper Components
+import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute'; // Adjust path
+import PublicRoute from './components/PublicRoute/PublicRoute'; // Adjust path
+
+// Import Global Components
+import { Snackbar } from './components'; // Assuming index export
+import BottomNavBar from './components/BottomNavBar/BottomNavBar'; // Adjust path
+import Loader from './components/Loader/Loader'; // ** Use your specific Loader import **
+
+// Import Global CSS
+import './index.css'; // Or your global css file path
+import { useUserStore } from './stores/userStore'; // Import user store
+
+// Layout component to conditionally render BottomNavBar
+const Layout = ({ children }) => {
+    const location = useLocation();
+    // Paths where the bottom nav SHOULD be shown
+    const showNavPaths = ['/home', '/me']; // Use /me for profile route
+    const showNav = showNavPaths.includes(location.pathname);
+
+    return (
+        <>
+            {children}
+            {/* Conditionally render BottomNavBar based on the specific paths */}
+            {showNav && <BottomNavBar />}
+        </>
+    );
+};
+
 
 const App = () => {
   // Get theme state
   const { darkMode } = useThemeStore();
-  // Get auth state and checkAuth action
-  const { checkAuth, loading: authLoading, isAuthenticated } = useAuthStore();
-  const updateProfile = useUserStore((state) => state.updateProfile);
+  // Get auth state directly from store for rendering decisions
+  // The listener will update these values
+  const isAuthenticated = useAuthStore(state => state.isAuthenticated);
+  const authLoading = useAuthStore(state=>state.loading)
+  // Removed checkAuth and updateProfile from here as they are not directly called in App render
+  // const { checkAuth } = useAuthStore();
+  // const updateProfile = useUserStore((state) => state.updateProfile);
 
-  // Local loading state specifically for the initial auth check on app load
-  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
-  const [showSplash, setShowSplash] = useState(true);
-  const [fadeOut, setFadeOut] = useState(false);
+  // Removed local isCheckingAuth state, rely solely on store's 'loading' state
+  // const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+  // Removed splash screen state for simplicity, can be added back if needed
+  // const [showSplash, setShowSplash] = useState(true);
+  // const [fadeOut, setFadeOut] = useState(false);
 
-  window.addEventListener('error', (e) => {
-    if (
-      e.message === 'ResizeObserver loop completed with undelivered notifications.'
-    ) {
-      e.stopImmediatePropagation();
-    }
-  });
+  // Global error listener (keep if needed)
+  // window.addEventListener('error', (e) => { ... });
 
   // Apply data-theme attribute for CSS variable theming
   useEffect(() => {
@@ -52,112 +74,67 @@ const App = () => {
     document.documentElement.setAttribute('data-theme', theme);
   }, [darkMode]);
 
-  // Check authentication status when the app loads
+  // --- MODIFIED: Initialize Auth Listener on mount ---
   useEffect(() => {
-    const verifyAuth = async () => {
-      console.log("App Mount: Checking authentication..."); // Debug log
-      setIsCheckingAuth(true); // Ensure loading state is true during check
-      try {
-        // Call the checkAuth action from the store.
-        // This should use authService.getCurrentUser() which checks localStorage token.
-        const user = await checkAuth();
-        updateProfile(user);
-
-        console.log("App Mount: Auth check complete.",user); // Debug log
-      } catch (err) {
-        console.error("App Mount: Error during initial auth check:", err);
-        // Error state should be handled within the store's checkAuth function
-      } finally {
-         setIsCheckingAuth(false); // Mark initial check as complete regardless of outcome
-         console.log("App Mount: Initial auth check finished."); // Debug log
-      }
+    // Initialize the listener that updates the auth store state
+    // This function should be defined in authStore.js and handle setting loading states
+    const unsubscribe = initializeAuthListener();
+    // Clean up the listener when the App component unmounts
+    return () => {
+        if (unsubscribe && typeof unsubscribe === 'function') { // Check if it's a function before calling
+            console.log("Cleaning up auth listener.",authLoading,isAuthenticated);
+            unsubscribe();
+        } else {
+             console.warn("Auth listener unsubscribe function not available or not a function.");
+        }
     };
-    verifyAuth();
-  }, [checkAuth]); 
+  }, []); // Run only once when App mounts
 
-  // useEffect(() => {
-  //   // Fade out before removing splash
-  //   const timer1 = setTimeout(() => setFadeOut(true), 1000); // start fade after 1s
-  //   const timer2 = setTimeout(() => setShowSplash(false), 1500); // fully hide after fade
 
-  //   return () => {
-  //     clearTimeout(timer1);
-  //     clearTimeout(timer2);
-  //   };
-  // }, []);
-
-  // if (showSplash) {
-  //   return (
-  //     <div
-  //       className={`transition-opacity duration-500 ease-in-out ${
-  //         fadeOut ? 'opacity-0' : 'opacity-100'
-  //       }`}
-  //     >
-  //       <SplashScreen />
-  //     </div>
-  //   );
-  // }
-
-  if (isCheckingAuth) {
-    return (
-        <Loader message="Initializing..." />
-    );
-}
-
-const Layout = ({ children }) => {
-  const location = useLocation();
-  // Define paths where the bottom nav SHOULD be shown
-  const showNavPaths = ['/home', '/me']; // Only show on these exact paths
-  // Check if the current pathname is exactly one of the allowed paths
-  const showNav = showNavPaths.includes(location.pathname);
-
-  return (
-      <>
-          {children}
-          {/* Conditionally render BottomNavBar based on the specific paths */}
-          {showNav && <BottomNavBar />}
-      </>
-  );
-};
+  // --- MODIFIED: Use authLoading from the store ---
+  // This loading state should be initially true in the store and set to false
+  // by the initializeAuthListener function once the initial auth state is known.
+  if (authLoading) {
+      return <Loader message="Initializing Session..." />; // Use your Loader component
+  }
 
   return (
     <>
-      <ErrorBoundary fallback={<div>Something went wrong! Please try again later</div>}>
+      {/* Removed ErrorBoundary for simplicity, add back if needed */}
       <Snackbar />
       <Router>
         <Layout>
-        <Routes>
-          {/* Public Routes: Accessible only when logged OUT */}
-          {/* PublicRoute checks if authenticated and redirects to /home if true */}
-          <Route element={<PublicRoute />}>
-            <Route path="/" element={<Welcome />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/verify" element={<Verify />} />
-          </Route>
+            <Routes>
+            {/* Public Routes */}
+            <Route element={<PublicRoute />}>
+                <Route path="/" element={<Welcome />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/verify" element={<Verify />} />
+            </Route>
 
-          <Route element={<ProtectedRoute />}>
-            <Route path="/home" element={<Home />} />
-            <Route path="/problems" element={<Problems />} />
-            <Route path="/category/:categoryId" element={<CategoryProblems />} />
-            <Route path="/me" element={<Profile />} />
-            <Route path="/me/edit" element={<ProfileEdit />} />
-            <Route path="/:categoryId/solve/:questionId" element={<CodingSession />} />
-            <Route path="/questions" element={<QuestionList />} />
-          </Route>
+            {/* Protected Routes */}
+            <Route element={<ProtectedRoute />}>
+                <Route path="/home" element={<Home />} />
+                <Route path="/problems" element={<Problems />} />
+                {/* Corrected component name */}
+                <Route path="/category/:categoryId" element={<CategoryProblems />} />
+                {/* Corrected path and component name */}
+                <Route path="/:categoryId/solve/:questionId" element={<CodingSession />} />
+                <Route path="/me" element={<ProfileScreen />} /> {/* Use ProfileScreen */}
+                <Route path="/me/edit" element={<ProfileEditScreen />} /> {/* Use ProfileEditScreen */}
+                {/* Removed /random route unless needed */}
+                {/* <Route path="/random" element={<div>Random Page Placeholder</div>} /> */}
+                 {/* <Route path="/questions" element={<QuestionList />} /> */}
+            </Route>
 
-          {/* Catch-all Route: Redirects unknown paths */}
-          {/* Redirect to /home if logged in, otherwise redirect to /login */}
-          {/* Note: This might conflict if Welcome page ('/') should be accessible when logged in */}
-          {/* Consider removing this or adjusting logic if '/' needs different handling */}
-          {/* <Route path="*" element={<Navigate to={isAuthenticated ? "/home" : "/login"} replace />} /> */}
+            {/* Catch-all Route */}
+            <Route path="*" element={<Navigate to={isAuthenticated ? "/home" : "/login"} replace />} />
 
-        </Routes>
+            </Routes>
         </Layout>
       </Router>
-
-      </ErrorBoundary>
     </>
   );
 };

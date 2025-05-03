@@ -1,53 +1,77 @@
 // src/services/api.js
 import axios from 'axios';
-// Import auth service if needed for logout, or handle logout directly
-import { authService } from './auth'; // Adjust path as needed
+// Import your Firebase auth instance or a function to get the token
+// Option 1: Direct Firebase import (if configured client-side)
+// import { auth } from '../config/firebase'; // Adjust path if needed
 
-// Use environment variable for base URL or fallback
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080/api';
+// Option 2: Using your auth service (Recommended)
+import { authService } from './auth'; // Adjust path
 
 const api = axios.create({
-    baseURL: API_BASE_URL
+  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:8080/api'
 });
 
-// Request Interceptor to add token from localStorage
+// --- Add Request Interceptor ---
 api.interceptors.request.use(
-    (config) => {
-        // Retrieve the token stored after backend login
-        const token = localStorage.getItem('token'); // Or wherever you store the backend token
+  async (config) => {
+    // Check if the request requires authentication (you might have specific paths)
+    // For simplicity, we'll try to add it to most requests to your API base URL
+    // You could add more specific checks based on config.url if needed
 
-        // If a token exists, add it to the Authorization header
-        if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
-            // console.log('Interceptor: Attaching token from localStorage.'); // For debugging
-        } else {
-            // console.log('Interceptor: No token found in localStorage.'); // For debugging
-            // Request proceeds without Authorization header
-        }
-        return config; // Continue with the config
-    },
-    (error) => {
-        // Handle request configuration error
-        console.error('Axios request interceptor error:', error);
-        return Promise.reject(error);
+    let idToken = null;
+    try {
+      // --- Get the ID token ---
+      // Option 1: Using direct firebase auth instance
+      // const currentUser = auth.currentUser;
+      // if (currentUser) {
+      //   idToken = await currentUser.getIdToken();
+      // }
+
+      // Option 2: Using your authService (preferred if it handles token logic)
+      // This assumes authService has a method like getCurrentUserToken()
+      // or that getCurrentUser() returns an object with getIdToken method
+      const user = await authService.getCurrentUser(); // Or however you get the user/token state
+      if (user && typeof user.getIdToken === 'function') { // Check if it's a Firebase user object
+         idToken = await user.getIdToken();
+      } else {
+         // Fallback: Maybe the token is stored elsewhere (e.g., localStorage after login)
+         idToken = localStorage.getItem('firebaseIdToken'); // Example, adjust if you store it
+      }
+
+    } catch (error) {
+      console.error('Error getting Firebase ID token:', error);
+      // Handle error appropriately, maybe redirect to login
     }
+
+    // If a token exists, add it to the Authorization header
+    if (idToken) {
+      config.headers.Authorization = `Bearer ${idToken}`;
+      // console.log('Attaching token:', idToken); // For debugging
+    } else {
+       // console.log('No token found for request'); // For debugging
+    }
+
+    return config; // Continue with the modified config
+  },
+  (error) => {
+    // Handle request error
+    return Promise.reject(error);
+  }
 );
 
-// Response Interceptor to handle Auth errors (like 401/403)
+// Optional: Add Response Interceptor for handling 401/403 errors globally
 api.interceptors.response.use(
-    (response) => response, // Pass through successful responses
-    (error) => {
-        if (error.response && (error.response.status === 401 || error.response.status === 403)) {
-            console.error(`Auth Error (${error.response.status}):`, error.response.data?.message || error.response.data?.error || 'Unauthorized/Forbidden');
-
-            localStorage.removeItem('token');
-
-            if (window.location.pathname !== '/login') {
-                 window.location.replace('/login');
-            }
-        }
-        return Promise.reject(error);
+  (response) => response, // Pass through successful responses
+  (error) => {
+    if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+      // Handle unauthorized errors, e.g., redirect to login
+      console.error('Unauthorized or Forbidden request:', error.response.data);
+      // Example: useAuthStore.getState().logout(); // Logout user
+      // window.location.href = '/login'; // Redirect
     }
+    return Promise.reject(error); // Pass error along
+  }
 );
+
 
 export default api;

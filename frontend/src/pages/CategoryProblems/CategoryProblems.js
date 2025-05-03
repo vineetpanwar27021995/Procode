@@ -146,7 +146,6 @@ const CategoryProblemsScreen = () => {
     ? "My Submissions"
     : (Object.keys(categories || {}).find(key => key === categoryId) || categoryId.replace(/-/g, ' '));
 
-  let sequenceCounter = 0;
 
   // --- MODIFIED: Use Loader ---
   if (isLoading) {
@@ -195,9 +194,7 @@ const CategoryProblemsScreen = () => {
                 </div>
                 <ul className={styles.questionList}>
                   {problemsInGroup.map((problem) => {
-                    sequenceCounter++;
                     const isSolved = isSubmissionsView || submissions.hasOwnProperty(problem.id);
-                    const sequence = String(sequenceCounter).padStart(2, '0');
                     // Find the category key for navigation
                     const categoryKey = problem.category?.replace(/[\s\/]+/g, '-').replace(/[^\w\-\&]/g, '').replace(/-+/g, '-') || categoryId;
 
