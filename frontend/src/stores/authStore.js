@@ -95,10 +95,10 @@ export const useAuthStore = create((set) => ({
 
     // Register action
     register: async (name, email, password) => {
-        set({ loading: true, error: null });
+        set({ error: null });
         try {
             const response = await authService.register(name, email, password);
-            set({ loading: false });
+            // set({ loading: false });
             return response;
         } catch (error) {
             set({ error: error.message || 'Registration failed', loading: false });
@@ -108,13 +108,13 @@ export const useAuthStore = create((set) => ({
 
     // VerifyCode action
     verifyCode: async (code, email) => {
-        set({ loading: true, error: null });
+        set({ error: null });
         try {
             const response = await authService.verifyCode(code, email);
             // Let listener handle state update after refresh
             await auth.currentUser?.getIdToken(true);
             // Set loading false here as listener might take time after token refresh
-            set({ loading: false });
+            // set({ loading: false });
             return response;
         } catch (error) {
             set({ error: error.message || 'Verification failed', loading: false });
