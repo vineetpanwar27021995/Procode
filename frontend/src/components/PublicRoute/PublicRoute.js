@@ -17,9 +17,9 @@ const PublicRoute = () => {
   // }
 
   // If finished loading and IS authenticated, redirect away from public route
-  if (isAuthenticated) {
-    return <Navigate to="/home" replace />; // Redirect to home or dashboard
-  }
+  // if (isAuthenticated) {
+  //   return <Navigate to="/home" replace />; // Redirect to home or dashboard
+  // }
 
   // If not authenticated, render the public route element
   return <Outlet />;
