@@ -203,7 +203,7 @@ const CategoryProblemsScreen = () => {
 
                     return (
                       <li key={problem.id} className={`${styles.questionItem} ${styles[`${difficulty.toLowerCase()}-border`]}`} onClick={()=>handleCodeSession(problem.id, categoryKey)}>
-                        <div className={`${styles.questionNumber} ${styles[difficulty.toLowerCase()]}`}>{sequence}</div>
+                        <div className={`${styles.questionNumber} ${styles[difficulty.toLowerCase()]}`}>{problem.question_number}</div>
                         <div className={styles.questionDetails}>
                           <span className={`${styles.questionName} ${styles[difficulty.toLowerCase()]}`}>{problem.name}</span>
                           <span className={styles.questionTime}>Est. {difficulty==='Easy'?'15':difficulty==='Medium'?'20':'30'} Mins</span>
