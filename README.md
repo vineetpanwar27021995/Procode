@@ -55,18 +55,18 @@ This will:
 
 You'll need to manually create the following `.env` files for both frontend and backend:
 
-#### ✅ `frontend/.env.development`
-Used in local dev mode by React.
+#### ✅ `frontend/.env`
 
 ```env
-REACT_APP_BACKEND_URL=http://localhost:8080
-```
-
-#### ✅ `frontend/.env.production`
-Used when building frontend for production (e.g., on Vercel).
-
-```env
-REACT_APP_BACKEND_URL=https://<your-cloud-run-backend-url>
+REACT_APP_NEETCODE_TOKEN="XXX"
+PERSONA_ID="XXX"
+REACT_APP_FIREBASE_API_KEY="XXX"
+REACT_APP_FIREBASE_AUTH_DOMAIN="XXX"
+REACT_APP_FIREBASE_PROJECT_ID="XXX"
+REACT_APP_FIREBASE_STORAGE_BUCKET="XXX 
+REACT_APP_FIREBASE_MESSAGING_SENDER_ID="XXX"
+REACT_APP_FIREBASE_APP_ID="XXX"
+REACT_APP_FIREBASE_MEASUREMENT_ID="XXX"
 ```
 
 #### ✅ `backend/.env`
@@ -74,8 +74,14 @@ Used by Node.js backend.
 
 ```env
 PORT=8080
-ANAM_API_KEY=your_anam_api_key_here
-FIREBASE_API_KEY=your_firebase_api_key_here
+DEEPSEEK_API_KEY="XXX"
+DEEPSEEK_BASE_URL="XXX"
+EMAIL_USER="XXX"
+EMAIL_PASS="XXX"
+FIREBASE_API_KEY="XXX"
+FIREBASE_STORAGE_BUCKET="XXX"
+ANAM_AI_API_KEY="XXX"
+JUDGE0_API_KEY="XXX"
 ```
 
 > 🔐 **Important:** Add all `.env` files to `.gitignore` and never commit them to the repo.
@@ -117,3 +123,5 @@ npm run start:backend  # Start backend only
 ---
 
 Made with 💙 by the ProCode Team
+- Bhupesh Chikara
+- Vineet Panwar
