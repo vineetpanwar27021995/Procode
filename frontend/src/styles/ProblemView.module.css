@@ -1,0 +1,250 @@
+/* components/ProblemView/ProblemView.module.css */
+/* Uses global CSS variables for base theme, defines specific ones */
+
+:root {
+    --problem-view-bg-light: #f9fafb; /* Example light background */
+    --problem-view-text-light: #1f2937;
+    --problem-view-border-light: #e5e7eb;
+    --problem-view-card-bg-light: #ffffff;
+    --problem-view-code-bg-light: #f3f4f6;
+    --problem-view-code-text-light: #374151;
+    --problem-view-hint-icon-light: #4b5563;
+
+    --problem-view-bg-dark: #2d3748; /* slate-800 - Slightly lighter than pure #2d3748 */
+    --problem-view-text-dark: #e2e8f0; /* slate-200 */
+    --problem-view-border-dark: #475569; /* slate-600 - Your #4a5568 */
+    --problem-view-card-bg-dark: #2d3748; /* Your #2d3748 */
+    --problem-view-code-bg-dark: #2d3748; /* slate-800 - For code blocks */
+    --problem-view-code-text-dark: #cbd5e1; /* slate-300 */
+    --problem-view-hint-icon-dark: #94a3b8; /* slate-400 */
+}
+
+.problemViewContainer {
+  min-height: 100%; /* Changed from 100vh to fit within parent */
+  padding: 0.5rem; /* Add some padding */
+  display: flex; /* For centering contentWrapper if needed */
+  flex-direction: column;
+  /* background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat; */
+  /* Background image related classes removed, using solid color */
+}
+
+.problemViewContainer.light {
+  background-color: var(--problem-view-bg-light);
+  color: var(--problem-view-text-light);
+}
+.problemViewContainer.dark {
+  background-color: var(--problem-view-bg-dark);
+  color: var(--problem-view-text-dark);
+}
+
+.contentWrapper {
+  width: 100%;
+  max-width: 800px; /* Max width for readability */
+  margin: 0 auto; /* Center content */
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem; /* Space between sections */
+}
+
+
+.header {
+  display: flex;
+  align-items: center;
+  /* justify-content: space-between; Removed to allow title to center better */
+  padding: 0.5rem; /* p-3 */
+  border-radius: 0.5rem; /* rounded-xl */
+  /* bg-opacity-30 applied via getBgColorClass utility */
+  border-width: 1px; /* Ensure border is visible */
+  /* border color applied via getDifficultyBorderClass utility */
+  background-color: var(--problem-view-card-bg-dark); /* Default to dark card bg */
+}
+.light .header {
+  background-color: var(--problem-view-card-bg-light);
+}
+
+.backButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem; /* p-1 */
+  margin-right: 0.5rem; /* Add some space */
+  /* Icon color applied via getDifficultyClass utility */
+}
+.backButton:hover svg {
+    opacity: 0.8;
+}
+
+.questionNumber {
+  font-size: 1.875rem; /* text-3xl */
+  font-weight: 700; /* bold */
+  padding-left: 0.5rem; /* pl-2 */
+  /* Color applied via getDifficultyClass utility */
+}
+
+.titleContainer {
+  flex-grow: 1;
+  margin-left: 1rem; /* ml-4 */
+  overflow: hidden; /* Prevent long names from breaking layout */
+}
+
+.problemName {
+  font-weight: 600; /* semibold */
+  font-size: 1.125rem; /* text-lg */
+  /* Color applied via getDifficultyClass utility */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.light .problemName { /* Ensure text is visible in light mode if difficulty class doesn't set it */
+    color: var(--problem-view-text-light);
+}
+.dark .problemName {
+    color: var(--problem-view-text-dark);
+}
+/* Override with difficulty color */
+.problemName.easy, .problemName.medium, .problemName.hard {
+    /* Color set by getDifficultyClass */
+}
+
+
+.categoryName {
+  font-size: 0.875rem; /* text-sm */
+  color: #9ca3af; /* gray-400 */
+}
+.light .categoryName {
+    color: #6b7280; /* gray-500 */
+}
+
+.descriptionSection {
+  padding: 0.5rem; /* p-2 */
+}
+
+.descriptionText {
+  font-size: 1rem; /* text-base */
+  font-weight: 500; /* medium */
+  line-height: 1.6;
+  /* Color inherited from .problemViewContainer */
+}
+
+.inlineCode {
+  background-color: var(--problem-view-code-bg-dark);
+  color: var(--problem-view-code-text-dark);
+  padding: 0.1em 0.4em;
+  border-radius: 0.25rem;
+  font-family: monospace;
+  font-size: 0.9em;
+}
+.light .inlineCode {
+  background-color: var(--problem-view-code-bg-light);
+  color: var(--problem-view-code-text-light);
+}
+
+.examplesContainer {
+  margin-top: 1rem; /* mt-4 */
+  /* background-color: rgba(0, 0, 0, 0.4); */ /* Handled by getBgColorClass */
+  color: #ffffff; /* Default text color for examples, can be overridden */
+  border-radius: 0.5rem; /* rounded-lg */
+  padding: 1rem; /* p-4 */
+  font-family: monospace;
+  font-size: 0.875rem; /* text-sm */
+  display: flex;
+  flex-direction: column;
+  gap: 1rem; /* space-y-4 */
+}
+
+.exampleItem {
+  /* Individual example styling */
+}
+
+.exampleLabel {
+  /* color: #ffffff; */ /* Handled by examplesContainer */
+  margin-bottom: 0.25rem; /* mb-1 */
+  font-weight: 600; /* semibold */
+}
+
+.exampleCode {
+  white-space: pre-wrap; /* Allow wrapping */
+  word-break: break-all;
+}
+
+.divider {
+  border: none;
+  height: 1px;
+  background-color: var(--problem-view-border-dark);
+  margin: 1.5rem 0; /* Vertical margin */
+}
+.light .divider {
+  background-color: var(--problem-view-border-light);
+}
+
+.hintsSection {
+  /* margin-top: 1.5rem; */ /* Spacing handled by contentWrapper gap */
+  padding: 0.5rem;
+}
+
+.hintsTitle {
+  font-size: 1.125rem; /* text-lg */
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: var(--problem-view-text-dark);
+}
+.light .hintsTitle {
+    color: var(--problem-view-text-light);
+}
+
+.accordionItem {
+  border-bottom: 1px solid var(--problem-view-border-dark);
+}
+.light .accordionItem {
+  border-bottom-color: var(--problem-view-border-light);
+}
+.accordionItem:last-child {
+  border-bottom: none;
+}
+
+.accordionHeader {
+  background: none;
+  border: none;
+  width: 100%;
+  padding: 1rem 0.5rem; /* py-4 px-2 */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  color: var(--problem-view-text-dark);
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+.light .accordionHeader {
+    color: var(--problem-view-text-light);
+}
+.accordionHeader:hover {
+  opacity: 0.8;
+}
+
+.hintIconTitle {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem; /* Space between icon and text */
+}
+
+.hintIcon {
+    color: var(--problem-view-hint-icon-dark);
+    font-size: 1.25rem; /* text-xl */
+}
+.light .hintIcon {
+    color: var(--problem-view-hint-icon-light);
+}
+
+.accordionContent {
+  padding: 0 0.5rem 1rem 0.5rem; /* px-2 pb-4 */
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--problem-view-text-dark); /* Slightly dimmer or same as main text */
+  opacity: 0.85;
+}
+.light .accordionContent {
+    color: var(--problem-view-text-light);
+}

@@ -31,7 +31,6 @@ import Loader from './components/Loader/Loader'; // ** Use your specific Loader 
 
 // Import Global CSS
 import './index.css'; // Or your global css file path
-import { useUserStore } from './stores/userStore'; // Import user store
 
 // Layout component to conditionally render BottomNavBar
 const Layout = ({ children }) => {

@@ -1,0 +1,204 @@
+/* src/pages/CodingSession/CodingSession.module.css */
+/* Uses global CSS variables like --welcome-bg-color, --welcome-card-bg, etc. */
+
+/* --- Define specific variables for this screen if needed, or use global ones --- */
+:root {
+    --coding-session-bg: var(--welcome-bg-color, #1a1a2e); /* Default to dark theme bg */
+    --panel-bg: var(--welcome-card-bg, #2d3748); /* Default to dark theme card bg */
+    --panel-border: var(--welcome-border-color, #4a5568);
+    --text-color: var(--welcome-text-color, #e2e8f0);
+    --resize-handle-bg: #4a5568; /* gray-600 for dark */
+    --resize-handle-bg-hover: #6b7280; /* gray-500 for dark */
+    --resize-handle-bg-active: var(--welcome-button-primary-bg, #3b82f6);
+}
+
+[data-theme="light"] {
+    --coding-session-bg: var(--welcome-bg-color-light, #f9fafb);
+    --panel-bg: var(--welcome-card-bg-light, #ffffff);
+    --panel-border: var(--welcome-border-color-light, #e5e7eb);
+    --text-color: var(--welcome-text-color-light, #1f2937);
+    --resize-handle-bg: #d1d5db; /* gray-300 for light */
+    --resize-handle-bg-hover: #9ca3af; /* gray-400 for light */
+    --resize-handle-bg-active: var(--welcome-button-primary-bg, #2563eb);
+}
+
+.codingSessionContainer {
+  position: relative;
+  width: 100%;
+  height: 100vh; /* Full screen height */
+  background-color: var(--coding-session-bg);
+  overflow: hidden;
+  padding: 0.5rem; /* p-4 */
+  color: var(--text-color);
+  font-family: var(--global-font-family, sans-serif);
+}
+
+/* Mobile View Specific Styles */
+.mobileViewContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  gap: 1rem; /* gap-4 */
+}
+
+.mobileProblemViewPanel {
+  height: 60%;
+  overflow-y: auto;
+  background-color: var(--panel-bg);
+  border-radius:.5rem; /* rounded-box (DaisyUI specific, using tailwind equivalent) */
+  padding: 0.5rem; /* p-2 */
+  border: 1px solid var(--panel-border);
+}
+
+.mobileEditorPanel {
+  height: 40%;
+  position: relative; /* For potential absolute positioned elements inside */
+  background-color: var(--panel-bg);
+  border-radius: 0.5rem;
+  border: 1px solid var(--panel-border);
+  /* MonacoEditor component will fill this */
+}
+
+/* Desktop View Specific Styles */
+.desktopPanelGroup {
+  height: 100%;
+  /* PanelGroup itself doesn't take much direct styling, panels do */
+}
+
+.desktopLeftPanel, .desktopRightPanel {
+  /* Styles for the panels if needed beyond what PanelGroup provides */
+  /* background-color: var(--panel-bg); */ /* Set on children for better control */
+  /* border-radius: 0.75rem; */
+  overflow: hidden; /* Important for rounded corners on children */
+}
+
+.desktopLeftPanelContent {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  gap: 0.5rem; /* gap-2 */
+}
+
+.desktopProblemViewWrapper {
+  height: 100%; /* Default if intuitionApproved */
+  overflow-y: auto !important;
+  /* background-color: var(--panel-bg); */
+  border-radius: 0.5rem;
+  /* border: 1px solid var(--panel-border); */
+}
+
+.problemTopView{
+    overflow-y: auto !important;
+    border-radius: 0.5rem;
+}
+
+.problemBottomView{
+    border-radius: 0rem;
+}
+
+.desktopProblemViewWrapperIntuitionHidden {
+  height: auto; /* When AITile is shown */
+}
+
+.desktopAITileWrapper {
+  height: 100%; /* When AITile is shown */
+  /* background-color: var(--panel-bg); */
+  border-radius: .5rem;
+  /* padding: 1rem; p-4 for AITile */
+  /* border: 1px solid var(--panel-border); */
+  /* Add shadow if needed from original Tailwind (shadow) */
+  /* box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1); */
+}
+[data-theme="dark"] .desktopAITileWrapper {
+    /* box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 1px 2px -1px rgba(0, 0, 0, 0.2); */
+}
+
+
+.desktopEditorWrapper {
+  position: relative; /* For MonacoEditor or other absolute elements */
+  height: 100%;
+  /* background-color: var(--panel-bg); Background for the editor area */
+  border-radius: 0.5rem;
+  /* border: 1px solid var(--panel-border); */
+  overflow: hidden; /* Ensure editor respects rounded corners */
+}
+
+/* --- Resizable Panel Handle --- */
+.resizeHandle {
+  width: 0.5rem !important; /* w-2 */
+  /* background-color: var(--resize-handle-bg); */
+  position: relative;
+  outline: none;
+  /* border-left: 1px solid var(--panel-border);
+  border-right: 1px solid var(--panel-border);
+  transition: background-color 0.2s ease; */
+}
+
+.resizeProblemHandle{
+    height: 0.5rem;
+    position: relative;
+    outline: none;
+}
+.resizeProblemHandle::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 30px; /* Width of the little line */
+    height: 2px; /* Height of the line */
+    background-color: var(--text-color);
+    opacity: 0.3;
+}
+
+.resizeHandle:hover {
+  /* background-color: var(--resize-handle-bg-hover); */
+}
+.resizeHandle[data-resize-handle-active] { /* Attribute set by library when dragging */
+  /* background-color: var(--resize-handle-bg-active); */
+}
+/* Optional: Add visual indicator on the handle */
+.resizeHandle::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 2px; /* Width of the little line */
+    height: 30px; /* Height of the line */
+    background-color: var(--text-color);
+    opacity: 0.3;
+}
+
+
+/* AITile placeholder styling */
+.aiTilePlaceholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+  padding: 0.5rem; /* p-2 */
+  color: var(--welcome-subtitle-color);
+}
+
+/* ErrorBoundary fallback styling */
+.errorFallback {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: var(--coding-session-bg);
+    color: var(--text-color);
+    padding: 2rem;
+    text-align: center;
+}
+.errorFallback h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+

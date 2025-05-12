@@ -1,0 +1,225 @@
+/* components/MonacoEditor/MonacoEditor.module.css */
+/* Uses global CSS variables for theming */
+
+.monacoContainer {
+    /* background-color: var(--welcome-bg-color); */ /* Let parent control this */
+    /* padding: 0.5rem; Add some padding around the whole component */
+  }
+  
+  .controlsHeader {
+    padding-bottom: 0.5rem; /* Space below controls */
+    border-bottom: 1px solid var(--welcome-border-color, #4a5568); /* Themed border */
+  }
+  [data-theme="light"] .controlsHeader {
+    border-bottom-color: var(--welcome-border-color-light, #e5e7eb);
+  }
+  
+  .select {
+    /* Basic styling for select dropdown - can be enhanced with DaisyUI classes if passed */
+    background-color: var(--welcome-card-bg);
+    color: var(--welcome-text-color);
+    border: 1px solid var(--welcome-border-color);
+    border-radius: 0.375rem; /* rounded-md */
+    padding: 0.5rem 2rem 0.5rem 0.75rem; /* DaisyUI like padding */
+    font-size: 0.875rem;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%239ca3af' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.5rem center;
+    background-size: 1.25em 1.25em;
+    outline: none !important;
+  }
+  [data-theme="light"] .select {
+    background-color: var(--welcome-card-bg-light);
+    border-color: var(--welcome-border-color-light);
+    color: var(--welcome-text-color);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
+  }
+
+  .select:active,.select:visited,.select:hover{
+    outline: none !important;
+  }
+  
+  .runButton {
+    /* Uses getBgColorClass utility, text is white via !text-[#fff] */
+    font-weight: 500;
+  }
+  .submitButton {
+    /* Uses getDifficultyBorderClass and getDifficultyClass utilities */
+    font-weight: 500;
+  }
+  
+  .editorWrapper {
+    border: 1px solid var(--welcome-border-color, #4a5568);
+  }
+  [data-theme="light"] .editorWrapper {
+    border-color: var(--welcome-border-color-light, #e5e7eb);
+  }
+  
+  /* --- NEW: Output Panel Styles --- */
+  .outputPanel {
+    background-color: var(--welcome-card-bg, #2d3748); /* Darker card background */
+    border: 1px solid var(--welcome-border-color, #4a5568);
+    color: var(--welcome-text-color);
+    padding: 0; /* Remove padding, header and details will have their own */
+    overflow: hidden; /* Important for rounded corners with child overflow */
+  }
+  [data-theme="light"] .outputPanel {
+    background-color: var(--welcome-card-bg-light, #f9fafb);
+    border-color: var(--welcome-border-color-light, #e5e7eb);
+  }
+  
+  .outputHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem; /* Padding for header content */
+    border-bottom: 1px solid var(--welcome-border-color, #4a5568);
+  }
+  [data-theme="light"] .outputHeader {
+    border-bottom-color: var(--welcome-border-color-light, #e5e7eb);
+  }
+  
+  .overallStatus {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .statusIconSuccess { color: var(--text-color-green, #22c55e); }
+  .statusIconError { color: var(--alert-error-text-color, #ef4444); }
+  .statusIconWarning { color: #f59e0b; } /* Example amber */
+  [data-theme="dark"] .statusIconSuccess { color: #4ade80; }
+  [data-theme="dark"] .statusIconError { color: #f87171; }
+  [data-theme="dark"] .statusIconWarning { color: #fcd34d; }
+  
+  
+  .statusText {
+    font-weight: 600;
+    font-size: 1rem;
+  }
+  .statusText.success { color: var(--text-color-green, #22c55e); }
+  .statusText.error { color: var(--alert-error-text-color, #ef4444); }
+  .statusText.warning { color: #f59e0b; } /* Example amber */
+  .statusText.info { color: var(--welcome-subtitle-color); }
+  [data-theme="dark"] .statusText.success { color: #4ade80; }
+  [data-theme="dark"] .statusText.error { color: #f87171; }
+  [data-theme="dark"] .statusText.warning { color: #fcd34d; }
+  
+  
+  .runtimeText {
+    font-size: 0.8rem;
+    color: var(--welcome-subtitle-color);
+    margin-left: 0.75rem;
+  }
+  
+  .testCaseTabs {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem; /* Small gap between tabs */
+  }
+  
+  .tabButton {
+    background-color: transparent;
+    color: var(--welcome-subtitle-color);
+    border: 1px solid transparent; /* For consistent sizing */
+    padding: 0.375rem 0.75rem; /* py-1.5 px-3 */
+    border-radius: 0.375rem; /* rounded-md */
+    font-size: 0.875rem; /* text-sm */
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  }
+  .tabButton:hover {
+    background-color: var(--welcome-card-bg-hover, #4a5568);
+    color: var(--welcome-text-color);
+  }
+  [data-theme="light"] .tabButton:hover {
+    background-color: var(--welcome-card-bg-hover-light, #f3f4f6);
+  }
+  
+  .tabButton.tabActive {
+    background-color: #2a323c; /* Use primary color for active tab */
+    color: var(--welcome-button-primary-text);
+    border-color: #2a323c;
+  }
+  [data-theme="light"] .tabButton.tabActive {
+    background-color: #4a5568;
+    color: var(--welcome-button-primary-text);
+    border-color: #2a323c;
+  }
+  
+  
+  .tabDot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: var(--welcome-subtitle-color); /* Default dot color */
+    margin-right: 0.25rem;
+  }
+  .tabButton.tabActive .tabDot {
+    background-color: var(--welcome-button-primary-text); /* Active dot color */
+  }
+  
+  
+  .testCaseDetails {
+    padding: 1rem;
+    flex-grow: 1; /* Allow this area to scroll if content overflows */
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem; /* Space between Input/Output/Expected blocks */
+  }
+  
+  .detailBlock {
+    /* No specific background, inherits from outputPanel */
+  }
+  
+  .detailTitle {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--welcome-subtitle-color);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.375rem;
+  }
+  
+  .detailContent {
+    background-color: var(--welcome-neutral-bg, #2a323c); /* Darker neutral for pre blocks */
+    color: var(--welcome-neutral-content, #a6adbb);
+    padding: 0.75rem;
+    border-radius: 0.375rem; /* rounded-md */
+    font-family: monospace;
+    font-size: 0.875rem; /* text-sm */
+    white-space: pre-wrap; /* Allow wrapping */
+    word-break: break-all; /* Break long words */
+    border: 1px solid var(--welcome-border-color);
+  }
+  [data-theme="light"] .detailContent {
+    background-color: var(--welcome-neutral-bg-light, #f3f4f6);
+    color: var(--welcome-neutral-content-light, #4a5568);
+    border-color: var(--welcome-border-color-light);
+  }
+  
+  
+  .noOutput {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--welcome-subtitle-color);
+    font-size: 0.9rem;
+    padding: 1rem;
+  }
+  
+  /* Ensure theme variables are defined in your global CSS for:
+     --welcome-bg-color, --welcome-text-color, --welcome-border-color,
+     --welcome-card-bg, --welcome-subtitle-color, --welcome-button-primary-bg,
+     --welcome-button-primary-text, --welcome-neutral-bg, --welcome-neutral-content,
+     --text-color-green, --alert-error-text-color, etc.
+     And their -light and -dark variants if applicable.
+  */
+  

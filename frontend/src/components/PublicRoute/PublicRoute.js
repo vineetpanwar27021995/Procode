@@ -12,14 +12,14 @@ const PublicRoute = () => {
   const loading = useAuthStore((state) => state.loading); // Get loading state
 
   // Optional: Show loading indicator while initial auth check is running
-  // if (loading) {
-  //   return <div>Loading...</div>;
-  // }
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   // If finished loading and IS authenticated, redirect away from public route
-  // if (isAuthenticated) {
-  //   return <Navigate to="/home" replace />; // Redirect to home or dashboard
-  // }
+  if (isAuthenticated) {
+    return <Navigate to="/home" replace />; // Redirect to home or dashboard
+  }
 
   // If not authenticated, render the public route element
   return <Outlet />;
