@@ -6,6 +6,9 @@ const cors = require('cors');
 const { handleErrors } = require('./utils/errorHandler');
 const { CORS, RATE_LIMIT } = require('./config/constants');
 const app = express();
+const http = require('http'); 
+const WebSocket = require('ws'); 
+const { handleWebSocketConnection } = require('./websockets/analyzeStreamHandler');
 
 // Middleware
 app.use(helmet());
@@ -26,7 +29,7 @@ app.use('/api', limiter);
 
 app.use('/api/auth', require('./routes/auth.routes'));
 app.use('/api/db', require('./routes/firestore.routes'));
-app.use('/api/analyze', require('./routes/analyzeIntution.routes'));
+// app.use('/api/analyze', require('./routes/analyzeIntution.routes'));
 app.use('/api/problems', require('./routes/problems.routes'));
 app.use('/api/user', require('./routes/user.routes'));
 app.use('/api/', require('./routes/analyzeIntution.routes'));
@@ -49,11 +52,26 @@ app.get('/api/test', (req, res) => {
   });
 });
 
+const server = http.createServer(app); 
+const wss = new WebSocket.Server({ server }); 
+wss.on('connection', (ws, req) => {
+    console.log('Client connected to WebSocket');
+    handleWebSocketConnection(ws);
+
+    ws.on('close', () => {
+        console.log('Client disconnected from WebSocket');
+    });
+    ws.on('error', (error) => {
+        console.error('WebSocket error:', error);
+    });
+});
+
 app.use(handleErrors);
 
-const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
+const PORT = process.env.PORT || 8082;
+server.listen(PORT, () => {  // Changed from app.listen to server.listen
   console.log(`✅ Backend server listening on port ${PORT}`);
+  console.log(`✅ WebSocket server is running on ws://localhost:${PORT}`);
 });
 
 module.exports = app;

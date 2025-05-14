@@ -67,9 +67,9 @@ const MonacoEditor = ({
         console.error("❌ Failed to load previous code:", err);
       }
     };
-    if (isUnlocked) { // Only load if unlocked
+
         loadExistingCode();
-    }
+
   }, [problemId, categoryId, isUnlocked]);
 
 

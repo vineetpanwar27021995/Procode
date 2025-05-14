@@ -49,7 +49,7 @@ npm run dev            # Starts both frontend & backend concurrently
 
 This will:
 - Run the React frontend on [http://localhost:3000](http://localhost:3000)
-- Run the Node backend on [http://localhost:8080](http://localhost:8080)
+- Run the Node backend on [http://localhost:8082](http://localhost:8082)
 
 ### 2. ⚙️ Setup Environment Variables (Required)
 
@@ -73,7 +73,7 @@ REACT_APP_FIREBASE_MEASUREMENT_ID="XXX"
 Used by Node.js backend.
 
 ```env
-PORT=8080
+PORT=8082
 DEEPSEEK_API_KEY="XXX"
 DEEPSEEK_BASE_URL="XXX"
 EMAIL_USER="XXX"
